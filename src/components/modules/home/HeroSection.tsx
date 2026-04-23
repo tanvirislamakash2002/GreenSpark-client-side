@@ -1,157 +1,188 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Search, ArrowRight, Sparkles, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Shield, Truck, Wallet, Headphones, Clock, Pill, Heart } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export function HeroSection() {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
+    const [isSearching, setIsSearching] = useState(false);
+
+    // Check if user is logged in (you can get this from your auth context)
+    const { data: session } = authClient.useSession();
+    const isAuthenticated = !!session?.user;
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (searchTerm.trim()) {
-            router.push(`/shop?search=${encodeURIComponent(searchTerm)}`);
+        if (!searchTerm.trim()) return;
+        
+        setIsSearching(true);
+        router.push(`/ideas?search=${encodeURIComponent(searchTerm)}`);
+    };
+
+    const handleShareIdea = () => {
+        if (isAuthenticated) {
+            router.push("/dashboard/member/ideas/create");
+        } else {
+            router.push("/login?redirect=/dashboard/member/ideas/create");
         }
     };
 
-    const trustBadges = [
-        {
-            icon: Shield,
-            title: "100% Genuine",
-            description: "Authentic medicines",
-        },
-        {
-            icon: Truck,
-            title: "Free Delivery",
-            description: "On orders over $50",
-        },
-        {
-            icon: Wallet,
-            title: "Cash on Delivery",
-            description: "Pay when you receive",
-        },
-        {
-            icon: Headphones,
-            title: "24/7 Support",
-            description: "Always here to help",
-        },
-        {
-            icon: Clock,
-            title: "Fast Delivery",
-            description: "2-4 business days",
-        },
-    ];
-
     return (
-        <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-primary/10 to-background">
+        <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-green-950/20 dark:via-background dark:to-emerald-950/20">
             {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-20 left-10 w-72 h-72 bg-primary/30 rounded-full blur-3xl" />
-                <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/30 rounded-full blur-3xl" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl" />
+            <div className="absolute inset-0 opacity-30">
+                <div className="absolute top-20 left-10 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />
+                <div className="absolute bottom-20 right-10 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-1000" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl animate-pulse delay-500" />
             </div>
 
-            {/* Floating Medical Icons */}
-            <div className="absolute top-1/4 left-[5%] animate-float-slow hidden lg:block">
-                <Pill className="h-12 w-12 text-primary/20" />
+            {/* Decorative Leaves */}
+            <div className="absolute bottom-0 left-0 text-green-100 dark:text-green-950/20">
+                <Leaf className="w-48 h-48 opacity-20" />
             </div>
-            <div className="absolute bottom-1/3 right-[8%] animate-float-fast hidden lg:block">
-                <Heart className="h-10 w-10 text-primary/20" />
-            </div>
-            <div className="absolute top-2/3 left-[15%] animate-float-medium hidden lg:block">
-                <Pill className="h-8 w-8 text-primary/20 rotate-45" />
+            <div className="absolute top-0 right-0 text-green-100 dark:text-green-950/20 rotate-45">
+                <Leaf className="w-32 h-32 opacity-20" />
             </div>
 
-            {/* Content Container */}
-            <div className="relative container mx-auto px-4 py-16 md:py-24 lg:py-32">
+            <div className="container mx-auto px-4 relative z-10">
                 <div className="max-w-4xl mx-auto text-center">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 bg-primary/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-6">
-                        <Shield className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium text-primary">Trusted by 10,000+ customers</span>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-medium mb-6 animate-fade-in">
+                        <Sparkles className="w-4 h-4" />
+                        <span>Join the Sustainability Movement</span>
                     </div>
 
                     {/* Main Heading */}
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
-                        Your Trusted
-                        <span className="text-primary"> Online Medicine</span>
+                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-green-700 via-emerald-600 to-green-500 bg-clip-text text-transparent animate-fade-in-up">
+                        Ignite Sustainable Ideas
                         <br />
-                        Shop
+                        for a Greener Future
                     </h1>
 
                     {/* Subheading */}
-                    <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-                        Get authentic medicines delivered to your doorstep with care and reliability. 
-                        Shop from 10,000+ products with free delivery on orders over $50.
+                    <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto animate-fade-in-up animation-delay-200">
+                        Share your eco-friendly innovations, discover groundbreaking solutions, 
+                        and vote for ideas that will shape tomorrow's sustainable world.
                     </p>
 
-                    {/* Search Bar */}
-                    <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
-                        <div className="flex gap-2">
-                            <div className="relative flex-1">
-                                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                <Input
-                                    type="text"
-                                    placeholder="Search for medicines, brands, or health conditions..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-12 h-12 text-base bg-background border-2 focus:border-primary"
-                                />
-                            </div>
-                            <Button type="submit" size="lg" className="h-12 px-6">
-                                Search
-                            </Button>
-                        </div>
-                    </form>
-
-                    {/* Trust Badges */}
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-8">
-                        {trustBadges.map((badge, index) => (
-                            <div
-                                key={index}
-                                className="flex flex-col items-center gap-2 p-3 rounded-lg bg-background/50 backdrop-blur-sm hover:bg-background/80 transition-all"
-                            >
-                                <div className="p-2 rounded-full bg-primary/10">
-                                    <badge.icon className="h-5 w-5 text-primary" />
-                                </div>
-                                <div className="text-center">
-                                    <p className="font-medium text-sm">{badge.title}</p>
-                                    <p className="text-xs text-muted-foreground">{badge.description}</p>
-                                </div>
-                            </div>
-                        ))}
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in-up animation-delay-400">
+                        <Button asChild size="lg" className="bg-green-600 hover:bg-green-700 text-white group">
+                            <Link href="/ideas">
+                                Explore Ideas
+                                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </Button>
+                        <Button 
+                            size="lg" 
+                            variant="outline" 
+                            onClick={handleShareIdea}
+                            className="border-green-600 text-green-600 hover:bg-green-50 dark:hover:bg-green-950/20"
+                        >
+                            Share Your Idea
+                            <Sparkles className="ml-2 h-4 w-4" />
+                        </Button>
                     </div>
 
-                    {/* Quick Links */}
-                    <div className="flex flex-wrap justify-center gap-4 mt-8">
-                        <Button variant="outline" size="sm" onClick={() => router.push("/shop")}>
-                            Browse Categories
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => router.push("/offers")}>
-                            View Offers →
-                        </Button>
+                    {/* Search Bar */}
+                    <div className="max-w-2xl mx-auto animate-fade-in-up animation-delay-600">
+                        <form onSubmit={handleSearch} className="relative">
+                            <Input
+                                type="text"
+                                placeholder="Search for sustainable ideas... (e.g., solar energy, plastic waste)"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-12 pr-24 py-6 text-base rounded-full border-2 focus:border-green-500 focus:ring-green-500"
+                            />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Button 
+                                type="submit" 
+                                size="sm"
+                                disabled={isSearching}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-green-600 hover:bg-green-700"
+                            >
+                                {isSearching ? "Searching..." : "Search"}
+                            </Button>
+                        </form>
+                        
+                        {/* Popular Searches */}
+                        <div className="flex flex-wrap gap-2 justify-center mt-4">
+                            <span className="text-xs text-muted-foreground">Popular:</span>
+                            {["Solar Energy", "Plastic Free", "Composting", "Electric Vehicles"].map((term) => (
+                                <button
+                                    key={term}
+                                    onClick={() => {
+                                        setSearchTerm(term);
+                                        router.push(`/ideas?search=${encodeURIComponent(term)}`);
+                                    }}
+                                    className="text-xs px-2 py-1 rounded-full bg-muted hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+                                >
+                                    {term}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Trust Indicators */}
+                    <div className="mt-16 flex flex-wrap gap-8 justify-center animate-fade-in-up animation-delay-800">
+                        <div className="text-center">
+                            <div className="text-2xl font-bold text-green-600">10,000+</div>
+                            <div className="text-xs text-muted-foreground">Active Members</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-2xl font-bold text-green-600">500+</div>
+                            <div className="text-xs text-muted-foreground">Ideas Shared</div>
+                        </div>
+                        <div className="text-center">
+                            <div className="text-2xl font-bold text-green-600">50+</div>
+                            <div className="text-xs text-muted-foreground">Countries</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Wave Divider */}
-            <div className="absolute bottom-0 left-0 right-0">
-                <svg
-                    viewBox="0 0 1440 120"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-full h-12"
-                >
-                    <path
-                        d="M0 32L48 42.7C96 53.3 192 74.7 288 80C384 85.3 480 74.7 576 69.3C672 64 768 64 864 69.3C960 74.7 1056 85.3 1152 80C1248 74.7 1344 53.3 1392 42.7L1440 32V120H1392C1344 120 1248 120 1152 120C1056 120 960 120 864 120C768 120 672 120 576 120C480 120 384 120 288 120C192 120 96 120 48 120H0V32Z"
-                        fill="currentColor"
-                        className="fill-background"
-                    />
-                </svg>
-            </div>
+            {/* Custom Animations - Add to your global CSS */}
+            <style jsx>{`
+                @keyframes fade-in {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes fade-in-up {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                .animate-fade-in {
+                    animation: fade-in 0.6s ease-out forwards;
+                }
+                .animate-fade-in-up {
+                    animation: fade-in-up 0.6s ease-out forwards;
+                    opacity: 0;
+                }
+                .animation-delay-200 {
+                    animation-delay: 0.2s;
+                }
+                .animation-delay-400 {
+                    animation-delay: 0.4s;
+                }
+                .animation-delay-600 {
+                    animation-delay: 0.6s;
+                }
+                .animation-delay-800 {
+                    animation-delay: 0.8s;
+                }
+            `}</style>
         </section>
     );
 }

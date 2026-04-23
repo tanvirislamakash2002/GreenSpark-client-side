@@ -3,17 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useCart } from "@/hooks/useCart";
-import { getSession } from "@/actions/auth.action";
 import {
   Menu,
   X,
-  ShoppingCart,
+  Lightbulb,
   User,
   LogOut,
-  Package,
+  Bookmark,
+  LayoutDashboard,
+  PlusCircle,
   Search,
-  LayoutDashboard
+  Info,
+  FileText,
+  CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,32 +33,36 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "../../ui/ThemeToggle";
-import { CategoriesDropdown } from "./CategoriesDropdown";
-import { Roles } from "@/constants/roles";
-import { getDashboardRoute, getProfileRoute } from "@/constants/routes";
-import { User as UserType } from "@/types";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useLogout } from "@/hooks/useLogout";
+import { getSession } from "@/actions/auth.action";
+import { Roles } from "@/constants/roles";
 
-
-
+// Navigation items for public routes
 const navItems = [
-  { name: "Home", href: "/" },
-  { name: "Shop", href: "/shop" },
+  { name: "Home", href: "/", icon: null },
+  { name: "Ideas", href: "/ideas", icon: Lightbulb },
+  { name: "About", href: "/about", icon: Info },
+  { name: "Blog", href: "/blog", icon: FileText },
+  { name: "Pricing", href: "/pricing", icon: CreditCard },
 ];
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  image?: string;
+}
 
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { cartCount } = useCart();
-  const { logout } = useLogout();
-  const [user, setUser] = useState<UserType | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  let profileRoute = user ? getProfileRoute(user.role) : '/'
-  let dashboardRoute = user ? getDashboardRoute(user.role) : '/'
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -72,11 +78,10 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      router.push(`/shop?search=${encodeURIComponent(searchTerm)}`);
+      router.push(`/ideas?search=${encodeURIComponent(searchTerm)}`);
       setIsMobileMenuOpen(false);
     }
   };
@@ -85,8 +90,23 @@ export function Navbar() {
     if (href === "/") return pathname === href;
     return pathname.startsWith(href);
   };
-  
-  // console.log(user);
+
+  const getDashboardRoute = () => {
+    if (!user) return "/dashboard";
+    return user.role === Roles.ADMIN ? "/dashboard/admin" : "/dashboard/member";
+  };
+
+  const getProfileRoute = () => {
+    if (!user) return "/profile";
+    return user.role === Roles.ADMIN ? "/dashboard/admin/profile" : "/dashboard/member/profile";
+  };
+
+  const handleLogout = async () => {
+    // Call your logout API
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/";
+  };
+
   return (
     <>
       <header className={cn(
@@ -99,10 +119,10 @@ export function Navbar() {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                MediGo
+              <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
+                GreenSpark
               </span>
-              <span className="hidden sm:inline text-xs text-muted-foreground">| Trusted Medicines</span>
+              <span className="hidden sm:inline text-xs text-muted-foreground">| Sustainable Ideas</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -114,16 +134,13 @@ export function Navbar() {
                   className={cn(
                     "px-3 py-2 text-sm font-medium rounded-md transition-colors",
                     isActive(item.href)
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-primary hover:bg-muted"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "text-muted-foreground hover:text-green-600 hover:bg-muted"
                   )}
                 >
                   {item.name}
                 </Link>
               ))}
-
-              {/* Categories Dropdown */}
-              <CategoriesDropdown />
             </nav>
 
             {/* Desktop Actions */}
@@ -132,7 +149,7 @@ export function Navbar() {
               <form onSubmit={handleSearch} className="hidden lg:flex relative">
                 <Input
                   type="text"
-                  placeholder="Search medicines..."
+                  placeholder="Search ideas..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-64 pl-9 pr-4"
@@ -143,21 +160,6 @@ export function Navbar() {
               {/* Theme Toggle */}
               <ThemeToggle />
 
-              {/* Cart */}
-              {user?.role !== Roles.admin || user?.role !== Roles.seller ? <Button
-                variant="ghost"
-                size="icon"
-                className="relative"
-                onClick={() => router.push("/cart")}
-              >
-                <ShoppingCart className="h-5 w-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartCount > 99 ? "99+" : cartCount}
-                  </span>
-                )}
-              </Button>: null}
-
               {/* User Menu */}
               {user ? (
                 <DropdownMenu>
@@ -165,7 +167,7 @@ export function Navbar() {
                     <div className="flex items-center gap-1 cursor-pointer">
                       <Avatar className="w-8 h-8 transition-transform hover:scale-105">
                         <AvatarImage src={user.image} alt={user.name} />
-                        <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
+                        <AvatarFallback className="bg-green-100 text-green-700 text-sm font-medium">
                           {user.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -177,31 +179,60 @@ export function Navbar() {
                       <p className="text-xs text-muted-foreground truncate">
                         {user.email}
                       </p>
+                      <p className="text-xs text-green-600 capitalize mt-1">
+                        {user.role.toLowerCase()}
+                      </p>
                     </div>
                     <DropdownMenuSeparator />
-                    {user.role === Roles.admin || user.role === Roles.seller ? (
+                    
+                    {/* Dashboard */}
+                    <DropdownMenuItem asChild>
+                      <Link href={getDashboardRoute()} className="cursor-pointer">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    
+                    {/* My Ideas (only for members) */}
+                    {user.role === Roles.MEMBER && (
                       <DropdownMenuItem asChild>
-                        <Link href={dashboardRoute} className="cursor-pointer">
-                          <LayoutDashboard className="mr-2 h-4 w-4" />
-                          Dashboard
-                        </Link>
-                      </DropdownMenuItem>
-                    ) : (
-                      <DropdownMenuItem asChild>
-                        <Link href="/orders" className="cursor-pointer">
-                          <Package className="mr-2 h-4 w-4" />
-                          My Orders
+                        <Link href="/dashboard/member/ideas" className="cursor-pointer">
+                          <Lightbulb className="mr-2 h-4 w-4" />
+                          My Ideas
                         </Link>
                       </DropdownMenuItem>
                     )}
+                    
+                    {/* Create Idea (only for members) */}
+                    {user.role === Roles.MEMBER && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/dashboard/member/ideas/create" className="cursor-pointer">
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Create Idea
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    
+                    {/* Bookmarks */}
+                    {user.role === Roles.MEMBER && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/dashboard/member/bookmarks" className="cursor-pointer">
+                          <Bookmark className="mr-2 h-4 w-4" />
+                          Bookmarks
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    
+                    {/* Profile */}
                     <DropdownMenuItem asChild>
-                      <Link href={profileRoute} className="cursor-pointer">
+                      <Link href={getProfileRoute()} className="cursor-pointer">
                         <User className="mr-2 h-4 w-4" />
                         Profile
                       </Link>
                     </DropdownMenuItem>
+                    
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={logout} className="text-red-600 cursor-pointer">
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
                       <LogOut className="mr-2 h-4 w-4" />
                       Logout
                     </DropdownMenuItem>
@@ -212,7 +243,7 @@ export function Navbar() {
                   <Button asChild variant="ghost" size="sm">
                     <Link href="/login">Login</Link>
                   </Button>
-                  <Button asChild size="sm">
+                  <Button asChild size="sm" className="bg-green-600 hover:bg-green-700">
                     <Link href="/register">Sign Up</Link>
                   </Button>
                 </div>
@@ -232,7 +263,7 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Menu Sheet - Updated */}
+      {/* Mobile Menu Sheet */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
         <SheetContent side="left" className="w-full max-w-sm p-0">
           <div className="flex flex-col h-full">
@@ -240,7 +271,7 @@ export function Navbar() {
               <div className="flex items-center justify-between">
                 <SheetTitle>
                   <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                    <span className="text-xl font-bold text-primary">MediGo</span>
+                    <span className="text-xl font-bold text-green-600">GreenSpark</span>
                   </Link>
                 </SheetTitle>
                 <Button
@@ -259,7 +290,7 @@ export function Navbar() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search medicines..."
+                    placeholder="Search ideas..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-9"
@@ -275,24 +306,16 @@ export function Navbar() {
                     href={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={cn(
-                      "block px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                      "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                       isActive(item.href)
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                         : "text-foreground hover:bg-muted"
                     )}
                   >
+                    {item.icon && <item.icon className="h-4 w-4" />}
                     {item.name}
                   </Link>
                 ))}
-
-                {/* Categories Link (Mobile) */}
-                <Link
-                  href="/categories"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors"
-                >
-                  Categories
-                </Link>
               </div>
             </div>
 
@@ -303,55 +326,83 @@ export function Navbar() {
                   <div className="flex items-center gap-3 px-3 py-2 bg-muted/30 rounded-lg">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={user.image} alt={user.name} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
+                      <AvatarFallback className="bg-green-100 text-green-700 text-sm font-medium">
                         {user.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{user.name}</p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                      <p className="text-xs text-green-600 capitalize">{user.role.toLowerCase()}</p>
                     </div>
                   </div>
-                  {user.role === Roles.admin || user.role === Roles.seller ? (
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      asChild
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Link href={dashboardRoute}>
-                        <LayoutDashboard className="h-4 w-4 mr-2" />
-                        Dashboard
-                      </Link>
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      asChild
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Link href="/orders">
-                        <Package className="h-4 w-4 mr-2" />
-                        My Orders
-                      </Link>
-                    </Button>
-                  )}
+                  
                   <Button
                     variant="outline"
                     className="w-full"
                     asChild
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Link href={profileRoute}>
+                    <Link href={getDashboardRoute()}>
+                      <LayoutDashboard className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </Link>
+                  </Button>
+                  
+                  {user.role === Roles.MEMBER && (
+                    <>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        asChild
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Link href="/dashboard/member/ideas">
+                          <Lightbulb className="h-4 w-4 mr-2" />
+                          My Ideas
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        asChild
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Link href="/dashboard/member/ideas/create">
+                          <PlusCircle className="h-4 w-4 mr-2" />
+                          Create Idea
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        asChild
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Link href="/dashboard/member/bookmarks">
+                          <Bookmark className="h-4 w-4 mr-2" />
+                          Bookmarks
+                        </Link>
+                      </Button>
+                    </>
+                  )}
+                  
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    asChild
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Link href={getProfileRoute()}>
                       <User className="h-4 w-4 mr-2" />
                       Profile
                     </Link>
                   </Button>
+                  
                   <Button
                     variant="destructive"
                     className="w-full"
-                    onClick={logout}
+                    onClick={handleLogout}
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
@@ -360,6 +411,7 @@ export function Navbar() {
               ) : (
                 <>
                   <Button
+                    variant="outline"
                     className="w-full"
                     asChild
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -367,8 +419,7 @@ export function Navbar() {
                     <Link href="/login">Login</Link>
                   </Button>
                   <Button
-                    variant="outline"
-                    className="w-full"
+                    className="w-full bg-green-600 hover:bg-green-700"
                     asChild
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

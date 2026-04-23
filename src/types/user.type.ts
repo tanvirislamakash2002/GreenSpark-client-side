@@ -2,8 +2,7 @@ export interface User {
     id: string;
     name: string;
     email: string;
-    role: string;
-    image?: string;
-    phone?: string;
-    address?: string;
+    role: "MEMBER" | "ADMIN";
+    image?: string | null;
+    isActive?: boolean;
 }

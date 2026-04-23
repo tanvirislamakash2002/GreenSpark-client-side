@@ -1,66 +1,69 @@
-import { NextRequest, NextResponse } from "next/server"
-import { userService } from "./services/user.service"
+import { NextRequest, NextResponse } from "next/server";
+import { getSession } from "./actions/auth.action";
 import { Roles } from "./constants/roles";
 
 export const proxy = async (request: NextRequest) => {
     const pathName = request.nextUrl.pathname;
-    let isAuthenticated = false
+    let isAuthenticated = false;
+    let userRole = '';
 
-    const { data } = await userService.getSession()
-    if (data) {
-        isAuthenticated = true
-    }
-
-    if (!isAuthenticated) {
-        return NextResponse.redirect(new URL("/login", request.url))
-    }
-    if (
-        (data.user.role === Roles.admin) &&
-        (
-            pathName.startsWith('/seller') ||
-            // pathName.startsWith('/cart') ||
-            pathName.startsWith('/checkout') ||
-            pathName.startsWith('/orders')
-        )
-    ) {
-        return NextResponse.redirect(new URL("/admin", request.url))
-    }
-    if (
-        (data.user.role === Roles.customer) &&
-        (
-            pathName.startsWith('/seller') ||
-            pathName.startsWith('/admin')
-        )
-    ) {
-        return NextResponse.redirect(new URL("/", request.url))
-    }
-    if (
-        (data.user.role === Roles.seller) &&
-        (
-            // pathName.startsWith('/cart') ||
-            pathName.startsWith('/checkout') ||
-            pathName.startsWith('/orders')
-        )
-    ) {
-        return NextResponse.redirect(new URL("/", request.url))
-    }
-    if (
-        (data.user.role === Roles.seller) &&
-        (pathName.startsWith('/admin'))
-    ) {
-        return NextResponse.redirect(new URL("/seller", request.url))
+    const { data } = await getSession();
+    if (data?.user) {
+        isAuthenticated = true;
+        userRole = data.user.role;
     }
 
-    return NextResponse.next()
-}
+    // Auth required for these routes
+    if (
+        pathName.startsWith('/dashboard') ||
+        pathName.startsWith('/member') ||
+        pathName.startsWith('/admin') ||
+        pathName === '/profile'
+    ) {
+        if (!isAuthenticated) {
+            return NextResponse.redirect(new URL("/login", request.url));
+        }
+    }
+
+    // Admin only routes
+    if (pathName.startsWith('/admin') && userRole !== Roles.ADMIN) {
+        return NextResponse.redirect(new URL("/dashboard/member", request.url));
+    }
+
+    // Member only routes (admin can't access)
+    if (pathName.startsWith('/member') && userRole !== Roles.MEMBER) {
+        return NextResponse.redirect(new URL("/dashboard/admin", request.url));
+    }
+
+    // Redirect /dashboard based on role
+    if (pathName === '/dashboard') {
+        if (userRole === Roles.ADMIN) {
+            return NextResponse.redirect(new URL("/dashboard/admin", request.url));
+        }
+        if (userRole === Roles.MEMBER) {
+            return NextResponse.redirect(new URL("/dashboard/member", request.url));
+        }
+    }
+
+    // Redirect to dashboard if already logged in and trying to access auth pages
+    if ((pathName === '/login' || pathName === '/register') && isAuthenticated) {
+        if (userRole === Roles.ADMIN) {
+            return NextResponse.redirect(new URL("/dashboard/admin", request.url));
+        }
+        return NextResponse.redirect(new URL("/dashboard/member", request.url));
+    }
+
+    return NextResponse.next();
+};
 
 export const config = {
     matcher: [
-        // '/cart',
-        '/checkout',
-        '/orders',
+        '/dashboard',
+        '/dashboard/:path*',
+        '/member/:path*',
+        '/admin/:path*',
         '/profile',
-        '/seller/:path*',
-        '/admin/:path*'
-    ]
-}
+        '/login',
+        '/register',
+    ],
+};
