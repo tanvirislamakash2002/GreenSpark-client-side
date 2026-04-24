@@ -37,6 +37,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getSession } from "@/actions/auth.action";
 import { Roles } from "@/constants/roles";
+import { useLogout } from "@/hooks/useLogout";
 
 // Navigation items for public routes
 const navItems = [
@@ -62,19 +63,19 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const { logout } = useLogout()
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
-    
+
     const fetchUser = async () => {
       const { data } = await getSession();
       setUser(data?.user || null);
     };
     fetchUser();
-    
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -99,12 +100,6 @@ export function Navbar() {
   const getProfileRoute = () => {
     if (!user) return "/profile";
     return user.role === Roles.ADMIN ? "/dashboard/admin/profile" : "/dashboard/member/profile";
-  };
-
-  const handleLogout = async () => {
-    // Call your logout API
-    await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/";
   };
 
   return (
@@ -184,7 +179,7 @@ export function Navbar() {
                       </p>
                     </div>
                     <DropdownMenuSeparator />
-                    
+
                     {/* Dashboard */}
                     <DropdownMenuItem asChild>
                       <Link href={getDashboardRoute()} className="cursor-pointer">
@@ -192,7 +187,7 @@ export function Navbar() {
                         Dashboard
                       </Link>
                     </DropdownMenuItem>
-                    
+
                     {/* My Ideas (only for members) */}
                     {user.role === Roles.MEMBER && (
                       <DropdownMenuItem asChild>
@@ -202,7 +197,7 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    
+
                     {/* Create Idea (only for members) */}
                     {user.role === Roles.MEMBER && (
                       <DropdownMenuItem asChild>
@@ -212,7 +207,7 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    
+
                     {/* Bookmarks */}
                     {user.role === Roles.MEMBER && (
                       <DropdownMenuItem asChild>
@@ -222,7 +217,7 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                     )}
-                    
+
                     {/* Profile */}
                     <DropdownMenuItem asChild>
                       <Link href={getProfileRoute()} className="cursor-pointer">
@@ -230,9 +225,9 @@ export function Navbar() {
                         Profile
                       </Link>
                     </DropdownMenuItem>
-                    
+
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
+                    <DropdownMenuItem onClick={logout} className="text-red-600 cursor-pointer">
                       <LogOut className="mr-2 h-4 w-4" />
                       Logout
                     </DropdownMenuItem>
@@ -336,7 +331,7 @@ export function Navbar() {
                       <p className="text-xs text-green-600 capitalize">{user.role.toLowerCase()}</p>
                     </div>
                   </div>
-                  
+
                   <Button
                     variant="outline"
                     className="w-full"
@@ -348,7 +343,7 @@ export function Navbar() {
                       Dashboard
                     </Link>
                   </Button>
-                  
+
                   {user.role === Roles.MEMBER && (
                     <>
                       <Button
@@ -386,7 +381,7 @@ export function Navbar() {
                       </Button>
                     </>
                   )}
-                  
+
                   <Button
                     variant="outline"
                     className="w-full"
@@ -398,11 +393,11 @@ export function Navbar() {
                       Profile
                     </Link>
                   </Button>
-                  
+
                   <Button
                     variant="destructive"
                     className="w-full"
-                    onClick={handleLogout}
+                    onClick={logout}
                   >
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout

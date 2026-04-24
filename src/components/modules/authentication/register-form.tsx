@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader2, Mail, Lock, User, Store, ShoppingBag, Camera, X } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail, Lock, User, Sparkles, Camera, X, Leaf } from "lucide-react";
 import * as z from "zod";
 import { uploadTempAvatar } from "@/actions/upload.action";
 
@@ -28,7 +28,6 @@ const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   confirmPassword: z.string(),
-  role: z.enum(["CUSTOMER", "SELLER"]),
   image: z.string().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
@@ -53,7 +52,6 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
       email: "",
       password: "",
       confirmPassword: "",
-      role: "CUSTOMER" as "CUSTOMER" | "SELLER",
       image: "",
     },
     onSubmit: async ({ value }) => {
@@ -74,7 +72,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
           name: result.data.name,
           email: result.data.email,
           password: result.data.password,
-          role: result.data.role,
+          role: "MEMBER",
           image: result.data.image,
         } as any);
 
@@ -85,14 +83,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         }
 
         toast.success("Account created successfully!", { id: toastId });
-
-        // Redirect based on role
-        if (result.data.role === "SELLER") {
-          toast.info("Please complete your seller verification", { duration: 5000 });
-          router.push("/");
-        } else {
-          router.push("/");
-        }
+        router.push("/dashboard/member");
       } catch (error) {
         toast.error("Something went wrong. Please try again.", { id: toastId });
         setError("Failed to create account. Please try again.");
@@ -102,48 +93,46 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   });
 
-const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
-        return;
+      toast.error("Please select an image file");
+      return;
     }
 
     // Validate file size (2MB limit)
     if (file.size > 2 * 1024 * 1024) {
-        toast.error("Image must be less than 2MB");
-        return;
+      toast.error("Image must be less than 2MB");
+      return;
     }
 
     setIsUploading(true);
     const toastId = toast.loading("Uploading image...");
 
     try {
-        const uploadFormData = new FormData();
-        uploadFormData.append("avatar", file);
+      const formData = new FormData();
+      formData.append("image", file);
 
-        // Use the server action
-        const result = await uploadTempAvatar(uploadFormData);
+      const result = await uploadTempAvatar(formData);
 
-        if (!result.success) {
-            toast.error(result.message, { id: toastId });
-            return;
-        }
+      if (!result.success) {
+        toast.error(result.message, { id: toastId });
+        return;
+      }
 
-        // Update form value with image URL
-        form.setFieldValue("image", result.data.url);
-        setAvatarPreview(result.data.url);
-        toast.success("Image uploaded!", { id: toastId });
+      form.setFieldValue("image", result.data.url);
+      setAvatarPreview(result.data.url);
+      toast.success("Image uploaded!", { id: toastId });
     } catch (error) {
-        toast.error("Failed to upload image", { id: toastId });
-        console.error("Upload error:", error);
+      toast.error("Failed to upload image", { id: toastId });
+      console.error("Upload error:", error);
     } finally {
-        setIsUploading(false);
+      setIsUploading(false);
     }
-};
+  };
 
   const removeImage = () => {
     form.setFieldValue("image", "");
@@ -158,7 +147,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "http://localhost:3000",
+        callbackURL: "/dashboard/member",
       });
     } catch (error) {
       toast.error("Failed to login with Google");
@@ -191,11 +180,17 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
   return (
     <Card className="border-0 shadow-none lg:shadow-lg w-full max-w-md mx-auto" {...props}>
       <CardHeader className="space-y-1">
+        <div className="flex justify-center lg:justify-start mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-medium">
+            <Sparkles className="w-3 h-3" />
+            <span>Join GreenSpark</span>
+          </div>
+        </div>
         <CardTitle className="text-2xl font-bold text-center lg:text-left">
           Create an account
         </CardTitle>
         <CardDescription className="text-center lg:text-left">
-          Join MediGo and start shopping for authentic medicines
+          Join thousands of changemakers sharing sustainable ideas
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -216,9 +211,9 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
           {/* Profile Picture Upload */}
           <div className="flex justify-center">
             <div className="relative">
-              <Avatar className="h-24 w-24 border-2 border-muted">
+              <Avatar className="h-24 w-24 border-2 border-green-200 dark:border-green-800">
                 <AvatarImage src={avatarPreview || undefined} />
-                <AvatarFallback className="bg-primary/10 text-primary text-2xl">
+                <AvatarFallback className="bg-green-100 text-green-700 text-2xl">
                   {getInitials(form.getFieldValue("name") || "U")}
                 </AvatarFallback>
               </Avatar>
@@ -235,7 +230,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isLoading || isUploading}
-                  className="absolute -bottom-2 -right-2 p-1.5 bg-primary rounded-full text-primary-foreground shadow-md hover:bg-primary/90 disabled:opacity-50"
+                  className="absolute -bottom-2 -right-2 p-1.5 bg-green-600 rounded-full text-white shadow-md hover:bg-green-700 disabled:opacity-50"
                 >
                   {isUploading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -248,7 +243,7 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
                   type="button"
                   onClick={removeImage}
                   disabled={isLoading || isUploading}
-                  className="absolute -bottom-2 -right-2 p-1.5 bg-destructive rounded-full text-destructive-foreground shadow-md hover:bg-destructive/90 disabled:opacity-50"
+                  className="absolute -bottom-2 -right-2 p-1.5 bg-red-500 rounded-full text-white shadow-md hover:bg-red-600 disabled:opacity-50"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -312,37 +307,6 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             }}
           </form.Field>
 
-          {/* Role Selection */}
-          <form.Field name="role">
-            {(field) => (
-              <div className="space-y-2">
-                <Label>I want to</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  <div
-                    className={`flex items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${field.state.value === "CUSTOMER"
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                      }`}
-                    onClick={() => field.handleChange("CUSTOMER")}
-                  >
-                    <ShoppingBag className={`h-5 w-5 ${field.state.value === "CUSTOMER" ? "text-primary" : "text-muted-foreground"}`} />
-                    <Label className="cursor-pointer font-medium">Customer</Label>
-                  </div>
-                  <div
-                    className={`flex items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${field.state.value === "SELLER"
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
-                      }`}
-                    onClick={() => field.handleChange("SELLER")}
-                  >
-                    <Store className={`h-5 w-5 ${field.state.value === "SELLER" ? "text-primary" : "text-muted-foreground"}`} />
-                    <Label className="cursor-pointer font-medium">Seller</Label>
-                  </div>
-                </div>
-              </div>
-            )}
-          </form.Field>
-
           {/* Password */}
           <form.Field name="password">
             {(field) => {
@@ -381,9 +345,6 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
                         </div>
                         <span className="text-xs text-muted-foreground">{strength.text}</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Password must contain at least 8 characters with uppercase, lowercase, number, and special character
-                      </p>
                     </div>
                   )}
                   {isInvalid && (
@@ -432,26 +393,20 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
             }}
           </form.Field>
 
-          {/* Seller Info Note */}
-          <form.Field name="role">
-            {(field) => (
-              field.state.value === "SELLER" && (
-                <Alert className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
-                  <AlertDescription className="text-sm text-blue-700 dark:text-blue-300">
-                    As a seller, you'll need to complete verification after registration.
-                    You'll be able to add medicines and manage your store once verified.
-                  </AlertDescription>
-                </Alert>
-              )
-            )}
-          </form.Field>
+          {/* Membership Info */}
+          <Alert className="bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
+            <Leaf className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-sm text-green-700 dark:text-green-300 mt-2">
+              By joining GreenSpark, you'll be able to share sustainable ideas, vote on community solutions, and access premium eco-innovations.
+            </AlertDescription>
+          </Alert>
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-3">
         <Button
           form="register-form"
           type="submit"
-          className="w-full"
+          className="w-full bg-green-600 hover:bg-green-700"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -460,7 +415,10 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
               Creating account...
             </>
           ) : (
-            "Create Account"
+            <>
+              <Sparkles className="mr-2 h-4 w-4" />
+              Create Account
+            </>
           )}
         </Button>
 
@@ -503,18 +461,18 @@ const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
         <p className="text-xs text-center text-muted-foreground">
           By creating an account, you agree to our{" "}
-          <Link href="/terms" className="text-primary hover:underline">
+          <Link href="/terms" className="text-green-600 hover:underline">
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link href="/privacy" className="text-primary hover:underline">
+          <Link href="/privacy" className="text-green-600 hover:underline">
             Privacy Policy
           </Link>
         </p>
 
         <p className="text-sm text-center text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="text-primary hover:underline font-medium">
+          <Link href="/login" className="text-green-600 hover:underline font-medium">
             Sign in
           </Link>
         </p>

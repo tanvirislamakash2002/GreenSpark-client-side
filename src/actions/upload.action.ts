@@ -3,48 +3,48 @@
 import { uploadService } from "@/services/upload.service";
 import { updateTag } from "next/cache";
 
-// upload temp avatar 
+// Upload temp avatar (for registration - no auth required)
 export const uploadTempAvatar = async (formData: FormData) => {
     const result = await uploadService.uploadPublic(formData, "avatar/temp");
     return result;
 };
 
-// Upload avatar image
+// Upload permanent avatar (authenticated users)
 export const uploadAvatar = async (formData: FormData) => {
     const result = await uploadService.upload(formData, "avatar");
     if (result.success) {
         updateTag("profile");
-        updateTag("customer-profile");
-        updateTag("seller-profile");
-        updateTag("admin-profile");
+        updateTag("user");
     }
     return result;
 };
 
-// Upload store logo (seller)
-export const uploadStoreLogo = async (formData: FormData) => {
-    const result = await uploadService.upload(formData, "store-logo");
+// Delete avatar
+export const deleteAvatar = async () => {
+    const result = await uploadService.deleteAvatar();
     if (result.success) {
-        updateTag("seller-profile");
-        updateTag("seller-settings");
+        updateTag("profile");
+        updateTag("user");
     }
     return result;
 };
 
-// Upload document (seller verification)
-export const uploadDocument = async (formData: FormData) => {
-    const result = await uploadService.upload(formData, "document");
+// Upload idea image
+export const uploadIdeaImage = async (ideaId: string, formData: FormData) => {
+    const result = await uploadService.upload(formData, `idea-image/${ideaId}`);
     if (result.success) {
-        updateTag("seller-documents");
+        updateTag("idea");
+        updateTag(`idea-${ideaId}`);
     }
     return result;
 };
 
-// Upload product image (seller)
-export const uploadProductImage = async (medicineId: string, formData: FormData) => {
-    const result = await uploadService.upload(formData, `product-image/${medicineId}`);
+// Upload category image (admin only)
+export const uploadCategoryImage = async (categoryId: string, formData: FormData) => {
+    const result = await uploadService.upload(formData, `category-image/${categoryId}`);
     if (result.success) {
-        updateTag("medicine");
+        updateTag("categories");
+        updateTag(`category-${categoryId}`);
     }
     return result;
 };

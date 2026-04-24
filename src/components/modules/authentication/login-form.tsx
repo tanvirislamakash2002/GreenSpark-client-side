@@ -18,7 +18,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { authClient } from "@/lib/auth-client";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
-import { Eye, EyeOff, Loader2, Mail, Lock, LogIn, Sparkles, Facebook } from "lucide-react";
+import { Eye, EyeOff, Loader2, Mail, Lock, LogIn, Sparkles, Leaf } from "lucide-react";
 import * as z from "zod";
 import { Roles } from "@/constants/roles";
 
@@ -26,7 +26,7 @@ interface User {
   id: string;
   email: string;
   name: string;
-  role: "CUSTOMER" | "ADMIN" | "SELLER";
+  role: "MEMBER" | "ADMIN";
   emailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -42,9 +42,8 @@ const formSchema = z.object({
 });
 
 const DEMO_CREDENTIALS = {
-  admin: { email: "westbrook@gmail.com", password: "westbrook123", role: "ADMIN" },
-  seller: { email: "ellis@gmail.com", password: "ellis123", role: "SELLER" },
-  customer: { email: "monroe@gmail.com", password: "monroe123", role: "CUSTOMER" },
+  admin: { email: "admin@greenspark.com", password: "admin123", role: "ADMIN" },
+  member: { email: "member@greenspark.com", password: "member123", role: "MEMBER" },
 };
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
@@ -89,28 +88,11 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         // Redirect based on role
         const userData = response.data?.user as User;
         const userRole = userData?.role;
-        const isEmailVerified = userData?.emailVerified;
 
-        if (!isEmailVerified) {
-          toast.info("Please verify your email to get full access to all features", {
-            duration: 5000,
-            action: {
-              label: "Resend",
-              onClick: async () => {
-                await authClient.sendVerificationEmail({
-                  email: result.data.email,
-                });
-                toast.success("Verification email sent!");
-              }
-            }
-          });
-        }
-        if (userRole === "ADMIN") {
-          router.push("/admin");
-        } else if (userRole === "SELLER") {
-          router.push("/seller");
+        if (userRole === Roles.ADMIN) {
+          router.push("/dashboard/admin");
         } else {
-          router.push("/shop");
+          router.push("/dashboard/member");
         }
       } catch (error) {
         toast.error("Something went wrong. Please try again.", { id: toastId });
@@ -126,7 +108,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "http://localhost:3000",
+        callbackURL: "/dashboard/member",
       });
     } catch (error) {
       toast.error("Failed to login with Google");
@@ -134,7 +116,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
   };
 
-  const handleDemoLogin = async (role: "admin" | "seller" | "customer") => {
+  const handleDemoLogin = async (role: "admin" | "member") => {
     const credentials = DEMO_CREDENTIALS[role];
     setIsDemoLoading(role);
     setError(null);
@@ -153,7 +135,12 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
       }
 
       toast.success(`Logged in as ${role.toUpperCase()}!`, { id: toastId });
-      router.push("/");
+      
+      if (role === "admin") {
+        router.push("/dashboard/admin");
+      } else {
+        router.push("/dashboard/member");
+      }
     } catch (error) {
       toast.error("Something went wrong. Please try again.", { id: toastId });
       setError("Demo login failed. Please try again.");
@@ -165,11 +152,17 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   return (
     <Card className="border-0 shadow-none lg:shadow-lg w-full max-w-md mx-auto" {...props}>
       <CardHeader className="space-y-1">
+        <div className="flex justify-center lg:justify-start mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-medium">
+            <Leaf className="w-3 h-3" />
+            <span>Welcome Back</span>
+          </div>
+        </div>
         <CardTitle className="text-2xl font-bold text-center lg:text-left">
-          Welcome back
+          Sign in to GreenSpark
         </CardTitle>
         <CardDescription className="text-center lg:text-left">
-          Sign in to your account to continue
+          Access your account to share and discover sustainable ideas
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -260,7 +253,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm text-primary hover:underline"
+              className="text-sm text-green-600 hover:underline"
             >
               Forgot password?
             </Link>
@@ -271,7 +264,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         <Button
           form="login-form"
           type="submit"
-          className="w-full"
+          className="w-full bg-green-600 hover:bg-green-700"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -326,54 +319,55 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
         <p className="text-sm text-center text-muted-foreground">
           Don't have an account?{" "}
-          <Link href="/register" className="text-primary hover:underline font-medium">
+          <Link href="/register" className="text-green-600 hover:underline font-medium">
             Create an account
           </Link>
         </p>
+
         {/* Demo Login Buttons */}
-        <div className="space-y-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full border-indigo-200 dark:border-indigo-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 hover:border-indigo-300"
-            onClick={() => handleDemoLogin("admin")}
-            disabled={isLoading || isDemoLoading !== null}
-          >
-            {isDemoLoading === Roles.admin ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            ) : (
-              <Sparkles className="h-4 w-4 mr-2 text-amber-500" />
-            )}
-            Admin Demo
-          </Button>
+        <div className="space-y-3 pt-2">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Quick Demo Access</span>
+            </div>
+          </div>
+          
           <div className="grid grid-cols-2 gap-3">
             <Button
               type="button"
               variant="outline"
-              onClick={() => handleDemoLogin("seller")}
+              onClick={() => handleDemoLogin("admin")}
               disabled={isLoading || isDemoLoading !== null}
-              className="border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-950/30"
+              className="border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/30"
             >
-              {isDemoLoading === Roles.seller ? (
+              {isDemoLoading === "admin" ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                "Seller Demo"
+                <Sparkles className="h-4 w-4 mr-2 text-amber-500" />
               )}
+              Admin Demo
             </Button>
             <Button
               type="button"
               variant="outline"
-              onClick={() => handleDemoLogin("customer")}
+              onClick={() => handleDemoLogin("member")}
               disabled={isLoading || isDemoLoading !== null}
-              className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/30"
+              className="border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-950/30"
             >
-              {isDemoLoading === Roles.customer ? (
+              {isDemoLoading === "member" ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                "Customer Demo"
+                <Leaf className="h-4 w-4 mr-2 text-green-500" />
               )}
+              Member Demo
             </Button>
           </div>
+          <p className="text-xs text-center text-muted-foreground">
+            Demo credentials: admin@greenspark.com / admin123 | member@greenspark.com / member123
+          </p>
         </div>
       </CardFooter>
     </Card>
