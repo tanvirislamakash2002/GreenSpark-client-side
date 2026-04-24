@@ -44,16 +44,112 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Roles } from "@/constants/roles";
+import { getProfileRoute, isActiveRoute } from "@/constants/routes";
 import { User as UserType } from "@/types";
 import { authClient } from "@/lib/auth-client";
-import { isActiveRoute } from "@/constants/routes";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     user: UserType;
 }
 
+// Member Routes
+const memberRoutes = [
+    {
+        title: "Overview",
+        items: [
+            { title: "Dashboard", url: "/dashboard/member", icon: LayoutDashboard },
+        ],
+    },
+    {
+        title: "Ideas",
+        items: [
+            { title: "My Ideas", url: "/dashboard/member/ideas", icon: Lightbulb },
+            { title: "Create Idea", url: "/dashboard/member/ideas/create", icon: PlusCircle },
+            { title: "Drafts", url: "/dashboard/member/ideas/drafts", icon: FileText },
+            { title: "Bookmarks", url: "/dashboard/member/bookmarks", icon: Bookmark },
+        ],
+    },
+    {
+        title: "Activity",
+        items: [
+            { title: "My Votes", url: "/dashboard/member/votes", icon: ThumbsUp },
+            { title: "My Comments", url: "/dashboard/member/comments", icon: MessageSquare },
+            { title: "Notifications", url: "/dashboard/member/notifications", icon: Bell },
+        ],
+    },
+    {
+        title: "Account",
+        items: [
+            { title: "Profile", url: "/dashboard/member/profile", icon: User },
+            { title: "Payments", url: "/dashboard/member/payments", icon: CreditCard },
+            { title: "Settings", url: "/dashboard/member/settings", icon: Settings },
+        ],
+    },
+    {
+        title: "Support",
+        items: [
+            { title: "Help & Support", url: "/dashboard/member/help", icon: HelpCircle },
+        ],
+    },
+];
+
+// Admin Routes
+const adminRoutes = [
+    {
+        title: "Overview",
+        items: [
+            { title: "Dashboard", url: "/dashboard/admin", icon: LayoutDashboard },
+            { title: "Analytics", url: "/dashboard/admin/analytics", icon: BarChart3 },
+        ],
+    },
+    {
+        title: "Idea Management",
+        items: [
+            { title: "All Ideas", url: "/dashboard/admin/ideas", icon: Lightbulb },
+            { title: "Pending Approval", url: "/dashboard/admin/ideas/pending", icon: Clock },
+            { title: "Approved Ideas", url: "/dashboard/admin/ideas/approved", icon: CheckCircle },
+            { title: "Rejected Ideas", url: "/dashboard/admin/ideas/rejected", icon: XCircle },
+            { title: "Reported Ideas", url: "/dashboard/admin/ideas/reported", icon: Flag },
+        ],
+    },
+    {
+        title: "User Management",
+        items: [
+            { title: "All Members", url: "/dashboard/admin/users", icon: Users },
+            { title: "Active Members", url: "/dashboard/admin/users/active", icon: Users },
+            { title: "Suspended Accounts", url: "/dashboard/admin/users/suspended", icon: Users },
+        ],
+    },
+    {
+        title: "Content Management",
+        items: [
+            { title: "Categories", url: "/dashboard/admin/categories", icon: Tag },
+            { title: "Blog Posts", url: "/dashboard/admin/blog", icon: FileText },
+            { title: "Newsletter", url: "/dashboard/admin/newsletter", icon: Mail },
+        ],
+    },
+    {
+        title: "Comment Moderation",
+        items: [
+            { title: "All Comments", url: "/dashboard/admin/comments", icon: MessageSquare },
+            { title: "Reported Comments", url: "/dashboard/admin/comments/reported", icon: Flag },
+        ],
+    },
+    {
+        title: "System",
+        items: [
+            { title: "Activity Logs", url: "/dashboard/admin/logs", icon: Activity },
+            { title: "Settings", url: "/dashboard/admin/settings", icon: Settings },
+        ],
+    },
+];
+
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
     const pathname = usePathname();
+    const profileRoute = getProfileRoute(user.role);
+
+    // Select routes based on user role
+    const routes = user.role === Roles.ADMIN ? adminRoutes : memberRoutes;
 
     const handleLogout = async () => {
         await authClient.signOut();
@@ -67,99 +163,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         .toUpperCase()
         .slice(0, 2);
 
-    // Member Routes
-    const memberRoutes = [
-        {
-            title: "Overview",
-            items: [
-                { title: "Dashboard", url: "/dashboard/member", icon: LayoutDashboard },
-            ],
-        },
-        {
-            title: "Ideas",
-            items: [
-                { title: "My Ideas", url: "/dashboard/member/ideas", icon: Lightbulb },
-                { title: "Create Idea", url: "/dashboard/member/ideas/create", icon: PlusCircle },
-                { title: "Drafts", url: "/dashboard/member/ideas/drafts", icon: FileText },
-                { title: "Bookmarks", url: "/dashboard/member/bookmarks", icon: Bookmark },
-            ],
-        },
-        {
-            title: "Activity",
-            items: [
-                { title: "My Votes", url: "/dashboard/member/votes", icon: ThumbsUp },
-                { title: "My Comments", url: "/dashboard/member/comments", icon: MessageSquare },
-                { title: "Notifications", url: "/dashboard/member/notifications", icon: Bell },
-            ],
-        },
-        {
-            title: "Account",
-            items: [
-                { title: "Profile", url: "/dashboard/member/profile", icon: User },
-                { title: "Payments", url: "/dashboard/member/payments", icon: CreditCard },
-                { title: "Settings", url: "/dashboard/member/settings", icon: Settings },
-            ],
-        },
-        {
-            title: "Support",
-            items: [
-                { title: "Help & Support", url: "/dashboard/member/help", icon: HelpCircle },
-            ],
-        },
-    ];
-
-    // Admin Routes
-    const adminRoutes = [
-        {
-            title: "Overview",
-            items: [
-                { title: "Dashboard", url: "/dashboard/admin", icon: LayoutDashboard },
-                { title: "Analytics", url: "/dashboard/admin/analytics", icon: BarChart3 },
-            ],
-        },
-        {
-            title: "Idea Management",
-            items: [
-                { title: "All Ideas", url: "/dashboard/admin/ideas", icon: Lightbulb },
-                { title: "Pending Approval", url: "/dashboard/admin/ideas/pending", icon: Clock },
-                { title: "Approved Ideas", url: "/dashboard/admin/ideas/approved", icon: CheckCircle },
-                { title: "Rejected Ideas", url: "/dashboard/admin/ideas/rejected", icon: XCircle },
-                { title: "Reported Ideas", url: "/dashboard/admin/ideas/reported", icon: Flag },
-            ],
-        },
-        {
-            title: "User Management",
-            items: [
-                { title: "All Members", url: "/dashboard/admin/users", icon: Users },
-                { title: "Active Members", url: "/dashboard/admin/users/active", icon: Users },
-                { title: "Suspended Accounts", url: "/dashboard/admin/users/suspended", icon: Users },
-            ],
-        },
-        {
-            title: "Content Management",
-            items: [
-                { title: "Categories", url: "/dashboard/admin/categories", icon: Tag },
-                { title: "Blog Posts", url: "/dashboard/admin/blog", icon: FileText },
-                { title: "Newsletter", url: "/dashboard/admin/newsletter", icon: Mail },
-            ],
-        },
-        {
-            title: "Comment Moderation",
-            items: [
-                { title: "All Comments", url: "/dashboard/admin/comments", icon: MessageSquare },
-                { title: "Reported Comments", url: "/dashboard/admin/comments/reported", icon: Flag },
-            ],
-        },
-        {
-            title: "System",
-            items: [
-                { title: "Activity Logs", url: "/dashboard/admin/logs", icon: Activity },
-                { title: "Settings", url: "/dashboard/admin/settings", icon: Settings },
-            ],
-        },
-    ];
-
-    const routes = user.role === Roles.ADMIN ? adminRoutes : memberRoutes;
     const roleLabel = user.role === Roles.ADMIN ? "Admin" : "Member";
 
     return (
@@ -217,7 +220,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             <SidebarFooter className="border-t p-4 flex-shrink-0">
                 <div className="flex items-center gap-3 mb-3 min-w-0">
                     <Avatar className="h-9 w-9 flex-shrink-0">
-                        <AvatarImage src={user.image || ''} alt={user.name} />
+                        <AvatarImage src={user.image || undefined} alt={user.name} />
                         <AvatarFallback className="bg-green-100 text-green-700">
                             {initials}
                         </AvatarFallback>
@@ -238,7 +241,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                         className="w-full justify-start text-muted-foreground hover:text-foreground"
                         asChild
                     >
-                        <Link href={user.role === Roles.ADMIN ? "/dashboard/admin/settings" : "/dashboard/member/profile"}>
+                        <Link href={profileRoute}>
                             <User className="h-4 w-4 mr-2 flex-shrink-0" />
                             <span className="group-data-[collapsible=icon]:hidden truncate">Profile</span>
                         </Link>

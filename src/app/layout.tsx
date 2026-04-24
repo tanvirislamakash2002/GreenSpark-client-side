@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MediGo",
-  description: "A Medicine selling platform",
+  title: "GreenSpark",
+  description: "A Idea shearing platform",
 };
 
 export default function RootLayout({
