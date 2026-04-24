@@ -12,7 +12,7 @@ interface FeaturedPostProps {
 export function FeaturedPost({ post }: FeaturedPostProps) {
     return (
         <div className="mb-12">
-            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border">
+            <div className="relative rounded-2xl  overflow-hidden border">
                 <div className="grid md:grid-cols-2 gap-6 p-6 md:p-8">
                     {/* Image */}
                     <div className="relative h-64 md:h-auto rounded-xl overflow-hidden">

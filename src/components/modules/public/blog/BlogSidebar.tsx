@@ -11,7 +11,7 @@ interface BlogSidebarProps {
 
 export function BlogSidebar({ popularPosts, recentPosts, categoryCounts }: BlogSidebarProps) {
     return (
-        <div className="space-y-16">
+        <div className="flex flex-col gap-6">
             {/* Popular Posts */}
             <div className="rounded-xl border bg-card p-5">
                 <div className="flex items-center gap-2 mb-4">
