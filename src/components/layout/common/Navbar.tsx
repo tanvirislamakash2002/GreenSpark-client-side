@@ -93,13 +93,13 @@ export function Navbar() {
   };
 
   const getDashboardRoute = () => {
-    if (!user) return "/dashboard";
-    return user.role === Roles.ADMIN ? "/dashboard/admin" : "/dashboard/member";
+    if (!user) return "/";
+    return user.role === Roles.ADMIN ? "/admin" : "/member";
   };
 
   const getProfileRoute = () => {
     if (!user) return "/profile";
-    return user.role === Roles.ADMIN ? "/dashboard/admin/profile" : "/dashboard/member/profile";
+    return user.role === Roles.ADMIN ? "/admin/profile" : "/member/profile";
   };
 
   return (

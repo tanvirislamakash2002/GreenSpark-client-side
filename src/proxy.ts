@@ -27,30 +27,30 @@ export const proxy = async (request: NextRequest) => {
 
     // Admin only routes
     if (pathName.startsWith('/admin') && userRole !== Roles.ADMIN) {
-        return NextResponse.redirect(new URL("/dashboard/member", request.url));
+        return NextResponse.redirect(new URL("/member", request.url));
     }
 
     // Member only routes (admin can't access)
     if (pathName.startsWith('/member') && userRole !== Roles.MEMBER) {
-        return NextResponse.redirect(new URL("/dashboard/admin", request.url));
+        return NextResponse.redirect(new URL("/admin", request.url));
     }
 
     // Redirect /dashboard based on role
     if (pathName === '/dashboard') {
         if (userRole === Roles.ADMIN) {
-            return NextResponse.redirect(new URL("/dashboard/admin", request.url));
+            return NextResponse.redirect(new URL("/admin", request.url));
         }
         if (userRole === Roles.MEMBER) {
-            return NextResponse.redirect(new URL("/dashboard/member", request.url));
+            return NextResponse.redirect(new URL("/member", request.url));
         }
     }
 
     // Redirect to dashboard if already logged in and trying to access auth pages
     if ((pathName === '/login' || pathName === '/register') && isAuthenticated) {
         if (userRole === Roles.ADMIN) {
-            return NextResponse.redirect(new URL("/dashboard/admin", request.url));
+            return NextResponse.redirect(new URL("/admin", request.url));
         }
-        return NextResponse.redirect(new URL("/dashboard/member", request.url));
+        return NextResponse.redirect(new URL("/member", request.url));
     }
 
     return NextResponse.next();

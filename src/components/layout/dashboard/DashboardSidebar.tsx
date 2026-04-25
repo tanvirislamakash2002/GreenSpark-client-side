@@ -57,7 +57,7 @@ const memberRoutes = [
     {
         title: "Overview",
         items: [
-            { title: "Dashboard", url: "/dashboard/member", icon: LayoutDashboard },
+            { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
         ],
     },
     {
@@ -69,28 +69,28 @@ const memberRoutes = [
             { title: "Bookmarks", url: "/dashboard/member/bookmarks", icon: Bookmark },
         ],
     },
-    {
-        title: "Activity",
-        items: [
-            { title: "My Votes", url: "/dashboard/member/votes", icon: ThumbsUp },
-            { title: "My Comments", url: "/dashboard/member/comments", icon: MessageSquare },
-            { title: "Notifications", url: "/dashboard/member/notifications", icon: Bell },
-        ],
-    },
+    // {
+    //     title: "Activity",
+    //     items: [
+    //         { title: "My Votes", url: "/dashboard/member/votes", icon: ThumbsUp },
+    //         { title: "My Comments", url: "/dashboard/member/comments", icon: MessageSquare },
+    //         { title: "Notifications", url: "/dashboard/member/notifications", icon: Bell },
+    //     ],
+    // },
     {
         title: "Account",
         items: [
             { title: "Profile", url: "/dashboard/member/profile", icon: User },
             { title: "Payments", url: "/dashboard/member/payments", icon: CreditCard },
-            { title: "Settings", url: "/dashboard/member/settings", icon: Settings },
+            // { title: "Settings", url: "/dashboard/member/settings", icon: Settings },
         ],
     },
-    {
-        title: "Support",
-        items: [
-            { title: "Help & Support", url: "/dashboard/member/help", icon: HelpCircle },
-        ],
-    },
+    // {
+    //     title: "Support",
+    //     items: [
+    //         { title: "Help & Support", url: "/dashboard/member/help", icon: HelpCircle },
+    //     ],
+    // },
 ];
 
 // Admin Routes
@@ -98,7 +98,7 @@ const adminRoutes = [
     {
         title: "Overview",
         items: [
-            { title: "Dashboard", url: "/dashboard/admin", icon: LayoutDashboard },
+            { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
             { title: "Analytics", url: "/dashboard/admin/analytics", icon: BarChart3 },
         ],
     },

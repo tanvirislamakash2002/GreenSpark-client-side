@@ -8,10 +8,10 @@ export default async function DashboardIndex() {
     if (!session?.user) {
         redirect("/login");
     }
-
+console.log(session);
     if (session.user.role === Roles.ADMIN) {
-        redirect("/dashboard/admin");
+        redirect("/admin");
     } else {
-        redirect("/dashboard/member");
+        redirect("/member");
     }
 }
