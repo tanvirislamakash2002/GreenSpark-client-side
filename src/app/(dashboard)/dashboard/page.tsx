@@ -8,7 +8,6 @@ export default async function DashboardIndex() {
     if (!session?.user) {
         redirect("/login");
     }
-console.log(session);
     if (session.user.role === Roles.ADMIN) {
         redirect("/admin");
     } else {

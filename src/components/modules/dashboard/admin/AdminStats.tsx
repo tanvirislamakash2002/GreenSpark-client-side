@@ -6,7 +6,15 @@ interface AdminStatsProps {
     stats: AdminStatsType;
 }
 
-const statItems = [
+interface StatItem {
+    key: keyof AdminStatsType;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+    color: string;
+    highlight?: boolean;
+}
+
+const statItems: StatItem[] = [
     { key: "totalUsers", label: "Total Users", icon: Users, color: "text-blue-500" },
     { key: "totalIdeas", label: "Total Ideas", icon: Lightbulb, color: "text-amber-500" },
     { key: "pendingIdeas", label: "Pending", icon: Clock, color: "text-orange-500", highlight: true },
