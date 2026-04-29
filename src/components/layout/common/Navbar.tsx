@@ -191,7 +191,7 @@ export function Navbar() {
                     {/* My Ideas (only for members) */}
                     {user.role === Roles.MEMBER && (
                       <DropdownMenuItem asChild>
-                        <Link href="/dashboard/member/ideas" className="cursor-pointer">
+                        <Link href="/member/ideas" className="cursor-pointer">
                           <Lightbulb className="mr-2 h-4 w-4" />
                           My Ideas
                         </Link>
@@ -201,7 +201,7 @@ export function Navbar() {
                     {/* Create Idea (only for members) */}
                     {user.role === Roles.MEMBER && (
                       <DropdownMenuItem asChild>
-                        <Link href="/dashboard/member/ideas/create" className="cursor-pointer">
+                        <Link href="/member/ideas/create" className="cursor-pointer">
                           <PlusCircle className="mr-2 h-4 w-4" />
                           Create Idea
                         </Link>
@@ -211,7 +211,7 @@ export function Navbar() {
                     {/* Bookmarks */}
                     {user.role === Roles.MEMBER && (
                       <DropdownMenuItem asChild>
-                        <Link href="/dashboard/member/bookmarks" className="cursor-pointer">
+                        <Link href="/member/bookmarks" className="cursor-pointer">
                           <Bookmark className="mr-2 h-4 w-4" />
                           Bookmarks
                         </Link>
@@ -352,7 +352,7 @@ export function Navbar() {
                         asChild
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <Link href="/dashboard/member/ideas">
+                        <Link href="/member/ideas">
                           <Lightbulb className="h-4 w-4 mr-2" />
                           My Ideas
                         </Link>
@@ -363,7 +363,7 @@ export function Navbar() {
                         asChild
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <Link href="/dashboard/member/ideas/create">
+                        <Link href="/member/ideas/create">
                           <PlusCircle className="h-4 w-4 mr-2" />
                           Create Idea
                         </Link>
@@ -374,7 +374,7 @@ export function Navbar() {
                         asChild
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <Link href="/dashboard/member/bookmarks">
+                        <Link href="/member/bookmarks">
                           <Bookmark className="h-4 w-4 mr-2" />
                           Bookmarks
                         </Link>

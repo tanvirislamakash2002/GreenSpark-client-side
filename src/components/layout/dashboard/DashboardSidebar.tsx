@@ -63,10 +63,10 @@ const memberRoutes = [
     {
         title: "Ideas",
         items: [
-            { title: "My Ideas", url: "/dashboard/member/ideas", icon: Lightbulb },
-            { title: "Create Idea", url: "/dashboard/member/ideas/create", icon: PlusCircle },
-            { title: "Drafts", url: "/dashboard/member/ideas/drafts", icon: FileText },
-            { title: "Bookmarks", url: "/dashboard/member/bookmarks", icon: Bookmark },
+            { title: "My Ideas", url: "/member/ideas", icon: Lightbulb },
+            { title: "Create Idea", url: "/member/ideas/create", icon: PlusCircle },
+            { title: "Drafts", url: "/member/ideas/drafts", icon: FileText },
+            { title: "Bookmarks", url: "/member/bookmarks", icon: Bookmark },
         ],
     },
     // {
@@ -80,8 +80,8 @@ const memberRoutes = [
     {
         title: "Account",
         items: [
-            { title: "Profile", url: "/dashboard/member/profile", icon: User },
-            { title: "Payments", url: "/dashboard/member/payments", icon: CreditCard },
+            { title: "Profile", url: "/member/profile", icon: User },
+            { title: "Payments", url: "/member/payments", icon: CreditCard },
             // { title: "Settings", url: "/dashboard/member/settings", icon: Settings },
         ],
     },
@@ -98,48 +98,48 @@ const adminRoutes = [
     {
         title: "Overview",
         items: [
-            { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-            { title: "Analytics", url: "/dashboard/admin/analytics", icon: BarChart3 },
+            { title: "Dashboard", url: "", icon: LayoutDashboard },
+            { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
         ],
     },
     {
         title: "Idea Management",
         items: [
-            { title: "All Ideas", url: "/dashboard/admin/ideas", icon: Lightbulb },
-            { title: "Pending Approval", url: "/dashboard/admin/ideas/pending", icon: Clock },
-            { title: "Approved Ideas", url: "/dashboard/admin/ideas/approved", icon: CheckCircle },
-            { title: "Rejected Ideas", url: "/dashboard/admin/ideas/rejected", icon: XCircle },
-            { title: "Reported Ideas", url: "/dashboard/admin/ideas/reported", icon: Flag },
+            { title: "All Ideas", url: "/admin/ideas", icon: Lightbulb },
+            { title: "Pending Approval", url: "/admin/ideas/pending", icon: Clock },
+            { title: "Approved Ideas", url: "/admin/ideas/approved", icon: CheckCircle },
+            { title: "Rejected Ideas", url: "/admin/ideas/rejected", icon: XCircle },
+            { title: "Reported Ideas", url: "/admin/ideas/reported", icon: Flag },
         ],
     },
     {
         title: "User Management",
         items: [
-            { title: "All Members", url: "/dashboard/admin/users", icon: Users },
-            { title: "Active Members", url: "/dashboard/admin/users/active", icon: Users },
-            { title: "Suspended Accounts", url: "/dashboard/admin/users/suspended", icon: Users },
+            { title: "All Members", url: "/admin/users", icon: Users },
+            { title: "Active Members", url: "/admin/users/active", icon: Users },
+            { title: "Suspended Accounts", url: "/admin/users/suspended", icon: Users },
         ],
     },
     {
         title: "Content Management",
         items: [
-            { title: "Categories", url: "/dashboard/admin/categories", icon: Tag },
-            { title: "Blog Posts", url: "/dashboard/admin/blog", icon: FileText },
-            { title: "Newsletter", url: "/dashboard/admin/newsletter", icon: Mail },
+            { title: "Categories", url: "/admin/categories", icon: Tag },
+            { title: "Blog Posts", url: "/admin/blog", icon: FileText },
+            { title: "Newsletter", url: "/admin/newsletter", icon: Mail },
         ],
     },
     {
         title: "Comment Moderation",
         items: [
-            { title: "All Comments", url: "/dashboard/admin/comments", icon: MessageSquare },
-            { title: "Reported Comments", url: "/dashboard/admin/comments/reported", icon: Flag },
+            { title: "All Comments", url: "/admin/comments", icon: MessageSquare },
+            { title: "Reported Comments", url: "/admin/comments/reported", icon: Flag },
         ],
     },
     {
         title: "System",
         items: [
-            { title: "Activity Logs", url: "/dashboard/admin/logs", icon: Activity },
-            { title: "Settings", url: "/dashboard/admin/settings", icon: Settings },
+            { title: "Activity Logs", url: "/admin/logs", icon: Activity },
+            { title: "Settings", url: "/admin/settings", icon: Settings },
         ],
     },
 ];

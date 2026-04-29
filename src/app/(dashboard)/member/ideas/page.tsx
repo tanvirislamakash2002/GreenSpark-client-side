@@ -26,7 +26,6 @@ async function IdeasContent({ searchParams }: { searchParams: Awaited<MemberIdea
         status: searchParams.status as any,
         sortBy: searchParams.sortBy as any,
     });
-    console.log(result);
 
     if (!result.success || !result.data) {
         return (
