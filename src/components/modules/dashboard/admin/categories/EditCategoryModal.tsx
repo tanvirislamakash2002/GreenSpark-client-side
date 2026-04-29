@@ -37,7 +37,7 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
         },
         onSubmit: async ({ value }) => {
             if (!category) return;
-            
+
             if (!value.name.trim()) {
                 toast.error('Name is required');
                 return;
@@ -128,7 +128,7 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
         setIsUploading(true);
         const formData = new FormData();
         formData.append('image', file);
-        
+
         const result = await uploadTempAvatar(formData);
         if (result.success) {
             form.setFieldValue('imageUrl', result.data.url);
@@ -170,7 +170,7 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
                 <DialogHeader>
                     <DialogTitle>Edit Category</DialogTitle>
                 </DialogHeader>
-                
+
                 <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }} className="space-y-4">
                     {/* Name */}
                     <div>
@@ -280,7 +280,7 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading || (slugAvailable && !slugAvailable.available)}>
+                        <Button type="submit" disabled={isLoading || (slugAvailable === null ? false : !slugAvailable.available)}>
                             {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                             Save Changes
                         </Button>

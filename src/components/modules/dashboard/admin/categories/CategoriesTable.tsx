@@ -9,11 +9,12 @@ interface CategoriesTableProps {
     onEdit: (category: Category) => void;
     onDelete: (category: Category) => void;
     onRefresh: () => void;
+    onAddClick: () => void;
 }
 
-export function CategoriesTable({ categories, onEdit, onDelete, onRefresh }: CategoriesTableProps) {
+export function CategoriesTable({ categories, onEdit, onDelete, onRefresh, onAddClick }: CategoriesTableProps) {
     if (categories.length === 0) {
-        return <EmptyState />;
+        return <EmptyState onAddClick={onAddClick} />;
     }
 
     return (
@@ -27,7 +28,7 @@ export function CategoriesTable({ categories, onEdit, onDelete, onRefresh }: Cat
                 <div className="col-span-1 text-center">Ideas</div>
                 <div className="col-span-2 text-right">Actions</div>
             </div>
-            
+
             {/* Rows */}
             <div className="divide-y">
                 {categories.map((category) => (

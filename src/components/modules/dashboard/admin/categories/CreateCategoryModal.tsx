@@ -274,7 +274,7 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess }: CreateCat
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading || (slugAvailable && !slugAvailable.available)}>
+                        <Button type="submit" disabled={isLoading || (slugAvailable === null ? false : !slugAvailable.available)}>
                             {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                             Create Category
                         </Button>
