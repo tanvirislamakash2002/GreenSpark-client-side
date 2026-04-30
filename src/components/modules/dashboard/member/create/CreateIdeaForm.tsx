@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { createIdea } from '@/actions/member-idea.action';
-import { getAllCategories } from '@/actions/category.action';
+import { getCategories } from '@/actions/category.action';
 import { uploadTempAvatar } from '@/actions/upload.action';
 import Image from 'next/image';
 import { Category } from '@/types/category.type';
@@ -144,7 +144,7 @@ export function CreateIdeaForm() {
 
     useEffect(() => {
         const fetchCategories = async () => {
-            const result = await getAllCategories();
+            const result = await getCategories();
             if (result.success && result.data) {
                 setCategories(result.data);
             }
