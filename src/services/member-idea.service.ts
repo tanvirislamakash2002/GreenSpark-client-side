@@ -1,6 +1,13 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { GetMemberIdeasParams, MemberIdeasResponse, DeleteIdeaResponse, SubmitIdeaResponse } from "@/types/member-idea.type";
+import { 
+    GetMemberIdeasParams, 
+    MemberIdeasResponse, 
+    CreateIdeaData, 
+    CreateIdeaResponse,
+    DeleteIdeaResponse,
+    SubmitIdeaResponse 
+} from "@/types/member-idea.type";
 
 const API_URL = env.API_URL;
 
@@ -40,6 +47,37 @@ export const memberIdeaService = {
             };
         } catch (error) {
             console.error("Get member ideas error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    createIdea: async (data: CreateIdeaData): Promise<CreateIdeaResponse> => {
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${API_URL}/member/ideas`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Cookie: cookieStore.toString(),
+                },
+                body: JSON.stringify(data),
+            });
+
+            const response = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: response.message || "Failed to create idea",
+                };
+            }
+
+            return response;
+        } catch (error) {
+            console.error("Create idea error:", error);
             return {
                 success: false,
                 message: "Something went wrong",

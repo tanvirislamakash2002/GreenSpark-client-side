@@ -63,10 +63,8 @@ export const ideaService = {
             const page = params?.page || 1;
             const limit = params?.limit || ITEMS_PER_PAGE;
             
-            // Get filtered ideas
             let filteredIdeas = filterIdeas(dummyIdeas as Idea[], params || {});
             
-            // Pagination
             const totalItems = filteredIdeas.length;
             const totalPages = Math.ceil(totalItems / limit);
             const startIndex = (page - 1) * limit;

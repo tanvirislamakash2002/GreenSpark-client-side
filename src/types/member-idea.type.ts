@@ -12,6 +12,85 @@ export interface MemberIdea {
     voteScore: number;
     viewCount: number;
     commentCount: number;
+    categoryId?: string;
+    category: {
+        id: string;
+        name: string;
+    };
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface CreateIdeaData {
+    title: string;
+    problemStatement: string;
+    solution: string;
+    description: string;
+    imageUrl?: string;
+    isPaid: boolean;
+    price?: number;
+    categoryId: string;
+}
+
+export interface CreateIdeaResponse {
+    success: boolean;
+    data?: MemberIdea;
+    message?: string;
+}
+
+export interface GetMemberIdeasParams {
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'all';
+    sortBy?: 'newest' | 'oldest' | 'title_asc' | 'title_desc' | 'votes';
+}
+
+export interface MemberIdeasResponse {
+    success: boolean;
+    data?: {
+        ideas: MemberIdea[];
+        pagination: {
+            currentPage: number;
+            totalPages: number;
+            totalItems: number;
+            itemsPerPage: number;
+        };
+        stats: {
+            total: number;
+            draft: number;
+            pending: number;
+            approved: number;
+            rejected: number;
+        };
+    };
+    message?: string;
+}
+
+export interface DeleteIdeaResponse {
+    success: boolean;
+    message: string;
+}
+
+export interface SubmitIdeaResponse {
+    success: boolean;
+    message: string;
+}
+
+export interface MemberIdea {
+    id: string;
+    title: string;
+    problemStatement: string;
+    solution: string;
+    description: string;
+    imageUrl: string | null;
+    status: 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED';
+    isPaid: boolean;
+    price: number | null;
+    feedback: string | null;
+    voteScore: number;
+    viewCount: number;
+    commentCount: number;
     category: {
         id: string;
         name: string;

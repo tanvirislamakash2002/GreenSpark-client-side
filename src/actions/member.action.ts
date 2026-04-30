@@ -1,23 +1,33 @@
 "use server";
 
-import { memberService } from "@/services/member.service";
+import { memberIdeaService } from "@/services/member-idea.service";
+import { GetMemberIdeasParams, CreateIdeaData } from "@/types/member-idea.type";
 import { updateTag } from "next/cache";
 
-export const getDashboardData = async () => {
-    return await memberService.getDashboardData();
+export const getMemberIdeas = async (params?: GetMemberIdeasParams) => {
+    return await memberIdeaService.getMemberIdeas(params);
 };
 
-export const getMemberStats = async () => {
-    return await memberService.getMemberStats();
+export const createIdea = async (data: CreateIdeaData) => {
+    const result = await memberIdeaService.createIdea(data);
+    if (result.success) {
+        updateTag("member-ideas");
+    }
+    return result;
 };
 
-export const getRecentIdeas = async (limit: number = 5) => {
-    return await memberService.getRecentIdeas(limit);
+export const deleteIdea = async (ideaId: string) => {
+    const result = await memberIdeaService.deleteIdea(ideaId);
+    if (result.success) {
+        updateTag("member-ideas");
+    }
+    return result;
 };
 
-// For revalidating dashboard data after actions
-export const revalidateDashboard = async () => {
-    updateTag("member-dashboard");
-    updateTag("member-stats");
-    updateTag("member-recent-ideas");
+export const submitIdea = async (ideaId: string) => {
+    const result = await memberIdeaService.submitIdea(ideaId);
+    if (result.success) {
+        updateTag("member-ideas");
+    }
+    return result;
 };
