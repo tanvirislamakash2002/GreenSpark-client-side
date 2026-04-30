@@ -45,14 +45,14 @@ export function IdeasFilterBar() {
             params.delete(key);
         }
         params.delete('page');
-        router.push(`/dashboard/member/ideas?${params.toString()}`);
+        router.push(`/member/ideas?${params.toString()}`);
     };
 
     const clearSearch = () => {
         const params = new URLSearchParams(searchParams);
         params.delete('search');
         params.delete('page');
-        router.push(`/dashboard/member/ideas?${params.toString()}`);
+        router.push(`/member/ideas?${params.toString()}`);
     };
 
     return (

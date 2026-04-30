@@ -22,7 +22,7 @@ export function IdeasHeader({ stats }: IdeasHeaderProps) {
                 </p>
             </div>
             <Button asChild className="bg-green-600 hover:bg-green-700">
-                <Link href="/dashboard/member/ideas/create">
+                <Link href="/member/ideas/create">
                     <Plus className="h-4 w-4 mr-2" />
                     Create New Idea
                 </Link>

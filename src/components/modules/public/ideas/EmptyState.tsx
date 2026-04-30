@@ -17,7 +17,7 @@ export function EmptyState() {
                     <Link href="/ideas">Clear all filters</Link>
                 </Button>
                 <Button asChild>
-                    <Link href="/dashboard/member/ideas/create">
+                    <Link href="/member/ideas/create">
                         <Lightbulb className="w-4 h-4 mr-2" />
                         Share an idea
                     </Link>

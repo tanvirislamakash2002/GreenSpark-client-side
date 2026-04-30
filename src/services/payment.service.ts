@@ -32,7 +32,7 @@ export const paymentService = {
                     success: true,
                     data: {
                         transactionId: 'FREE_PLAN',
-                        paymentUrl: '/dashboard/member',
+                        paymentUrl: '/member',
                         amount: 0,
                     },
                 };

@@ -79,7 +79,7 @@ export function IdeaRow({ idea, onUpdate }: IdeaRowProps) {
                     
                     {canEdit && (
                         <Button asChild variant="ghost" size="sm">
-                            <Link href={`/dashboard/member/ideas/edit/${idea.id}`}>
+                            <Link href={`/member/ideas/edit/${idea.id}`}>
                                 <Edit className="h-4 w-4" />
                             </Link>
                         </Button>

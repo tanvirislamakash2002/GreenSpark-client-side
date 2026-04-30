@@ -13,7 +13,7 @@ export function EmptyState() {
                 You haven't created any ideas yet. Share your first sustainability idea and make an impact!
             </p>
             <Button asChild className="bg-green-600 hover:bg-green-700">
-                <Link href="/dashboard/member/ideas/create">
+                <Link href="/member/ideas/create">
                     <Plus className="h-4 w-4 mr-2" />
                     Create Your First Idea
                 </Link>

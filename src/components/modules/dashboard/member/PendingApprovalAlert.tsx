@@ -21,7 +21,7 @@ export function PendingApprovalAlert({ pendingCount }: PendingApprovalAlertProps
                     You have {pendingCount} idea{pendingCount !== 1 ? "s" : ""} waiting for admin approval.
                 </span>
                 <Button asChild variant="outline" size="sm" className="border-amber-300 text-amber-700 hover:bg-amber-100">
-                    <Link href="/dashboard/member/ideas?status=pending">
+                    <Link href="/member/ideas?status=pending">
                         View Pending Ideas
                     </Link>
                 </Button>

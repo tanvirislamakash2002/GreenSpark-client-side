@@ -18,7 +18,7 @@ export function IdeasPagination({ currentPage, totalPages, totalItems, itemsPerP
     const goToPage = (page: number) => {
         const params = new URLSearchParams(searchParams);
         params.set('page', page.toString());
-        router.push(`/dashboard/member/ideas?${params.toString()}`);
+        router.push(`/member/ideas?${params.toString()}`);
     };
 
     const startItem = (currentPage - 1) * itemsPerPage + 1;

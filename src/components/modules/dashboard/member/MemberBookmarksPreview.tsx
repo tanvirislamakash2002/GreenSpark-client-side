@@ -36,7 +36,7 @@ export function MemberBookmarksPreview({ bookmarks }: MemberBookmarksPreviewProp
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Bookmarks</CardTitle>
                 <Button asChild variant="ghost" size="sm">
-                    <Link href="/dashboard/member/bookmarks">
+                    <Link href="/member/bookmarks">
                         View All
                         <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>

@@ -32,7 +32,7 @@ export function TopContributors({ contributors }: TopContributorsProps) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Top Contributors</CardTitle>
                 <Button asChild variant="ghost" size="sm">
-                    <Link href="/dashboard/admin/contributors">
+                    <Link href="/admin/contributors">
                         View All
                         <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>

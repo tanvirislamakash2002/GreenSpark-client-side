@@ -63,7 +63,7 @@ export function PendingApprovalList({ ideas }: PendingApprovalListProps) {
                     </Badge>
                 </div>
                 <Button asChild variant="ghost" size="sm">
-                    <Link href="/dashboard/admin/ideas/pending">
+                    <Link href="/admin/ideas/pending">
                         View All
                         <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>
@@ -97,7 +97,7 @@ export function PendingApprovalList({ ideas }: PendingApprovalListProps) {
                             </div>
                             <div className="flex items-center gap-2 mt-3 md:mt-0">
                                 <Button asChild variant="ghost" size="sm">
-                                    <Link href={`/dashboard/admin/ideas/${idea.id}`}>
+                                    <Link href={`/admin/ideas/${idea.id}`}>
                                         <Eye className="h-4 w-4 mr-1" />
                                         View
                                     </Link>

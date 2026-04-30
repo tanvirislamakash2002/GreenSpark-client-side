@@ -47,7 +47,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Recent Activity</CardTitle>
                 <Button asChild variant="ghost" size="sm">
-                    <Link href="/dashboard/admin/logs">
+                    <Link href="/admin/logs">
                         View All
                         <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>

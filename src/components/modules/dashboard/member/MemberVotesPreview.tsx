@@ -36,7 +36,7 @@ export function MemberVotesPreview({ votes }: MemberVotesPreviewProps) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Recent Votes</CardTitle>
                 <Button asChild variant="ghost" size="sm">
-                    <Link href="/dashboard/member/votes">
+                    <Link href="/member/votes">
                         View All
                         <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>

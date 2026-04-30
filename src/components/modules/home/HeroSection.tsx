@@ -27,9 +27,9 @@ export function HeroSection() {
 
     const handleShareIdea = () => {
         if (isAuthenticated) {
-            router.push("/dashboard/member/ideas/create");
+            router.push("/member/ideas/create");
         } else {
-            router.push("/login?redirect=/dashboard/member/ideas/create");
+            router.push("/login?redirect=/member/ideas/create");
         }
     };
 

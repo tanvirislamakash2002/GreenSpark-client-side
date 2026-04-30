@@ -27,7 +27,7 @@ export function MemberIdeasPreview({ ideas }: MemberIdeasPreviewProps) {
                     <div className="text-center py-8">
                         <p className="text-muted-foreground mb-4">You haven't shared any ideas yet.</p>
                         <Button asChild>
-                            <Link href="/dashboard/member/ideas/create">
+                            <Link href="/member/ideas/create">
                                 <PlusCircle className="h-4 w-4 mr-2" />
                                 Create Your First Idea
                             </Link>
@@ -43,7 +43,7 @@ export function MemberIdeasPreview({ ideas }: MemberIdeasPreviewProps) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>My Ideas</CardTitle>
                 <Button asChild variant="ghost" size="sm">
-                    <Link href="/dashboard/member/ideas">
+                    <Link href="/member/ideas">
                         View All
                         <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>
@@ -73,7 +73,7 @@ export function MemberIdeasPreview({ ideas }: MemberIdeasPreviewProps) {
                                     <span>👁️ {idea.viewCount}</span>
                                     <span>💬 {idea.commentCount}</span>
                                     <Button asChild variant="ghost" size="sm">
-                                        <Link href={`/dashboard/member/ideas/edit/${idea.id}`}>
+                                        <Link href={`/member/ideas/edit/${idea.id}`}>
                                             Edit
                                         </Link>
                                     </Button>
@@ -84,7 +84,7 @@ export function MemberIdeasPreview({ ideas }: MemberIdeasPreviewProps) {
                 </div>
                 <div className="mt-4 text-center">
                     <Button asChild variant="outline">
-                        <Link href="/dashboard/member/ideas/create">
+                        <Link href="/member/ideas/create">
                             <PlusCircle className="h-4 w-4 mr-2" />
                             Create New Idea
                         </Link>

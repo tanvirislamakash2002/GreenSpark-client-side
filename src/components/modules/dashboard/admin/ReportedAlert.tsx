@@ -21,7 +21,7 @@ export function ReportedAlert({ count }: ReportedAlertProps) {
                     You have {count} reported comment{count !== 1 ? "s" : ""} pending review.
                 </span>
                 <Button asChild variant="outline" size="sm" className="border-red-300 text-red-700 hover:bg-red-100">
-                    <Link href="/dashboard/admin/comments/reported">
+                    <Link href="/admin/comments/reported">
                         <Flag className="h-4 w-4 mr-1" />
                         Review Reports
                     </Link>

@@ -49,8 +49,6 @@ export const adminCategoryService = {
 
     createCategory: async (data: CreateCategoryData): Promise<CategoryResponse> => {
         try {
-            console.log(data);
-            console.log('from service');
             const cookieStore = await cookies();
             const res = await fetch(`${API_URL}/categories`, {
                 method: "POST",
@@ -146,7 +144,6 @@ export const adminCategoryService = {
             const url = new URL(`${API_URL}/categories/check-slug`);
             url.searchParams.set('slug', slug);
             if (excludeId) url.searchParams.set('excludeId', excludeId);
-            console.log('object------', url);
             const res = await fetch(url.toString(), {
                 headers: {
                     Cookie: cookieStore.toString(),

@@ -83,7 +83,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
         }
 
         toast.success("Account created successfully!", { id: toastId });
-        router.push("/dashboard/member");
+        router.push("/member");
       } catch (error) {
         toast.error("Something went wrong. Please try again.", { id: toastId });
         setError("Failed to create account. Please try again.");
@@ -147,7 +147,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard/member",
+        callbackURL: "/member",
       });
     } catch (error) {
       toast.error("Failed to login with Google");

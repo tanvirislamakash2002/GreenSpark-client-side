@@ -50,14 +50,14 @@ export const getProfileRoute = (role: string): string => {
 export const isActiveRoute = (pathname: string, routeUrl: string): boolean => {
     if (routeUrl === "/") return pathname === routeUrl;
 
-    // Get the base path (e.g., "/dashboard/admin" from "/dashboard/admin/ideas")
+    // Get the base path (e.g., "/admin" from "/admin/ideas")
     const basePath = `/${pathname.split('/')[1]}/${pathname.split('/')[2] || ''}`.replace(/\/$/, '');
     
     // Handle dashboard base paths
-    if (routeUrl === "/dashboard/admin" && basePath === "/dashboard/admin") {
+    if (routeUrl === "/admin" && basePath === "/admin") {
         return pathname === routeUrl || pathname.startsWith(routeUrl + "/");
     }
-    if (routeUrl === "/dashboard/member" && basePath === "/dashboard/member") {
+    if (routeUrl === "/member" && basePath === "/member") {
         return pathname === routeUrl || pathname.startsWith(routeUrl + "/");
     }
 

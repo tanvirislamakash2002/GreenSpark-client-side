@@ -90,9 +90,9 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
         const userRole = userData?.role;
 
         if (userRole === Roles.ADMIN) {
-          router.push("/dashboard/admin");
+          router.push("/admin");
         } else {
-          router.push("/dashboard/member");
+          router.push("/member");
         }
       } catch (error) {
         toast.error("Something went wrong. Please try again.", { id: toastId });
@@ -108,7 +108,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     try {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard/member",
+        callbackURL: "/member",
       });
     } catch (error) {
       toast.error("Failed to login with Google");
@@ -137,9 +137,9 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
       toast.success(`Logged in as ${role.toUpperCase()}!`, { id: toastId });
       
       if (role === "admin") {
-        router.push("/dashboard/admin");
+        router.push("/admin");
       } else {
-        router.push("/dashboard/member");
+        router.push("/member");
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.", { id: toastId });

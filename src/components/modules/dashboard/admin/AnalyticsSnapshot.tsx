@@ -18,7 +18,7 @@ export function AnalyticsSnapshot({ chartData }: AnalyticsSnapshotProps) {
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Analytics Snapshot</CardTitle>
                 <Button asChild variant="ghost" size="sm">
-                    <Link href="/dashboard/admin/analytics">
+                    <Link href="/admin/analytics">
                         View Full Analytics
                         <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>

@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm } from '@tanstack/react-form';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Loader2, Upload, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -27,51 +26,19 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
     const [slugAvailable, setSlugAvailable] = useState<{ available: boolean; suggestions?: string[] } | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    
+    // Form state
+    const [name, setName] = useState('');
+    const [slug, setSlug] = useState('');
+    const [description, setDescription] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    
+    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const slugManuallyEditedRef = useRef(false);
+    const isInitialLoadRef = useRef(true);
 
-    const form = useForm({
-        defaultValues: {
-            name: '',
-            slug: '',
-            description: '',
-            imageUrl: '',
-        },
-        onSubmit: async ({ value }) => {
-            if (!category) return;
-
-            if (!value.name.trim()) {
-                toast.error('Name is required');
-                return;
-            }
-            if (!value.slug.trim()) {
-                toast.error('Slug is required');
-                return;
-            }
-            if (slugAvailable && !slugAvailable.available) {
-                toast.error('Please choose a different slug');
-                return;
-            }
-
-            setIsLoading(true);
-            const result = await updateCategory(category.id, {
-                name: value.name.trim(),
-                slug: value.slug.trim().toLowerCase(),
-                description: value.description || undefined,
-                imageUrl: value.imageUrl || undefined,
-            });
-
-            if (result.success) {
-                toast.success('Category updated successfully');
-                onOpenChange(false);
-                onSuccess();
-            } else {
-                toast.error(result.message || 'Failed to update category');
-            }
-            setIsLoading(false);
-        },
-    });
-
-    const generateSlug = (name: string) => {
-        return name
+    const generateSlug = (nameValue: string) => {
+        return nameValue
             .toLowerCase()
             .trim()
             .replace(/[^\w\s-]/g, '')
@@ -79,36 +46,69 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
             .replace(/^-+|-+$/g, '');
     };
 
-    const checkSlugAvailability = async (slug: string) => {
-        if (!slug || !category) return;
+    const checkSlugAvailability = useCallback(async (slugValue: string) => {
+        if (!slugValue || !category) return;
+        
         setIsCheckingSlug(true);
-        const result = await checkSlug(slug, category.id);
-        if (result.success && result.data) {
-            setSlugAvailable({
-                available: result.data.available,
-                suggestions: result.data.suggestions,
-            });
+        try {
+            const result = await checkSlug(slugValue, category.id);
+            if (result.success && result.data) {
+                setSlugAvailable({
+                    available: result.data.available,
+                    suggestions: result.data.suggestions,
+                });
+            } else {
+                setSlugAvailable({ available: true });
+            }
+        } catch (error) {
+            console.error('Slug check error:', error);
+            setSlugAvailable({ available: true });
+        } finally {
+            setIsCheckingSlug(false);
         }
-        setIsCheckingSlug(false);
-    };
+    }, [category]);
 
-    const handleNameChange = (name: string) => {
-        form.setFieldValue('name', name);
-        const currentSlug = form.getFieldValue('slug');
-        const generatedSlug = generateSlug(name);
-        if (currentSlug === generateSlug(category?.name || '')) {
-            form.setFieldValue('slug', generatedSlug);
+    const debouncedCheckSlug = useCallback((slugValue: string) => {
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+        
+        debounceTimerRef.current = setTimeout(() => {
+            if (slugValue) {
+                checkSlugAvailability(slugValue);
+            }
+        }, 300);
+    }, [checkSlugAvailability]);
+
+    // Handle name change - auto-generates slug only if not manually edited
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newName = e.target.value;
+        setName(newName);
+        
+        if (!slugManuallyEditedRef.current) {
+            const generatedSlug = generateSlug(newName);
+            setSlug(generatedSlug);
             if (generatedSlug) {
-                checkSlugAvailability(generatedSlug);
+                debouncedCheckSlug(generatedSlug);
             }
         }
     };
 
-    const handleSlugChange = (slug: string) => {
-        const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-        form.setFieldValue('slug', cleanSlug);
-        if (cleanSlug) {
-            checkSlugAvailability(cleanSlug);
+    // Handle slug change - manual editing with debounced check
+    const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const rawSlug = e.target.value;
+        const cleanSlug = rawSlug.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+        setSlug(cleanSlug);
+        
+        slugManuallyEditedRef.current = true;
+        debouncedCheckSlug(cleanSlug);
+    };
+
+    // Handle slug blur - immediate check
+    const handleSlugBlur = () => {
+        if (slug && debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+            checkSlugAvailability(slug);
         }
     };
 
@@ -126,12 +126,12 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
         }
 
         setIsUploading(true);
-        const formData = new FormData();
-        formData.append('image', file);
-
-        const result = await uploadTempAvatar(formData);
+        const uploadFormData = new FormData();
+        uploadFormData.append('image', file);
+        
+        const result = await uploadTempAvatar(uploadFormData);
         if (result.success) {
-            form.setFieldValue('imageUrl', result.data.url);
+            setImageUrl(result.data.url);
             setImagePreview(result.data.url);
             toast.success('Image uploaded');
         } else {
@@ -141,26 +141,90 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
     };
 
     const removeImage = () => {
-        form.setFieldValue('imageUrl', '');
+        setImageUrl('');
         setImagePreview(null);
     };
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!category) return;
+        
+        if (!name.trim()) {
+            toast.error('Name is required');
+            return;
+        }
+        if (!slug.trim()) {
+            toast.error('Slug is required');
+            return;
+        }
+        
+        // Final slug check before submit
+        if (slugAvailable === null) {
+            await checkSlugAvailability(slug);
+        }
+        
+        if (slugAvailable && !slugAvailable.available) {
+            toast.error('Please choose a different slug');
+            return;
+        }
+
+        setIsLoading(true);
+        const result = await updateCategory(category.id, {
+            name: name.trim(),
+            slug: slug.trim().toLowerCase(),
+            description: description || undefined,
+            imageUrl: imageUrl || undefined,
+        });
+
+        if (result.success) {
+            toast.success('Category updated successfully');
+            onOpenChange(false);
+            onSuccess();
+        } else {
+            toast.error(result.message || 'Failed to update category');
+        }
+        setIsLoading(false);
+    };
+
+    // Load category data when modal opens
     useEffect(() => {
         if (category && open) {
-            form.setFieldValue('name', category.name);
-            form.setFieldValue('slug', category.slug);
-            form.setFieldValue('description', category.description || '');
-            form.setFieldValue('imageUrl', category.imageUrl || '');
+            setName(category.name);
+            setSlug(category.slug);
+            setDescription(category.description || '');
+            setImageUrl(category.imageUrl || '');
             setImagePreview(category.imageUrl || null);
             setSlugAvailable({ available: true });
+            slugManuallyEditedRef.current = false;
+            isInitialLoadRef.current = true;
         }
-    }, [category, open, form]);
+    }, [category, open]);
 
+    // Reset form when modal closes
     useEffect(() => {
         if (!open) {
+            setName('');
+            setSlug('');
+            setDescription('');
+            setImageUrl('');
+            setImagePreview(null);
             setSlugAvailable(null);
+            slugManuallyEditedRef.current = false;
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
         }
     }, [open]);
+
+    // Clean up timer on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
 
     if (!category) return null;
 
@@ -170,27 +234,32 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
                 <DialogHeader>
                     <DialogTitle>Edit Category</DialogTitle>
                 </DialogHeader>
-
-                <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }} className="space-y-4">
-                    {/* Name */}
+                
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Name Field */}
                     <div>
                         <Label htmlFor="edit-name">Name *</Label>
                         <Input
                             id="edit-name"
-                            value={form.getFieldValue('name')}
-                            onChange={(e) => handleNameChange(e.target.value)}
+                            type="text"
+                            value={name}
+                            onChange={handleNameChange}
+                            placeholder="e.g., Energy, Waste, Transportation"
                             disabled={isLoading}
                         />
                     </div>
 
-                    {/* Slug */}
+                    {/* Slug Field */}
                     <div>
                         <Label htmlFor="edit-slug">Slug *</Label>
                         <div className="relative">
                             <Input
                                 id="edit-slug"
-                                value={form.getFieldValue('slug')}
-                                onChange={(e) => handleSlugChange(e.target.value)}
+                                type="text"
+                                value={slug}
+                                onChange={handleSlugChange}
+                                onBlur={handleSlugBlur}
+                                placeholder="url-friendly-identifier"
                                 disabled={isLoading || isCheckingSlug}
                                 className={slugAvailable && !slugAvailable.available ? 'border-red-500 pr-16' : slugAvailable?.available ? 'border-green-500 pr-16' : ''}
                             />
@@ -214,15 +283,19 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
                                 Try: {slugAvailable.suggestions.slice(0, 3).join(', ')}
                             </p>
                         )}
+                        <p className="text-xs text-muted-foreground mt-1">
+                            URL: /categories/{slug || '...'}
+                        </p>
                     </div>
 
-                    {/* Description */}
+                    {/* Description Field */}
                     <div>
                         <Label htmlFor="edit-description">Description</Label>
                         <Textarea
                             id="edit-description"
-                            value={form.getFieldValue('description')}
-                            onChange={(e) => form.setFieldValue('description', e.target.value)}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Brief description of this category"
                             rows={3}
                             disabled={isLoading}
                         />
@@ -274,13 +347,19 @@ export function EditCategoryModal({ open, onOpenChange, category, onSuccess }: E
                                 </div>
                             )}
                         </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Optional. Max 2MB. JPG, PNG, GIF, WEBP.
+                        </p>
                     </div>
 
                     <DialogFooter>
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading || (slugAvailable === null ? false : !slugAvailable.available)}>
+                        <Button 
+                            type="submit" 
+                            disabled={isLoading || (slugAvailable !== null && !slugAvailable.available)}
+                        >
                             {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                             Save Changes
                         </Button>
