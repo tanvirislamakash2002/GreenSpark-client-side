@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { GetCategoriesParams, CategoriesResponse, CreateCategoryData, UpdateCategoryData, CategoryResponse, DeleteCategoryResponse, CheckSlugResponse } from "@/types/admin-category.type";
+import { GetCategoriesParams, CategoriesResponse, CreateCategoryData, UpdateCategoryData, CategoryResponse, DeleteCategoryResponse, CheckSlugResponse } from "@/types/category.type";
 
 const API_URL = env.API_URL;
 
@@ -8,7 +8,7 @@ export const adminCategoryService = {
     getCategories: async (params?: GetCategoriesParams): Promise<CategoriesResponse> => {
         try {
             const cookieStore = await cookies();
-            const url = new URL(`${API_URL}/admin/categories`);
+            const url = new URL(`${API_URL}/categories`);
             
             if (params) {
                 if (params.page) url.searchParams.set('page', params.page.toString());
@@ -22,7 +22,7 @@ export const adminCategoryService = {
                 headers: {
                     Cookie: cookieStore.toString(),
                 },
-                next: { tags: ["admin-categories"] },
+                next: { tags: ["categories"] },
             });
 
             const data = await res.json();
@@ -49,8 +49,10 @@ export const adminCategoryService = {
 
     createCategory: async (data: CreateCategoryData): Promise<CategoryResponse> => {
         try {
+            console.log(data);
+            console.log('from service');
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/categories`, {
+            const res = await fetch(`${API_URL}/categories`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -81,7 +83,7 @@ export const adminCategoryService = {
     updateCategory: async (id: string, data: UpdateCategoryData): Promise<CategoryResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/categories/${id}`, {
+            const res = await fetch(`${API_URL}/categories/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -112,7 +114,7 @@ export const adminCategoryService = {
     deleteCategory: async (id: string): Promise<DeleteCategoryResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/categories/${id}`, {
+            const res = await fetch(`${API_URL}/categories/${id}`, {
                 method: "DELETE",
                 headers: {
                     Cookie: cookieStore.toString(),
@@ -141,10 +143,10 @@ export const adminCategoryService = {
     checkSlug: async (slug: string, excludeId?: string): Promise<CheckSlugResponse> => {
         try {
             const cookieStore = await cookies();
-            const url = new URL(`${API_URL}/admin/categories/check-slug`);
+            const url = new URL(`${API_URL}/categories/check-slug`);
             url.searchParams.set('slug', slug);
             if (excludeId) url.searchParams.set('excludeId', excludeId);
-            
+            console.log('object------', url);
             const res = await fetch(url.toString(), {
                 headers: {
                     Cookie: cookieStore.toString(),

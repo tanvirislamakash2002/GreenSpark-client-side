@@ -23,7 +23,7 @@ export function CategoriesSearch() {
         params.delete('page');
         
         startTransition(() => {
-            router.push(`/dashboard/admin/categories?${params.toString()}`);
+            router.push(`/admin/categories?${params.toString()}`);
         });
     };
 
@@ -32,7 +32,7 @@ export function CategoriesSearch() {
         const params = new URLSearchParams(searchParams);
         params.delete('search');
         params.delete('page');
-        router.push(`/dashboard/admin/categories?${params.toString()}`);
+        router.push(`/admin/categories?${params.toString()}`);
     };
 
     return (

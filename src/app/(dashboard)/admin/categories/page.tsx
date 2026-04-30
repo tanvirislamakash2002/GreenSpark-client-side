@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { getCategories } from '@/actions/admin-category.action';
+import { getCategories } from '@/actions/category.action';
 import { CategoriesHeader } from '@/components/modules/dashboard/admin/categories/CategoriesHeader';
 import { CategoriesSearch } from '@/components/modules/dashboard/admin/categories/CategoriesSearch';
 import { CategoriesTable } from '@/components/modules/dashboard/admin/categories/CategoriesTable';
@@ -10,7 +10,7 @@ import { CategoriesSkeleton } from '@/components/modules/dashboard/admin/categor
 import { CreateCategoryModal } from '@/components/modules/dashboard/admin/categories/CreateCategoryModal';
 import { EditCategoryModal } from '@/components/modules/dashboard/admin/categories/EditCategoryModal';
 import { DeleteCategoryModal } from '@/components/modules/dashboard/admin/categories/DeleteCategoryModal';
-import { Category } from '@/types/admin-category.type';
+import { Category } from '@/types/category.type';
 import { toast } from 'sonner';
 
 export default function AdminCategoriesPage() {

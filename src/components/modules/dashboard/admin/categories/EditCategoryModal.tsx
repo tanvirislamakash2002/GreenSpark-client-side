@@ -9,9 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { updateCategory, checkSlug } from '@/actions/admin-category.action';
+import { updateCategory, checkSlug } from '@/actions/category.action';
 import { uploadTempAvatar } from '@/actions/upload.action';
-import { Category } from '@/types/admin-category.type';
+import { Category } from '@/types/category.type';
 import Image from 'next/image';
 
 interface EditCategoryModalProps {

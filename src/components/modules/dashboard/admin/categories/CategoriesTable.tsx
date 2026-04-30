@@ -1,6 +1,6 @@
 'use client';
 
-import { Category } from "@/types/admin-category.type";
+import { Category } from "@/types/category.type";
 import { CategoryRow } from "./CategoryRow";
 import { EmptyState } from "./EmptyState";
 

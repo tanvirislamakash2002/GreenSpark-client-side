@@ -2,7 +2,7 @@
 
 import { Pencil, Trash2, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Category } from "@/types/admin-category.type";
+import { Category } from "@/types/category.type";
 import Image from "next/image";
 
 interface CategoryRowProps {

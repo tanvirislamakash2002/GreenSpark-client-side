@@ -5,8 +5,8 @@ import { Loader2, AlertTriangle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { deleteCategory } from '@/actions/admin-category.action';
-import { Category } from '@/types/admin-category.type';
+import { deleteCategory } from '@/actions/category.action';
+import { Category } from '@/types/category.type';
 
 interface DeleteCategoryModalProps {
     open: boolean;

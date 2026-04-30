@@ -4,11 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const actions = [
-    { title: "Create Category", href: "/dashboard/admin/categories/create", icon: PlusCircle, color: "bg-green-100 text-green-700" },
-    { title: "Send Newsletter", href: "/dashboard/admin/newsletter", icon: Mail, color: "bg-blue-100 text-blue-700" },
+    { title: "Create Category", href: "/admin/categories/create", icon: PlusCircle, color: "bg-green-100 text-green-700" },
+    { title: "Send Newsletter", href: "/admin/newsletter", icon: Mail, color: "bg-blue-100 text-blue-700" },
     { title: "Export Data", href: "/api/admin/export", icon: Download, color: "bg-purple-100 text-purple-700", external: true },
     { title: "Clear Cache", href: "#", icon: Trash2, color: "bg-orange-100 text-orange-700" },
-    { title: "System Settings", href: "/dashboard/admin/settings", icon: Settings, color: "bg-gray-100 text-gray-700" },
+    { title: "System Settings", href: "/admin/settings", icon: Settings, color: "bg-gray-100 text-gray-700" },
 ];
 
 export function QuickActions() {

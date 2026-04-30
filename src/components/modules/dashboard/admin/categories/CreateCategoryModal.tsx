@@ -1,15 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm } from '@tanstack/react-form';
-import { Loader2, Upload, X, ImageIcon } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Loader2, Upload, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { createCategory, checkSlug } from '@/actions/admin-category.action';
+import { createCategory, checkSlug } from '@/actions/category.action';
 import { uploadTempAvatar } from '@/actions/upload.action';
 import Image from 'next/image';
 
@@ -25,52 +24,16 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess }: CreateCat
     const [slugAvailable, setSlugAvailable] = useState<{ available: boolean; suggestions?: string[] } | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [name, setName] = useState('');
+    const [slug, setSlug] = useState('');
+    const [description, setDescription] = useState('');
+    const [imageUrl, setImageUrl] = useState('');
+    
+    const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const slugManuallyEditedRef = useRef(false);
 
-    const form = useForm({
-        defaultValues: {
-            name: '',
-            slug: '',
-            description: '',
-            imageUrl: '',
-        },
-        onSubmit: async ({ value }) => {
-            if (!value.name.trim()) {
-                toast.error('Name is required');
-                return;
-            }
-            if (!value.slug.trim()) {
-                toast.error('Slug is required');
-                return;
-            }
-            if (slugAvailable && !slugAvailable.available) {
-                toast.error('Please choose a different slug');
-                return;
-            }
-
-            setIsLoading(true);
-            const result = await createCategory({
-                name: value.name.trim(),
-                slug: value.slug.trim().toLowerCase(),
-                description: value.description || undefined,
-                imageUrl: value.imageUrl || undefined,
-            });
-
-            if (result.success) {
-                toast.success('Category created successfully');
-                form.reset();
-                setImagePreview(null);
-                setSlugAvailable(null);
-                onOpenChange(false);
-                onSuccess();
-            } else {
-                toast.error(result.message || 'Failed to create category');
-            }
-            setIsLoading(false);
-        },
-    });
-
-    const generateSlug = (name: string) => {
-        return name
+    const generateSlug = (nameValue: string) => {
+        return nameValue
             .toLowerCase()
             .trim()
             .replace(/[^\w\s-]/g, '')
@@ -78,33 +41,75 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess }: CreateCat
             .replace(/^-+|-+$/g, '');
     };
 
-    const handleNameChange = (name: string) => {
-        form.setFieldValue('name', name);
-        const generatedSlug = generateSlug(name);
-        form.setFieldValue('slug', generatedSlug);
-        if (generatedSlug) {
-            checkSlugAvailability(generatedSlug);
-        }
-    };
-
-    const checkSlugAvailability = async (slug: string) => {
-        if (!slug) return;
+    const checkSlugAvailability = useCallback(async (slugValue: string) => {
+        if (!slugValue) return;
+        
         setIsCheckingSlug(true);
-        const result = await checkSlug(slug);
-        if (result.success && result.data) {
-            setSlugAvailable({
-                available: result.data.available,
-                suggestions: result.data.suggestions,
-            });
+        try {
+            const result = await checkSlug(slugValue);
+            if (result.success && result.data) {
+                setSlugAvailable({
+                    available: result.data.available,
+                    suggestions: result.data.suggestions,
+                });
+            } else {
+                setSlugAvailable({ available: true });
+            }
+        } catch (error) {
+            console.error('Slug check error:', error);
+            setSlugAvailable({ available: true });
+        } finally {
+            setIsCheckingSlug(false);
         }
-        setIsCheckingSlug(false);
+    }, []);
+
+    // ✅ Debounced slug check - waits 300ms after user stops typing
+    const debouncedCheckSlug = useCallback((slugValue: string) => {
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+        
+        debounceTimerRef.current = setTimeout(() => {
+            if (slugValue) {
+                checkSlugAvailability(slugValue);
+            }
+        }, 300); // ✅ Reduced from 500ms to 300ms for faster feedback
+    }, [checkSlugAvailability]);
+
+    // Handle name change - auto-generates slug
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newName = e.target.value;
+        setName(newName);
+        
+        // Only auto-generate slug if user hasn't manually edited it
+        if (!slugManuallyEditedRef.current) {
+            const generatedSlug = generateSlug(newName);
+            setSlug(generatedSlug);
+            // ✅ Check availability of auto-generated slug
+            if (generatedSlug) {
+                debouncedCheckSlug(generatedSlug);
+            }
+        }
     };
 
-    const handleSlugChange = (slug: string) => {
-        const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '-');
-        form.setFieldValue('slug', cleanSlug);
-        if (cleanSlug) {
-            checkSlugAvailability(cleanSlug);
+    // Handle slug change - manual editing with debounced check
+    const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const rawSlug = e.target.value;
+        const cleanSlug = rawSlug.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+        setSlug(cleanSlug);
+        
+        // Mark that user has manually edited the slug
+        slugManuallyEditedRef.current = true;
+        
+        // ✅ Check slug availability while typing (debounced)
+        debouncedCheckSlug(cleanSlug);
+    };
+
+    // Handle slug blur - immediate check when user leaves the field
+    const handleSlugBlur = () => {
+        if (slug && debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+            checkSlugAvailability(slug);
         }
     };
 
@@ -122,12 +127,12 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess }: CreateCat
         }
 
         setIsUploading(true);
-        const formData = new FormData();
-        formData.append('image', file);
+        const uploadFormData = new FormData();
+        uploadFormData.append('image', file);
         
-        const result = await uploadTempAvatar(formData);
+        const result = await uploadTempAvatar(uploadFormData);
         if (result.success) {
-            form.setFieldValue('imageUrl', result.data.url);
+            setImageUrl(result.data.url);
             setImagePreview(result.data.url);
             toast.success('Image uploaded');
         } else {
@@ -137,17 +142,82 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess }: CreateCat
     };
 
     const removeImage = () => {
-        form.setFieldValue('imageUrl', '');
+        setImageUrl('');
         setImagePreview(null);
     };
 
-    useEffect(() => {
-        if (!open) {
-            form.reset();
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!name.trim()) {
+            toast.error('Name is required');
+            return;
+        }
+        if (!slug.trim()) {
+            toast.error('Slug is required');
+            return;
+        }
+        
+        // Final slug check before submit
+        if (slugAvailable === null) {
+            await checkSlugAvailability(slug);
+        }
+        
+        if (slugAvailable && !slugAvailable.available) {
+            toast.error('Please choose a different slug');
+            return;
+        }
+
+        setIsLoading(true);
+        const result = await createCategory({
+            name: name.trim(),
+            slug: slug.trim().toLowerCase(),
+            description: description || undefined,
+            imageUrl: imageUrl || undefined,
+        });
+
+        if (result.success) {
+            toast.success('Category created successfully');
+            // Reset all state
+            setName('');
+            setSlug('');
+            setDescription('');
+            setImageUrl('');
             setImagePreview(null);
             setSlugAvailable(null);
+            slugManuallyEditedRef.current = false;
+            onOpenChange(false);
+            onSuccess();
+        } else {
+            toast.error(result.message || 'Failed to create category');
         }
-    }, [open, form]);
+        setIsLoading(false);
+    };
+
+    // Reset form when modal opens
+    useEffect(() => {
+        if (open) {
+            setName('');
+            setSlug('');
+            setDescription('');
+            setImageUrl('');
+            setImagePreview(null);
+            setSlugAvailable(null);
+            slugManuallyEditedRef.current = false;
+        }
+        if (debounceTimerRef.current) {
+            clearTimeout(debounceTimerRef.current);
+        }
+    }, [open]);
+
+    // Clean up timer on unmount
+    useEffect(() => {
+        return () => {
+            if (debounceTimerRef.current) {
+                clearTimeout(debounceTimerRef.current);
+            }
+        };
+    }, []);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -156,28 +226,31 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess }: CreateCat
                     <DialogTitle>Create New Category</DialogTitle>
                 </DialogHeader>
                 
-                <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }} className="space-y-4">
-                    {/* Name */}
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Name Field */}
                     <div>
                         <Label htmlFor="name">Name *</Label>
                         <Input
                             id="name"
+                            type="text"
+                            value={name}
+                            onChange={handleNameChange}
                             placeholder="e.g., Energy, Waste, Transportation"
-                            value={form.getFieldValue('name')}
-                            onChange={(e) => handleNameChange(e.target.value)}
                             disabled={isLoading}
                         />
                     </div>
 
-                    {/* Slug */}
+                    {/* Slug Field */}
                     <div>
                         <Label htmlFor="slug">Slug *</Label>
                         <div className="relative">
                             <Input
                                 id="slug"
+                                type="text"
+                                value={slug}
+                                onChange={handleSlugChange}
+                                onBlur={handleSlugBlur}
                                 placeholder="url-friendly-identifier"
-                                value={form.getFieldValue('slug')}
-                                onChange={(e) => handleSlugChange(e.target.value)}
                                 disabled={isLoading || isCheckingSlug}
                                 className={slugAvailable && !slugAvailable.available ? 'border-red-500 pr-16' : slugAvailable?.available ? 'border-green-500 pr-16' : ''}
                             />
@@ -202,18 +275,18 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess }: CreateCat
                             </p>
                         )}
                         <p className="text-xs text-muted-foreground mt-1">
-                            URL: /categories/{form.getFieldValue('slug') || '...'}
+                            URL: /categories/{slug || '...'}
                         </p>
                     </div>
 
-                    {/* Description */}
+                    {/* Description Field */}
                     <div>
                         <Label htmlFor="description">Description</Label>
                         <Textarea
                             id="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
                             placeholder="Brief description of this category"
-                            value={form.getFieldValue('description')}
-                            onChange={(e) => form.setFieldValue('description', e.target.value)}
                             rows={3}
                             disabled={isLoading}
                         />
@@ -274,7 +347,10 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess }: CreateCat
                         <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading || (slugAvailable === null ? false : !slugAvailable.available)}>
+                        <Button 
+                            type="submit" 
+                            disabled={isLoading || (slugAvailable !== null && !slugAvailable.available)}
+                        >
                             {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                             Create Category
                         </Button>
