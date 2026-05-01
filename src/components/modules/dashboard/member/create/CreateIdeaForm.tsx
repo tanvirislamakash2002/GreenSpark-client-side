@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from '@tanstack/react-form';
-import { Loader2, Eye, EyeOff, DollarSign } from 'lucide-react';
+import { Loader2, DollarSign, X, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -99,7 +99,7 @@ export function CreateIdeaForm() {
 
             if (result.success) {
                 toast.success('Idea created successfully!');
-                router.push('/dashboard/member/ideas');
+                router.push('/member/ideas');
             } else {
                 toast.error(result.message || 'Failed to create idea');
             }
@@ -125,7 +125,7 @@ export function CreateIdeaForm() {
         setIsUploading(true);
         const formData = new FormData();
         formData.append('image', file);
-        
+
         const result = await uploadTempAvatar(formData);
         if (result.success) {
             form.setFieldValue('imageUrl', result.data.url);
@@ -146,7 +146,7 @@ export function CreateIdeaForm() {
         const fetchCategories = async () => {
             const result = await getCategories();
             if (result.success && result.data) {
-                setCategories(result.data);
+                setCategories(result.data.categories);
             }
             setIsLoadingCategories(false);
         };
@@ -158,8 +158,13 @@ export function CreateIdeaForm() {
     const solutionChars = form.getFieldValue('solution').length;
     const descriptionChars = form.getFieldValue('description').length;
 
+    // Manual submit handler
+    const handleSubmit = () => {
+        form.handleSubmit();
+    };
+
     return (
-        <form onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }} className="space-y-8 max-w-3xl mx-auto">
+        <div className="space-y-8 max-w-3xl mx-auto">
             {/* Title */}
             <form.Field name="title">
                 {(field) => (
@@ -386,7 +391,8 @@ export function CreateIdeaForm() {
                     Cancel
                 </Button>
                 <Button
-                    type="submit"
+                    type="button"
+                    onClick={handleSubmit}
                     className="bg-green-600 hover:bg-green-700"
                     disabled={isLoading}
                 >
@@ -400,6 +406,6 @@ export function CreateIdeaForm() {
                     )}
                 </Button>
             </div>
-        </form>
+        </div>
     );
 }

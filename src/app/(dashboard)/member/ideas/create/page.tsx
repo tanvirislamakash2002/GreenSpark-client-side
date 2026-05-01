@@ -1,6 +1,6 @@
+import { CreateIdeaForm } from '@/components/modules/dashboard/member/create/CreateIdeaForm';
+import { FormSkeleton } from '@/components/modules/dashboard/member/create/FormSkeleton';
 import { Suspense } from 'react';
-import { CreateIdeaForm } from './components/CreateIdeaForm';
-import { FormSkeleton } from './components/FormSkeleton';
 
 export const metadata = {
     title: 'Create New Idea - GreenSpark',
@@ -16,7 +16,8 @@ export default function CreateIdeaPage() {
                     Describe your eco-friendly solution and help make a difference
                 </p>
             </div>
-            
+
+
             <Suspense fallback={<FormSkeleton />}>
                 <CreateIdeaForm />
             </Suspense>

@@ -1,11 +1,19 @@
 "use server";
 
 import { memberIdeaService } from "@/services/member-idea.service";
-import { GetMemberIdeasParams } from "@/types/member-idea.type";
+import { CreateIdeaData, GetMemberIdeasParams } from "@/types/member-idea.type";
 import { updateTag } from "next/cache";
 
 export const getMemberIdeas = async (params?: GetMemberIdeasParams) => {
     return await memberIdeaService.getMemberIdeas(params);
+};
+
+export const createIdea = async (data: CreateIdeaData) => {
+    const result = await memberIdeaService.createIdea(data);
+    if (result.success) {
+        updateTag("member-ideas");
+    }
+    return result;
 };
 
 export const deleteIdea = async (ideaId: string) => {

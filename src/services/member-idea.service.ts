@@ -57,7 +57,7 @@ export const memberIdeaService = {
     createIdea: async (data: CreateIdeaData): Promise<CreateIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/member/ideas`, {
+            const res = await fetch(`${API_URL}/ideas`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -88,7 +88,7 @@ export const memberIdeaService = {
     deleteIdea: async (ideaId: string): Promise<DeleteIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/member/ideas/${ideaId}`, {
+            const res = await fetch(`${API_URL}/ideas/${ideaId}`, {
                 method: "DELETE",
                 headers: {
                     Cookie: cookieStore.toString(),
@@ -117,7 +117,7 @@ export const memberIdeaService = {
     submitIdea: async (ideaId: string): Promise<SubmitIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/member/ideas/${ideaId}/submit`, {
+            const res = await fetch(`${API_URL}/ideas/${ideaId}/submit`, {
                 method: "PATCH",
                 headers: {
                     Cookie: cookieStore.toString(),

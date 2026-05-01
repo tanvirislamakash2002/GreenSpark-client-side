@@ -137,3 +137,20 @@ export interface SubmitIdeaResponse {
     success: boolean;
     message: string;
 }
+
+export interface CreateIdeaData {
+    title: string;
+    problemStatement: string;
+    solution: string;
+    description: string;
+    imageUrl?: string;
+    isPaid: boolean;
+    price?: number;
+    categoryId: string;
+}
+
+export interface CreateIdeaResponse {
+    success: boolean;
+    data?: MemberIdea;
+    message?: string;
+}
