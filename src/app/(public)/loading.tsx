@@ -3,6 +3,7 @@ import { FeaturedIdeasSkeleton } from "@/components/modules/public/home/Featured
 import { TopVotedIdeasSkeleton } from "@/components/modules/public/home/TopVotedIdeas";
 import { CategoriesSkeleton } from "@/components/modules/public/home/Categories";
 import { HowItWorksSkeleton } from "@/components/modules/public/home/HowItWorks";
+import { ImpactStatsSkeleton } from "@/components/modules/public/home/ImpactStats";
 
 export default function PublicLoading() {
     return (
@@ -10,8 +11,9 @@ export default function PublicLoading() {
             <HeroSectionSkeleton />
             <CategoriesSkeleton />
             <FeaturedIdeasSkeleton />
-            <TopVotedIdeasSkeleton /> 
             <HowItWorksSkeleton /> 
+            <TopVotedIdeasSkeleton /> 
+            <ImpactStatsSkeleton  /> 
         </main>
     );
 }
