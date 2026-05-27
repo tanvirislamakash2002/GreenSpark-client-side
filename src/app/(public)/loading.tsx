@@ -2,6 +2,7 @@ import { HeroSectionSkeleton } from "@/components/modules/public/home/HeroSectio
 import { FeaturedIdeasSkeleton } from "@/components/modules/public/home/FeaturedIdeas";
 import { TopVotedIdeasSkeleton } from "@/components/modules/public/home/TopVotedIdeas";
 import { CategoriesSkeleton } from "@/components/modules/public/home/Categories";
+import { HowItWorksSkeleton } from "@/components/modules/public/home/HowItWorks";
 
 export default function PublicLoading() {
     return (
@@ -10,6 +11,7 @@ export default function PublicLoading() {
             <CategoriesSkeleton />
             <FeaturedIdeasSkeleton />
             <TopVotedIdeasSkeleton /> 
+            <HowItWorksSkeleton /> 
         </main>
     );
 }
