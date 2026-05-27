@@ -4,6 +4,7 @@ import { TopVotedIdeasSkeleton } from "@/components/modules/public/home/TopVoted
 import { CategoriesSkeleton } from "@/components/modules/public/home/Categories";
 import { HowItWorksSkeleton } from "@/components/modules/public/home/HowItWorks";
 import { ImpactStatsSkeleton } from "@/components/modules/public/home/ImpactStats";
+import { CTASkeleton } from "@/components/modules/public/home/CTA";
 
 export default function PublicLoading() {
     return (
@@ -14,6 +15,7 @@ export default function PublicLoading() {
             <HowItWorksSkeleton /> 
             <TopVotedIdeasSkeleton /> 
             <ImpactStatsSkeleton  /> 
+            <CTASkeleton  /> 
         </main>
     );
 }

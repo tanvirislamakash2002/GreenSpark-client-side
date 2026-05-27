@@ -1,4 +1,5 @@
 import { Categories } from "@/components/modules/public/home/Categories";
+import { CTA } from "@/components/modules/public/home/CTA";
 import { FeaturedIdeas, FeaturedIdeasSkeleton } from "@/components/modules/public/home/FeaturedIdeas";
 import { HeroSection } from "@/components/modules/public/home/HeroSection/HeroSection";
 import { HowItWorks } from "@/components/modules/public/home/HowItWorks";
@@ -15,6 +16,7 @@ export default async function Home() {
       <HowItWorks />
       <TopVotedIdeas limit={3} />
       <ImpactStats />
+      <CTA />
     </main>
   );
 }
