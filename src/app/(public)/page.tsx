@@ -1,4 +1,4 @@
-import { HeroSection } from "@/components/modules/home/HeroSection";
+import { HeroSection } from "@/components/modules/public/home/HeroSection";
 
 export default async function Home() {
 

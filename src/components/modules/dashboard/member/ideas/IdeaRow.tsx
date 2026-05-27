@@ -59,7 +59,7 @@ export function IdeaRow({ idea, onUpdate }: IdeaRowProps) {
                             {new Date(idea.createdAt).toLocaleDateString()}
                         </span>
                     </div>
-                    <Link href={`/ideas/${idea.id}`} className="font-medium hover:text-green-600 transition-colors">
+                    <Link href={`/member/ideas/${idea.id}`} className="font-medium hover:text-green-600 transition-colors">
                         {idea.title}
                     </Link>
                     <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
@@ -72,7 +72,7 @@ export function IdeaRow({ idea, onUpdate }: IdeaRowProps) {
                 
                 <div className="flex items-center gap-2 mt-3 md:mt-0">
                     <Button asChild variant="ghost" size="sm">
-                        <Link href={`/ideas/${idea.id}`}>
+                        <Link href={`/member/ideas/${idea.id}`}>
                             <Eye className="h-4 w-4" />
                         </Link>
                     </Button>

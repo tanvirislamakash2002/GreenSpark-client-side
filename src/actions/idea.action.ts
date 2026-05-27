@@ -9,6 +9,13 @@ export const getIdeas = async (params?: GetIdeasParams) => {
 };
 
 export const getIdeaById = async (id: string) => {
+    if (!id) {
+        return {
+            success: false,
+            message: 'Idea ID is required',
+        };
+    }
+    console.log(id);
     return await ideaService.getIdeaById(id);
 };
 

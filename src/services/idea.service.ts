@@ -1,119 +1,173 @@
-import { GetIdeasParams, IdeasResponse, Idea } from '@/types/idea.type';
-import { dummyIdeas } from '@/lib/dummy-data';
+import { env } from "@/env";
+import { cookies } from "next/headers";
+import { GetIdeasParams, IdeasResponse, IdeaResponse } from "@/types/idea.type";
 
-const ITEMS_PER_PAGE = 12;
-
-// Filter ideas based on params
-const filterIdeas = (ideas: Idea[], params: GetIdeasParams): Idea[] => {
-    let filtered = [...ideas];
-
-    // Filter by status (only show APPROVED ideas)
-    filtered = filtered.filter(idea => idea.status === 'APPROVED');
-
-    // Search filter
-    if (params.search) {
-        const searchLower = params.search.toLowerCase();
-        filtered = filtered.filter(idea =>
-            idea.title.toLowerCase().includes(searchLower) ||
-            idea.description.toLowerCase().includes(searchLower) ||
-            idea.problemStatement.toLowerCase().includes(searchLower)
-        );
-    }
-
-    // Category filter
-    if (params.category && params.category !== 'all') {
-        filtered = filtered.filter(idea =>
-            idea.categories.some(cat => cat.slug === params.category)
-        );
-    }
-
-    // Payment status filter
-    if (params.status === 'free') {
-        filtered = filtered.filter(idea => !idea.isPaid);
-    } else if (params.status === 'paid') {
-        filtered = filtered.filter(idea => idea.isPaid);
-    }
-
-    // Sorting
-    switch (params.sortBy) {
-        case 'topVoted':
-            filtered.sort((a, b) => b.voteScore - a.voteScore);
-            break;
-        case 'mostCommented':
-            filtered.sort((a, b) => b.commentCount - a.commentCount);
-            break;
-        case 'mostViewed':
-            filtered.sort((a, b) => b.viewCount - a.viewCount);
-            break;
-        case 'recent':
-        default:
-            filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-            break;
-    }
-
-    return filtered;
-};
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
 export const ideaService = {
     getIdeas: async (params?: GetIdeasParams): Promise<IdeasResponse> => {
         try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 500));
+            const url = new URL(`${API_URL}/ideas`);
+            
+            if (params) {
+                if (params.page) url.searchParams.set('page', params.page.toString());
+                if (params.limit) url.searchParams.set('limit', params.limit.toString());
+                if (params.search) url.searchParams.set('search', params.search);
+                if (params.category) url.searchParams.set('category', params.category);
+                if (params.status) url.searchParams.set('status', params.status);
+                if (params.sortBy) url.searchParams.set('sortBy', params.sortBy);
+            }
+            
+            const res = await fetch(url.toString(), {
+                next: { tags: ["ideas"] },
+            });
 
-            const page = params?.page || 1;
-            const limit = params?.limit || ITEMS_PER_PAGE;
-            
-            let filteredIdeas = filterIdeas(dummyIdeas as Idea[], params || {});
-            
-            const totalItems = filteredIdeas.length;
-            const totalPages = Math.ceil(totalItems / limit);
-            const startIndex = (page - 1) * limit;
-            const endIndex = startIndex + limit;
-            const paginatedIdeas = filteredIdeas.slice(startIndex, endIndex);
+            const data = await res.json();
 
-            return {
-                success: true,
-                data: {
-                    ideas: paginatedIdeas,
-                    pagination: {
-                        currentPage: page,
-                        totalPages,
-                        totalItems,
-                        itemsPerPage: limit,
-                    },
-                },
-            };
-        } catch (error) {
-            console.error('Get ideas error:', error);
-            return {
-                success: false,
-                message: 'Failed to fetch ideas',
-            };
-        }
-    },
-
-    getIdeaById: async (id: string) => {
-        try {
-            await new Promise(resolve => setTimeout(resolve, 300));
-            
-            const idea = dummyIdeas.find(idea => idea.id === id);
-            
-            if (!idea) {
+            if (!res.ok) {
                 return {
                     success: false,
-                    message: 'Idea not found',
+                    message: data.message || "Failed to fetch ideas",
                 };
             }
 
             return {
                 success: true,
-                data: idea,
+                data: data.data,
             };
         } catch (error) {
-            console.error('Get idea by ID error:', error);
+            console.error("Get ideas error:", error);
             return {
                 success: false,
-                message: 'Something went wrong',
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    getIdeaById: async (id: string): Promise<IdeaResponse> => {
+        try {
+            if (!id) {
+                return {
+                    success: false,
+                    message: "Idea ID is required",
+                };
+            }
+
+            const res = await fetch(`${API_URL}/ideas/${id}`, {
+                next: { tags: [`idea-${id}`] },
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to fetch idea",
+                };
+            }
+
+            return {
+                success: true,
+                data: data.data,
+            };
+        } catch (error) {
+            console.error("Get idea by ID error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    getFeaturedIdeas: async (limit: number = 3): Promise<{ success: boolean; data?: any[]; message?: string }> => {
+        try {
+            const url = new URL(`${API_URL}/ideas/featured`);
+            url.searchParams.set('limit', limit.toString());
+            
+            const res = await fetch(url.toString(), {
+                next: { tags: ["featured-ideas"] },
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to fetch featured ideas",
+                };
+            }
+
+            return {
+                success: true,
+                data: data.data,
+            };
+        } catch (error) {
+            console.error("Get featured ideas error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    getTopVotedIdeas: async (limit: number = 3): Promise<{ success: boolean; data?: any[]; message?: string }> => {
+        try {
+            const url = new URL(`${API_URL}/ideas/top-voted`);
+            url.searchParams.set('limit', limit.toString());
+            
+            const res = await fetch(url.toString(), {
+                next: { tags: ["top-voted-ideas"] },
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to fetch top voted ideas",
+                };
+            }
+
+            return {
+                success: true,
+                data: data.data,
+            };
+        } catch (error) {
+            console.error("Get top voted ideas error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    getRecentIdeas: async (limit: number = 6): Promise<{ success: boolean; data?: any[]; message?: string }> => {
+        try {
+            const url = new URL(`${API_URL}/ideas/recent`);
+            url.searchParams.set('limit', limit.toString());
+            
+            const res = await fetch(url.toString(), {
+                next: { tags: ["recent-ideas"] },
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to fetch recent ideas",
+                };
+            }
+
+            return {
+                success: true,
+                data: data.data,
+            };
+        } catch (error) {
+            console.error("Get recent ideas error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
             };
         }
     },

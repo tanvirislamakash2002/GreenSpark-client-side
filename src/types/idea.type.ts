@@ -8,25 +8,24 @@ export interface Idea {
     status: 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED';
     isPaid: boolean;
     price: number | null;
-    viewCount: number;
+    feedback: string | null;
     voteScore: number;
-    upvotes: number;
-    downvotes: number;
+    viewCount: number;
     commentCount: number;
-    publishedAt: string | null;
-    createdAt: string;
-    updatedAt: string;
     author: {
         id: string;
         name: string;
         email: string;
         image: string | null;
+        createdAt?: string;
     };
     categories: {
         id: string;
         name: string;
         slug: string;
     }[];
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface GetIdeasParams {
@@ -36,7 +35,6 @@ export interface GetIdeasParams {
     category?: string;
     status?: 'free' | 'paid';
     sortBy?: 'recent' | 'topVoted' | 'mostCommented' | 'mostViewed';
-    sortOrder?: 'asc' | 'desc';
 }
 
 export interface IdeasResponse {
@@ -50,5 +48,11 @@ export interface IdeasResponse {
             itemsPerPage: number;
         };
     };
+    message?: string;
+}
+
+export interface IdeaResponse {
+    success: boolean;
+    data?: Idea;
     message?: string;
 }
