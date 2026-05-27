@@ -1,15 +1,15 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { GetCategoriesParams, CategoriesResponse, CreateCategoryData, UpdateCategoryData, CategoryResponse, DeleteCategoryResponse, CheckSlugResponse } from "@/types/category.type";
+import { GetCategoriesParams, CategoriesResponse, CreateCategoryData, UpdateCategoryData, CategoryResponse, DeleteCategoryResponse, CheckSlugResponse, AllCategoriesResponse } from "@/types/category.type";
 
 const API_URL = env.API_URL;
 
-export const adminCategoryService = {
+export const categoryService = {
     getCategories: async (params?: GetCategoriesParams): Promise<CategoriesResponse> => {
         try {
             const cookieStore = await cookies();
             const url = new URL(`${API_URL}/categories`);
-            
+
             if (params) {
                 if (params.page) url.searchParams.set('page', params.page.toString());
                 if (params.limit) url.searchParams.set('limit', params.limit.toString());
@@ -17,7 +17,7 @@ export const adminCategoryService = {
                 if (params.sortBy) url.searchParams.set('sortBy', params.sortBy);
                 if (params.sortOrder) url.searchParams.set('sortOrder', params.sortOrder);
             }
-            
+
             const res = await fetch(url.toString(), {
                 headers: {
                     Cookie: cookieStore.toString(),
@@ -44,6 +44,53 @@ export const adminCategoryService = {
                 success: false,
                 message: "Something went wrong",
             };
+        }
+    },
+
+    getAllCategories: async (): Promise<AllCategoriesResponse> => {
+        try {
+            const url = new URL(`${API_URL}/categories/all`);
+
+            const res = await fetch(url.toString(), {
+                next: { tags: ["all-categories"] },
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to fetch all categories",
+                };
+            }
+
+            return {
+                success: true,
+                data: data.data,
+            };
+        } catch (error) {
+            console.error("Get all categories error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    // Add this method to your categoryService
+    getCategoryCounts: async () => {
+        try {
+            const res = await fetch(`${API_URL}/categories/counts`, {
+                next: { tags: ["category-counts"] },
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                return { success: false, message: data.message };
+            }
+            return { success: true, data: data.data };
+        } catch (error) {
+            return { success: false, message: "Failed to fetch category counts" };
         }
     },
 

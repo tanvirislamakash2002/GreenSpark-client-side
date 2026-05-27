@@ -31,6 +31,23 @@ export interface CategoriesResponse {
     message?: string;
 }
 
+export interface AllCategoriesResponse {
+    success: boolean;
+    data?: Category[];
+    message?: string;
+}
+
+export interface CategoryCount {
+    slug: string;
+    count: number;
+}
+
+export interface CategoryCountsResponse {
+    success: boolean;
+    data?: CategoryCount[];
+    message?: string;
+}
+
 export interface CreateCategoryData {
     name: string;
     slug: string;
