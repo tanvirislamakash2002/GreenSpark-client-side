@@ -56,3 +56,9 @@ export interface IdeaResponse {
     data?: Idea;
     message?: string;
 }
+
+export interface TopVotedIdeasResponse {
+    success: boolean;
+    data?: Idea[];
+    message?: string;
+}

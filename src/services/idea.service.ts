@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { GetIdeasParams, IdeasResponse, IdeaResponse } from "@/types/idea.type";
+import { GetIdeasParams, IdeasResponse, IdeaResponse, TopVotedIdeasResponse } from "@/types/idea.type";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
@@ -110,7 +110,7 @@ export const ideaService = {
         }
     },
 
-    getTopVotedIdeas: async (limit: number = 3): Promise<{ success: boolean; data?: any[]; message?: string }> => {
+    getTopVotedIdeas: async (limit: number = 3): Promise<TopVotedIdeasResponse> => {
         try {
             const url = new URL(`${API_URL}/ideas/top-voted`);
             url.searchParams.set('limit', limit.toString());

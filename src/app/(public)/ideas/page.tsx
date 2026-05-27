@@ -1,8 +1,6 @@
-import { Suspense } from 'react';
 import { getIdeas } from '@/actions/idea.action';
 import { IdeasHeader } from '@/components/modules/public/ideas/IdeasHeader';
 import { IdeasFilterBar } from '@/components/modules/public/ideas/IdeasFilterBar';
-import { IdeasSkeleton } from '@/components/modules/public/ideas/IdeasSkeleton';
 import { IdeasGrid } from '@/components/modules/public/ideas/IdeasGrid';
 import { IdeasPagination } from '@/components/modules/public/ideas/IdeasPagination';
 
@@ -27,17 +25,15 @@ export default async function IdeasPage({ searchParams }: IdeasPageProps) {
         limit,
         search: params.search,
         category: params.category,
-        status: params.status as 'free' | 'paid' | undefined,
-        sortBy: params.sortBy as 'recent' | 'topVoted' | 'mostCommented' | 'mostViewed' | undefined,
+        status: params.status as any,
+        sortBy: params.sortBy as any,
     });
 
     if (!result.success || !result.data) {
         return (
-            <div className="container mx-auto px-4 py-12">
-                <div className="text-center py-16">
-                    <h2 className="text-xl font-semibold mb-2">Unable to load ideas</h2>
-                    <p className="text-muted-foreground">{result.message || 'Please try again later'}</p>
-                </div>
+            <div className="text-center py-16">
+                <h2 className="text-xl font-semibold mb-2">Unable to load ideas</h2>
+                <p className="text-muted-foreground">{result.message || "Please try again later"}</p>
             </div>
         );
     }
@@ -47,13 +43,8 @@ export default async function IdeasPage({ searchParams }: IdeasPageProps) {
     return (
         <div className="container mx-auto px-4 py-12">
             <IdeasHeader totalItems={pagination.totalItems} />
-            
             <IdeasFilterBar />
-            
-            <Suspense fallback={<IdeasSkeleton />}>
-                <IdeasGrid ideas={ideas} />
-            </Suspense>
-            
+            <IdeasGrid ideas={ideas} />
             <IdeasPagination
                 currentPage={pagination.currentPage}
                 totalPages={pagination.totalPages}
