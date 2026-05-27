@@ -1,0 +1,37 @@
+import { env } from "@/env";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+
+export const newsletterService = {
+    subscribe: async (email: string) => {
+        try {
+            const res = await fetch(`${API_URL}/newsletter/subscribe`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to subscribe",
+                };
+            }
+
+            return {
+                success: true,
+                message: "Successfully subscribed to newsletter!",
+            };
+        } catch (error) {
+            console.error("Subscribe error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+};
