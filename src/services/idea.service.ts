@@ -77,7 +77,7 @@ export const ideaService = {
                 message: "Something went wrong",
             };
         }
-    },
+    },   
 
     getFeaturedIdeas: async (limit: number = 3): Promise<{ success: boolean; data?: any[]; message?: string }> => {
         try {

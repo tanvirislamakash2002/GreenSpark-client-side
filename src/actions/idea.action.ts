@@ -19,6 +19,10 @@ export const getIdeaById = async (id: string) => {
     return await ideaService.getIdeaById(id);
 };
 
+export const getFeaturedIdeas = async (limit?: number) => {
+    return await ideaService.getFeaturedIdeas(limit);
+};
+
 // Vote on an idea
 export const voteIdea = async (ideaId: string, voteType: 'UP' | 'DOWN') => {
     // This will be implemented when backend is ready
