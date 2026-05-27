@@ -22,7 +22,6 @@ export default async function MemberIdeaDetailsPage({ params }: IdeaDetailsPageP
     }
 
     const result = await getIdeaById(id);
-console.log(result);
     if (!result.success || !result.data) {
         return <IdeaNotFound />;
     }
@@ -33,7 +32,6 @@ console.log(result);
     if (idea.author.id !== session.data.user.id) {
         return <IdeaNotFound />;
     }
-console.log(idea);
     return (
         <div className="container mx-auto py-8 max-w-4xl">
             <IdeaDetailsHeader

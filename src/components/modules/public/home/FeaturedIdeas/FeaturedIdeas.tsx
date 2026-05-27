@@ -17,7 +17,6 @@ export async function FeaturedIdeas({ limit = 6 }: FeaturedIdeasProps) {
     }
 
     const ideas = result.data;
-console.log(result);
     return (
         <section className="py-16 bg-muted/30">
             <div className="container mx-auto px-4">

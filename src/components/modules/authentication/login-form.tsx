@@ -42,8 +42,8 @@ const formSchema = z.object({
 });
 
 const DEMO_CREDENTIALS = {
-  admin: { email: "admin@greenspark.com", password: "admin123", role: "ADMIN" },
-  member: { email: "member@greenspark.com", password: "member123", role: "MEMBER" },
+  admin: { email: "westbrook@gmail.com", password: "westbrook123", role: "ADMIN" },
+  member: { email: "armstrong@gmail.com", password: "armstrong123", role: "MEMBER" },
 };
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {

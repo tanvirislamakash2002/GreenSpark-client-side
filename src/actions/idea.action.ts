@@ -15,7 +15,6 @@ export const getIdeaById = async (id: string) => {
             message: 'Idea ID is required',
         };
     }
-    console.log(id);
     return await ideaService.getIdeaById(id);
 };
 
