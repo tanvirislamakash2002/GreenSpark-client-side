@@ -11,7 +11,7 @@ interface FeaturedIdeasProps {
 
 export async function FeaturedIdeas({ limit = 6 }: FeaturedIdeasProps) {
     const result = await getFeaturedIdeas(limit);
-
+    
     if (!result.success || !result.data || result.data.length === 0) {
         return null;
     }

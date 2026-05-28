@@ -1,29 +1,27 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
 import { 
-    GetMemberIdeasParams, 
-    MemberIdeasResponse, 
-    CreateIdeaData, 
-    CreateIdeaResponse,
-    DeleteIdeaResponse,
-    SubmitIdeaResponse, 
-    UpdateIdeaData,
-    UpdateIdeaResponse
-} from "@/types/idea/member-idea.type";
+    GetAdminIdeasParams, 
+    AdminIdeasResponse,
+    ApproveIdeaResponse,
+    RejectIdeaResponse,
+    DeleteIdeaResponse
+} from "@/types/idea/admin-idea.type";
 
-const API_URL = env.API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 
-export const memberIdeaService = {
-    getMemberIdeas: async (params?: GetMemberIdeasParams): Promise<MemberIdeasResponse> => {
+export const adminIdeaService = {
+    getAdminIdeas: async (params?: GetAdminIdeasParams): Promise<AdminIdeasResponse> => {
         try {
             const cookieStore = await cookies();
-            const url = new URL(`${API_URL}/ideas/member/ideas`);
+            const url = new URL(`${API_URL}/ideas/admin/ideas`);
             
             if (params) {
                 if (params.page) url.searchParams.set('page', params.page.toString());
                 if (params.limit) url.searchParams.set('limit', params.limit.toString());
                 if (params.search) url.searchParams.set('search', params.search);
-                if (params.status && params.status !== 'all') url.searchParams.set('status', params.status);
+                if (params.category) url.searchParams.set('category', params.category);
+                if (params.status) url.searchParams.set('status', params.status);
                 if (params.sortBy) url.searchParams.set('sortBy', params.sortBy);
             }
             
@@ -31,7 +29,7 @@ export const memberIdeaService = {
                 headers: {
                     Cookie: cookieStore.toString(),
                 },
-                next: { tags: ["member-ideas"] },
+                next: { tags: ["admin-ideas"] },
             });
 
             const data = await res.json();
@@ -48,7 +46,7 @@ export const memberIdeaService = {
                 data: data.data,
             };
         } catch (error) {
-            console.error("Get member ideas error:", error);
+            console.error("Get admin ideas error:", error);
             return {
                 success: false,
                 message: "Something went wrong",
@@ -56,30 +54,28 @@ export const memberIdeaService = {
         }
     },
 
-    createIdea: async (data: CreateIdeaData): Promise<CreateIdeaResponse> => {
+    approveIdea: async (ideaId: string): Promise<ApproveIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/ideas`, {
-                method: "POST",
+            const res = await fetch(`${API_URL}/admin/ideas/${ideaId}/approve`, {
+                method: "PATCH",
                 headers: {
-                    "Content-Type": "application/json",
                     Cookie: cookieStore.toString(),
                 },
-                body: JSON.stringify(data),
             });
 
-            const response = await res.json();
+            const data = await res.json();
 
             if (!res.ok) {
                 return {
                     success: false,
-                    message: response.message || "Failed to create idea",
+                    message: data.message || "Failed to approve idea",
                 };
             }
 
-            return response;
+            return data;
         } catch (error) {
-            console.error("Create idea error:", error);
+            console.error("Approve idea error:", error);
             return {
                 success: false,
                 message: "Something went wrong",
@@ -87,30 +83,30 @@ export const memberIdeaService = {
         }
     },
 
-    updateIdea: async (ideaId: string, data: UpdateIdeaData): Promise<UpdateIdeaResponse> => {
+    rejectIdea: async (ideaId: string, feedback: string): Promise<RejectIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/ideas/member/${ideaId}`, {
+            const res = await fetch(`${API_URL}/admin/ideas/${ideaId}/reject`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     Cookie: cookieStore.toString(),
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify({ feedback }),
             });
 
-            const response = await res.json();
+            const data = await res.json();
 
             if (!res.ok) {
                 return {
                     success: false,
-                    message: response.message || "Failed to update idea",
+                    message: data.message || "Failed to reject idea",
                 };
             }
 
-            return response;
+            return data;
         } catch (error) {
-            console.error("Update idea error:", error);
+            console.error("Reject idea error:", error);
             return {
                 success: false,
                 message: "Something went wrong",
@@ -121,7 +117,7 @@ export const memberIdeaService = {
     deleteIdea: async (ideaId: string): Promise<DeleteIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/ideas/${ideaId}`, {
+            const res = await fetch(`${API_URL}/admin/ideas/${ideaId}`, {
                 method: "DELETE",
                 headers: {
                     Cookie: cookieStore.toString(),
@@ -140,35 +136,6 @@ export const memberIdeaService = {
             return data;
         } catch (error) {
             console.error("Delete idea error:", error);
-            return {
-                success: false,
-                message: "Something went wrong",
-            };
-        }
-    },
-
-    submitIdea: async (ideaId: string): Promise<SubmitIdeaResponse> => {
-        try {
-            const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/ideas/${ideaId}/submit`, {
-                method: "PATCH",
-                headers: {
-                    Cookie: cookieStore.toString(),
-                },
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                return {
-                    success: false,
-                    message: data.message || "Failed to submit idea",
-                };
-            }
-
-            return data;
-        } catch (error) {
-            console.error("Submit idea error:", error);
             return {
                 success: false,
                 message: "Something went wrong",

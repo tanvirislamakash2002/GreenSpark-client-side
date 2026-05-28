@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getMemberIdeas } from '@/actions/member-idea.action';
+import { getMemberIdeas } from '@/actions/idea/member-idea.action';
 import { IdeasHeader } from '@/components/modules/dashboard/member/ideas/IdeasHeader';
 import { IdeasFilterBar } from '@/components/modules/dashboard/member/ideas/IdeasFilterBar';
 import { IdeasPagination } from '@/components/modules/dashboard/member/ideas/IdeasPagination';
@@ -26,7 +26,6 @@ async function IdeasContent({ searchParams }: { searchParams: Awaited<MemberIdea
         status: searchParams.status as any,
         sortBy: searchParams.sortBy as any,
     });
-
     if (!result.success || !result.data) {
         return (
             <div className="text-center py-16">

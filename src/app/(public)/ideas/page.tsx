@@ -1,4 +1,4 @@
-import { getIdeas } from '@/actions/idea.action';
+import { getIdeas } from '@/actions/idea/idea.action';
 import { IdeasHeader } from '@/components/modules/public/ideas/IdeasHeader';
 import { IdeasFilterBar } from '@/components/modules/public/ideas/IdeasFilterBar';
 import { IdeasGrid } from '@/components/modules/public/ideas/IdeasGrid';

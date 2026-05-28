@@ -6,7 +6,7 @@ import { Eye, Edit, Trash2, Send, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from './StatusBadge';
 import { MemberIdea } from '@/types/idea/member-idea.type';
-import { deleteIdea, submitIdea } from '@/actions/member-idea.action';
+import { deleteIdea, submitIdea } from '@/actions/idea/member-idea.action';
 import { DeleteIdeaModal } from './DeleteIdeaModal';
 import { FeedbackModal } from './FeedbackModal';
 import { toast } from 'sonner';

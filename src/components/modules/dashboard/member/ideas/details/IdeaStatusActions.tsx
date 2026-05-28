@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Edit, Trash2, Send, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { deleteIdea, submitIdea } from '@/actions/member-idea.action';
+import { deleteIdea, submitIdea } from '@/actions/idea/member-idea.action';
 import { DeleteIdeaModal } from '@/components/modules/dashboard/member/ideas/DeleteIdeaModal';
 
 interface IdeaStatusActionsProps {
