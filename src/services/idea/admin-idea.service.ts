@@ -57,7 +57,7 @@ export const adminIdeaService = {
     approveIdea: async (ideaId: string): Promise<ApproveIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/ideas/${ideaId}/approve`, {
+            const res = await fetch(`${API_URL}/ideas/${ideaId}/approve`, {
                 method: "PATCH",
                 headers: {
                     Cookie: cookieStore.toString(),
@@ -86,7 +86,7 @@ export const adminIdeaService = {
     rejectIdea: async (ideaId: string, feedback: string): Promise<RejectIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/ideas/${ideaId}/reject`, {
+            const res = await fetch(`${API_URL}/ideas/${ideaId}/reject`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Eye, Edit, Trash2, Send, MessageCircle } from 'lucide-react';
+import { Eye, Edit, Trash2, Send, MessageCircle, MessageSquareMoreIcon, EyeIcon, ThumbsUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatusBadge } from './StatusBadge';
 import { MemberIdea } from '@/types/idea/member-idea.type';
@@ -64,9 +64,9 @@ export function IdeaRow({ idea, onUpdate }: IdeaRowProps) {
                     </Link>
                     <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                         <span>{idea.category.name}</span>
-                        <span>👍 {idea.voteScore}</span>
-                        <span>👁️ {idea.viewCount}</span>
-                        <span>💬 {idea.commentCount}</span>
+                        <span className='flex items-center justify-center gap-2'><ThumbsUp size={15}/> {idea.voteScore}</span>
+                        <span className='flex items-center justify-center gap-2'><EyeIcon size={15}/> {idea.viewCount}</span>
+                        <span className='flex items-center justify-center gap-2'><MessageSquareMoreIcon size={15}/> {idea.commentCount}</span>
                     </div>
                 </div>
                 

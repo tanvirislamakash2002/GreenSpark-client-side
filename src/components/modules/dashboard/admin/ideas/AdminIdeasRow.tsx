@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Eye, CheckCircle, XCircle, Trash2, ExternalLink } from 'lucide-react';
+import { Eye, CheckCircle, XCircle, Trash2, ExternalLink, EyeIcon, ThumbsUp, MessageSquareIcon, MessageSquareMoreIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -108,16 +108,16 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                             <span>{idea.author.name}</span>
                         </div>
                         <span>{idea.categories[0]?.name || 'Uncategorized'}</span>
-                        <span>👍 {idea.voteScore}</span>
-                        <span>👁️ {idea.viewCount}</span>
-                        <span>💬 {idea.commentCount}</span>
+                        <span className='flex items-center justify-center gap-2'><ThumbsUp size={15}/> {idea.voteScore}</span>
+                        <span className='flex items-center justify-center gap-2'><EyeIcon size={15}/> {idea.viewCount}</span>
+                        <span className='flex items-center justify-center gap-2'><MessageSquareMoreIcon size={15}/> {idea.commentCount}</span>
                     </div>
                 </div>
                 
                 {/* Right Section - Actions */}
                 <div className="flex items-center gap-2 mt-3 lg:mt-0">
                     <Button asChild variant="ghost" size="sm">
-                        <Link href={`/ideas/${idea.id}`}>
+                        <Link href={`/admin/ideas/${idea.id}`}>
                             <Eye className="h-4 w-4" />
                         </Link>
                     </Button>
