@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { ThumbsUp, Eye, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Idea } from '@/types/idea.type';
+import { Idea } from '@/types/idea/idea.type';
 
 interface FeaturedIdeasCardProps {
     idea: Idea;

@@ -20,7 +20,7 @@ export function IdeaNotFound() {
                     </Link>
                 </Button>
                 <Button asChild className="bg-green-600 hover:bg-green-700">
-                    <Link href="/dashboard/member/ideas/create">
+                    <Link href="/member/ideas/create">
                         Share Your Idea
                     </Link>
                 </Button>

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getIdeaById } from "@/actions/idea.action";
+import { getIdeaById } from "@/actions/idea/idea.action";
 import { getSession } from "@/actions/auth.action";
 import { IdeaNotFound } from "@/components/modules/public/idea-details/IdeaNotFound";
 import { IdeaDetailsHeader } from "@/components/modules/public/idea-details/IdeaDetailsHeader";

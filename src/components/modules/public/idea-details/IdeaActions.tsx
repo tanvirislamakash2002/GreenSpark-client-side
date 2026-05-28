@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ThumbsUp, ThumbsDown, Bookmark, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { voteIdea, bookmarkIdea } from "@/actions/idea.action";
+import { voteIdea, bookmarkIdea } from "@/actions/idea/idea.action";
 import { authClient } from "@/lib/auth-client";
 
 interface IdeaActionsProps {

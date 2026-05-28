@@ -65,30 +65,30 @@ const memberRoutes = [
         items: [
             { title: "My Ideas", url: "/member/ideas", icon: Lightbulb },
             { title: "Create Idea", url: "/member/ideas/create", icon: PlusCircle },
-            { title: "Drafts", url: "/member/ideas/drafts", icon: FileText },
+            // { title: "Drafts", url: "/member/ideas/drafts", icon: FileText },
             { title: "Bookmarks", url: "/member/bookmarks", icon: Bookmark },
         ],
     },
-    // {
-    //     title: "Activity",
-    //     items: [
-    //         { title: "My Votes", url: "/dashboard/member/votes", icon: ThumbsUp },
-    //         { title: "My Comments", url: "/dashboard/member/comments", icon: MessageSquare },
-    //         { title: "Notifications", url: "/dashboard/member/notifications", icon: Bell },
-    //     ],
-    // },
+    {
+        title: "Activity",
+        items: [
+            { title: "My Votes", url: "/member/votes", icon: ThumbsUp },
+            { title: "My Comments", url: "/member/comments", icon: MessageSquare },
+            // { title: "Notifications", url: "/member/notifications", icon: Bell },
+        ],
+    },
     {
         title: "Account",
         items: [
             { title: "Profile", url: "/member/profile", icon: User },
             { title: "Payments", url: "/member/payments", icon: CreditCard },
-            // { title: "Settings", url: "/dashboard/member/settings", icon: Settings },
+            // { title: "Settings", url: "/member/settings", icon: Settings },
         ],
     },
     // {
     //     title: "Support",
     //     items: [
-    //         { title: "Help & Support", url: "/dashboard/member/help", icon: HelpCircle },
+    //         { title: "Help & Support", url: "/member/help", icon: HelpCircle },
     //     ],
     // },
 ];
@@ -135,13 +135,13 @@ const adminRoutes = [
             { title: "Reported Comments", url: "/admin/comments/reported", icon: Flag },
         ],
     },
-    {
-        title: "System",
-        items: [
-            { title: "Activity Logs", url: "/admin/logs", icon: Activity },
-            { title: "Settings", url: "/admin/settings", icon: Settings },
-        ],
-    },
+    // {
+    //     title: "System",
+    //     items: [
+    //         { title: "Activity Logs", url: "/admin/logs", icon: Activity },
+    //         { title: "Settings", url: "/admin/settings", icon: Settings },
+    //     ],
+    // },
 ];
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {

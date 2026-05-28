@@ -1,4 +1,4 @@
-import { Idea } from '@/types/idea.type';
+import { Idea } from '@/types/idea/idea.type';
 import { IdeaCard } from './IdeaCard';
 import { EmptyState } from './EmptyState';
 

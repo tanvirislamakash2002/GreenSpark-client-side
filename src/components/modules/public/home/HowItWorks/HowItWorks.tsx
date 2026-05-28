@@ -79,7 +79,7 @@ export function HowItWorks() {
                 {/* CTA Button */}
                 <div className="text-center mt-12">
                     <Button asChild size="lg" className="bg-green-600 hover:bg-green-700 group">
-                        <Link href="/dashboard/member/ideas/create">
+                        <Link href="/member/ideas/create">
                             Start Sharing
                             <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </Link>

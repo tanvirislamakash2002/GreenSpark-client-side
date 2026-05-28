@@ -27,7 +27,7 @@ export function IdeaStatusActions({ ideaId, ideaTitle, status }: IdeaStatusActio
         const result = await deleteIdea(ideaId);
         if (result.success) {
             toast.success(result.message);
-            router.push('/dashboard/member/ideas');
+            router.push('/member/ideas');
         } else {
             toast.error(result.message);
         }
@@ -39,7 +39,7 @@ export function IdeaStatusActions({ ideaId, ideaTitle, status }: IdeaStatusActio
         const result = await submitIdea(ideaId);
         if (result.success) {
             toast.success(result.message);
-            router.push('/dashboard/member/ideas');
+            router.push('/member/ideas');
         } else {
             toast.error(result.message);
         }
@@ -60,7 +60,7 @@ export function IdeaStatusActions({ ideaId, ideaTitle, status }: IdeaStatusActio
 
                 {canEdit && (
                     <Button asChild variant="outline">
-                        <Link href={`/dashboard/member/ideas/edit/${ideaId}`}>
+                        <Link href={`/member/ideas/edit/${ideaId}`}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit Idea
                         </Link>

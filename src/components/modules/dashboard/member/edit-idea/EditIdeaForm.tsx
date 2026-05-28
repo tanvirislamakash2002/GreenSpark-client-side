@@ -39,16 +39,16 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
-import { createIdea } from '@/actions/idea/member-idea.action';
+import { updateIdea } from '@/actions/idea/member-idea.action';
 import { getCategories } from '@/actions/category.action';
 import { uploadTempAvatar } from '@/actions/upload.action';
 import Image from 'next/image';
 import { Category } from '@/types/category.type';
+import { Idea } from '@/types/idea/idea.type';
 import { cn } from '@/lib/utils';
-import { Checkbox } from '@/components/ui/checkbox';
 
-// ✅ Zod Schema
-const ideaFormSchema = z.object({
+// ✅ Zod Schema (same as create)
+const editIdeaSchema = z.object({
     title: z.string()
         .min(5, 'Title must be at least 5 characters')
         .max(100, 'Title cannot exceed 100 characters'),
@@ -75,29 +75,23 @@ const ideaFormSchema = z.object({
     path: ['price'],
 });
 
-type IdeaFormValues = z.infer<typeof ideaFormSchema>;
+type EditIdeaFormValues = z.infer<typeof editIdeaSchema>;
 
-const defaultValues: IdeaFormValues = {
-    title: '',
-    problemStatement: '',
-    solution: '',
-    description: '',
-    imageUrl: '',
-    isPaid: false,
-    price: null,
-    categoryId: '',
-};
+interface EditIdeaFormProps {
+    idea: Idea;
+}
 
-export function CreateIdeaForm() {
+export function EditIdeaForm({ idea }: EditIdeaFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(idea.imageUrl || null);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(true);
     const [activeTab, setActiveTab] = useState('basic');
-    // ✅ Add missing state
-    const [submitImmediately, setSubmitImmediately] = useState(false);
+
+    // Get the current category ID from the idea
+    const currentCategoryId = idea.categories?.[0]?.id || '';
 
     const {
         register,
@@ -106,9 +100,18 @@ export function CreateIdeaForm() {
         setValue,
         formState: { errors, isValid, isDirty },
         trigger
-    } = useForm<IdeaFormValues>({
-        resolver: zodResolver(ideaFormSchema),
-        defaultValues,
+    } = useForm<EditIdeaFormValues>({
+        resolver: zodResolver(editIdeaSchema),
+        defaultValues: {
+            title: idea.title,
+            problemStatement: idea.problemStatement,
+            solution: idea.solution,
+            description: idea.description,
+            imageUrl: idea.imageUrl || '',
+            isPaid: idea.isPaid,
+            price: idea.price,
+            categoryId: currentCategoryId,
+        },
         mode: 'onChange',
     });
 
@@ -168,13 +171,10 @@ export function CreateIdeaForm() {
         fetchCategories();
     }, []);
 
-    const onSubmit = async (data: IdeaFormValues) => {
+    const onSubmit = async (data: EditIdeaFormValues) => {
         setIsLoading(true);
 
-        // ✅ Determine status based on checkbox
-        const status = submitImmediately ? 'PENDING' : 'DRAFT';
-
-        const result = await createIdea({
+        const result = await updateIdea(idea.id, {
             title: data.title.trim(),
             problemStatement: data.problemStatement.trim(),
             solution: data.solution.trim(),
@@ -183,25 +183,19 @@ export function CreateIdeaForm() {
             isPaid: data.isPaid,
             price: data.isPaid ? data.price || undefined : undefined,
             categoryId: data.categoryId,
-            status, // ✅ Pass status to createIdea
         });
 
         if (result.success) {
-            toast.success(submitImmediately
-                ? 'Idea submitted for review successfully!'
-                : 'Idea saved as draft successfully!'
-            );
+            toast.success('Idea updated successfully!');
             router.push('/member/ideas');
         } else {
-            toast.error(result.message || 'Failed to create idea');
+            toast.error(result.message || 'Failed to update idea');
         }
         setIsLoading(false);
     };
 
-    const getError = (field: keyof IdeaFormValues) => {
-        const error = errors[field];
-        return error?.message;
-    };
+    // Check if form has any changes
+    const hasChanges = isDirty;
 
     return (
         <div className="max-w-3xl mx-auto">
@@ -210,13 +204,13 @@ export function CreateIdeaForm() {
                 <CardContent className="pt-4 pb-3">
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
-                            {isValid && isDirty ? (
+                            {isValid && hasChanges ? (
                                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                             ) : (
                                 <AlertCircle className="h-4 w-4 text-amber-500" />
                             )}
                             <span className="text-sm font-medium">
-                                {isValid && isDirty ? "Ready to submit" : "Complete all required fields"}
+                                {isValid && hasChanges ? "Ready to update" : hasChanges ? "Complete all required fields" : "No changes made"}
                             </span>
                         </div>
                         <span className="text-sm text-muted-foreground">
@@ -253,7 +247,7 @@ export function CreateIdeaForm() {
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-lg">Basic Information</CardTitle>
                                     <CardDescription className="text-sm">
-                                        Tell us what your idea is about
+                                        Edit your idea's basic information
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4 pt-0">
@@ -288,6 +282,7 @@ export function CreateIdeaForm() {
                                             Category <span className="text-red-500">*</span>
                                         </Label>
                                         <Select
+                                            defaultValue={currentCategoryId}
                                             onValueChange={(value) => {
                                                 setValue('categoryId', value);
                                                 trigger('categoryId');
@@ -322,7 +317,7 @@ export function CreateIdeaForm() {
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-lg">Idea Content</CardTitle>
                                     <CardDescription className="text-sm">
-                                        Describe the problem and your solution in detail
+                                        Edit the problem and your solution
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4 pt-0">
@@ -413,7 +408,7 @@ export function CreateIdeaForm() {
                                 <CardHeader className="pb-3">
                                     <CardTitle className="text-lg">Media & Settings</CardTitle>
                                     <CardDescription className="text-sm">
-                                        Add visuals and configure premium options
+                                        Update visuals and premium options
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4 pt-0">
@@ -495,10 +490,6 @@ export function CreateIdeaForm() {
                                                     }
                                                     trigger('price');
                                                 }}
-                                                style={{
-                                                    backgroundColor: isPaid ? '#22c55e' : '#e5e7eb',
-                                                }}
-                                                className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-300"
                                             />
                                         </div>
 
@@ -533,18 +524,6 @@ export function CreateIdeaForm() {
                                             </div>
                                         )}
                                     </div>
-
-                                    {/* ✅ Checkbox moved inside Media tab */}
-                                    <div className="flex items-center gap-2 pt-4 border-t">
-                                        <Checkbox
-                                            id="submitImmediately"
-                                            checked={submitImmediately}
-                                            onCheckedChange={(checked) => setSubmitImmediately(checked as boolean)}
-                                        />
-                                        <Label htmlFor="submitImmediately" className="text-sm cursor-pointer">
-                                            Submit for review immediately after saving
-                                        </Label>
-                                    </div>
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -565,17 +544,17 @@ export function CreateIdeaForm() {
                     <Button
                         type="submit"
                         className="bg-green-600 hover:bg-green-700 sm:w-auto w-full"
-                        disabled={isLoading || !isValid}
+                        disabled={isLoading || !isValid || !hasChanges}
                     >
                         {isLoading ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Creating...
+                                Updating...
                             </>
                         ) : (
                             <>
                                 <Leaf className="mr-2 h-4 w-4" />
-                                {submitImmediately ? 'Submit for Review' : 'Save as Draft'}
+                                Update Idea
                             </>
                         )}
                     </Button>

@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { GetIdeasParams, IdeasResponse, IdeaResponse, TopVotedIdeasResponse } from "@/types/idea.type";
+import { GetIdeasParams, IdeasResponse, IdeaResponse, TopVotedIdeasResponse } from "@/types/idea/idea.type";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
 

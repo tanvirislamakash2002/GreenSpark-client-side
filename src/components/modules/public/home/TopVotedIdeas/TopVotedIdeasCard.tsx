@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ThumbsUp, User, ArrowRight } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Idea } from '@/types/idea.type';
+import { Idea } from '@/types/idea/idea.type';
 
 interface TopVotedIdeasCardProps {
     idea: Idea;

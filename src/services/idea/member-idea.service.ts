@@ -6,8 +6,10 @@ import {
     CreateIdeaData, 
     CreateIdeaResponse,
     DeleteIdeaResponse,
-    SubmitIdeaResponse 
-} from "@/types/member-idea.type";
+    SubmitIdeaResponse, 
+    UpdateIdeaData,
+    UpdateIdeaResponse
+} from "@/types/idea/member-idea.type";
 
 const API_URL = env.API_URL;
 
@@ -78,6 +80,37 @@ export const memberIdeaService = {
             return response;
         } catch (error) {
             console.error("Create idea error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    updateIdea: async (ideaId: string, data: UpdateIdeaData): Promise<UpdateIdeaResponse> => {
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${API_URL}/ideas/member/${ideaId}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Cookie: cookieStore.toString(),
+                },
+                body: JSON.stringify(data),
+            });
+
+            const response = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: response.message || "Failed to update idea",
+                };
+            }
+
+            return response;
+        } catch (error) {
+            console.error("Update idea error:", error);
             return {
                 success: false,
                 message: "Something went wrong",

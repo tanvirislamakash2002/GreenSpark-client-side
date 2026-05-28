@@ -1,6 +1,6 @@
 'use client';
 
-import { MemberIdea } from '@/types/member-idea.type';
+import { MemberIdea } from '@/types/idea/member-idea.type';
 import { IdeaRow } from './IdeaRow';
 import { EmptyState } from './EmptyState';
 

@@ -13,7 +13,7 @@ export function IdeaNotFound() {
                 The idea you're looking for doesn't exist or you don't have permission to view it.
             </p>
             <Button asChild variant="outline">
-                <Link href="/dashboard/member/ideas">
+                <Link href="/member/ideas">
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to My Ideas
                 </Link>

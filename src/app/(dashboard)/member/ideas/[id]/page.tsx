@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getIdeaById } from '@/actions/idea.action';
+import { getIdeaById } from '@/actions/idea/idea.action';
 import { IdeaDetailsHeader } from '@/components/modules/dashboard/member/ideas/details/IdeaDetailsHeader';
 import { IdeaStats } from '@/components/modules/dashboard/member/ideas/details/IdeaStats';
 import { IdeaContent } from '@/components/modules/dashboard/member/ideas/details/IdeaContent';

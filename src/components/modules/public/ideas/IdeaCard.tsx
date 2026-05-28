@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Idea } from '@/types/idea.type';
+import { Idea } from '@/types/idea/idea.type';
 import { ThumbsUp, ThumbsDown, MessageCircle, Eye, Lock, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';

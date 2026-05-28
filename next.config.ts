@@ -1,4 +1,4 @@
-import './src/env'
+import './src/env';
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -30,7 +30,12 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-  }, async rewrites() {
+  },
+  transpilePackages: ['@tailwindcss/postcss'],
+  
+
+  
+  async rewrites() {
     return [
       {
         source: "/api/auth/:path*",
@@ -41,4 +46,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-

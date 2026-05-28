@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getFeaturedIdeas } from '@/actions/idea.action';
+import { getFeaturedIdeas } from '@/actions/idea/idea.action';
 import { FeaturedIdeasCard } from './FeaturedIdeasCard';
 import { FeaturedIdeasSkeleton } from './FeaturedIdeasSkeleton';
 
