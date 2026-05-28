@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PlusCircle, ArrowRight } from "lucide-react";
+import { PlusCircle, ArrowRight, ThumbsUp, EyeIcon, MessageSquareMoreIcon, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +37,6 @@ export function MemberIdeasPreview({ ideas }: MemberIdeasPreviewProps) {
             </Card>
         );
     }
-
     return (
         <Card className="mb-8">
             <CardHeader className="flex flex-row items-center justify-between">
@@ -69,14 +68,15 @@ export function MemberIdeasPreview({ ideas }: MemberIdeasPreviewProps) {
                                     </Link>
                                 </div>
                                 <div className="flex items-center gap-4 mt-3 sm:mt-0 text-sm text-muted-foreground">
-                                    <span>👍 {idea.voteScore}</span>
-                                    <span>👁️ {idea.viewCount}</span>
-                                    <span>💬 {idea.commentCount}</span>
-                                    <Button asChild variant="ghost" size="sm">
+                                    <span className='flex items-center justify-center gap-2'><ThumbsUp size={15} /> {idea.voteScore}</span>
+                                    <span className='flex items-center justify-center gap-2'><EyeIcon size={15} /> {idea.viewCount}</span>
+                                    <span className='flex items-center justify-center gap-2'><MessageSquareMoreIcon size={15} /> {idea.commentCount}</span>
+                                    {(idea.status === 'DRAFT' || idea.status === 'REJECTED') && <Button asChild variant="ghost" size="sm">
                                         <Link href={`/member/ideas/edit/${idea.id}`}>
+                                        <Edit className="h-4 w-4 mr-1" />
                                             Edit
                                         </Link>
-                                    </Button>
+                                    </Button>}
                                 </div>
                             </div>
                         );

@@ -29,6 +29,7 @@ export const rejectIdea = async (ideaId: string, feedback: string) => {
 };
 
 export const deleteIdea = async (ideaId: string) => {
+    console.log('----------', ideaId);
     const result = await adminIdeaService.deleteIdea(ideaId);
     if (result.success) {
         updateTag("admin-ideas");

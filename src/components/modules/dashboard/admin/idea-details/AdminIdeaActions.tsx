@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, CheckCircle, XCircle, Trash2, Edit } from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { approveIdea, rejectIdea, deleteIdea } from "@/actions/idea/admin-idea.action";
@@ -27,14 +26,13 @@ export function AdminIdeaActions({ ideaId, ideaTitle, status }: AdminIdeaActions
     const canApprove = status === "PENDING";
     const canReject = status === "PENDING";
     const canDelete = true; // Admin can delete any idea
-    const canEdit = true; // Admin can edit any idea (as override)
 
     const handleApprove = async () => {
         setIsLoading(true);
         const result = await approveIdea(ideaId);
         if (result.success) {
             toast.success(result.message);
-            router.push("/dashboard/admin/ideas");
+            router.push("/admin/ideas");
         } else {
             toast.error(result.message);
         }
@@ -47,7 +45,7 @@ export function AdminIdeaActions({ ideaId, ideaTitle, status }: AdminIdeaActions
         const result = await rejectIdea(ideaId, feedback);
         if (result.success) {
             toast.success(result.message);
-            router.push("/dashboard/admin/ideas");
+            router.push("/admin/ideas");
         } else {
             toast.error(result.message);
         }
@@ -60,7 +58,7 @@ export function AdminIdeaActions({ ideaId, ideaTitle, status }: AdminIdeaActions
         const result = await deleteIdea(ideaId);
         if (result.success) {
             toast.success(result.message);
-            router.push("/dashboard/admin/ideas");
+            router.push("/admin/ideas");
         } else {
             toast.error(result.message);
         }
@@ -79,15 +77,6 @@ export function AdminIdeaActions({ ideaId, ideaTitle, status }: AdminIdeaActions
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back
                 </Button>
-
-                {canEdit && (
-                    <Button asChild variant="outline">
-                        <Link href={`/dashboard/admin/ideas/edit/${ideaId}`}>
-                            <Edit className="h-4 w-4 mr-2" />
-                            Edit Idea
-                        </Link>
-                    </Button>
-                )}
 
                 {canApprove && (
                     <Button

@@ -117,7 +117,7 @@ export const adminIdeaService = {
     deleteIdea: async (ideaId: string): Promise<DeleteIdeaResponse> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/ideas/${ideaId}`, {
+            const res = await fetch(`${API_URL}/ideas/admin/${ideaId}`, {
                 method: "DELETE",
                 headers: {
                     Cookie: cookieStore.toString(),

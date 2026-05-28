@@ -1,24 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, ThumbsUp, ThumbsDown, Bookmark, Lock } from "lucide-react";
+import { ArrowLeft, ThumbsUp, ThumbsDown, Bookmark, BookmarkCheck, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { voteIdea, bookmarkIdea } from "@/actions/idea/idea.action";
-import { authClient } from "@/lib/auth-client";
+import { castVote, removeVote, getUserVote } from "@/actions/vote.action";
+import { addBookmark, removeBookmark, checkBookmark } from "@/actions/bookmark.action";
 
 interface IdeaActionsProps {
     ideaId: string;
     isPaid: boolean;
     hasAccess?: boolean;
+    initialVoteScore?: number;
+    isAuthenticated: boolean;
+    userId?: string;
+    onVoteUpdate?: (newScore: number, userVote: string | null) => void;
 }
 
-export function IdeaActions({ ideaId, isPaid, hasAccess = false }: IdeaActionsProps) {
+export function IdeaActions({ 
+    ideaId, 
+    isPaid, 
+    hasAccess = false,
+    initialVoteScore = 0,
+    isAuthenticated,
+    userId,
+    onVoteUpdate 
+}: IdeaActionsProps) {
     const [isVoting, setIsVoting] = useState(false);
     const [isBookmarking, setIsBookmarking] = useState(false);
-    const { data: session } = authClient.useSession();
-    const isAuthenticated = !!session?.user;
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [isLoadingBookmark, setIsLoadingBookmark] = useState(true);
+    const [userVote, setUserVote] = useState<string | null>(null);
+    const [currentVoteScore, setCurrentVoteScore] = useState(initialVoteScore);
+
+    // Check if idea is bookmarked and get user vote on load
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!isAuthenticated || !userId) {
+                setIsLoadingBookmark(false);
+                return;
+            }
+            
+            const [bookmarkResult, voteResult] = await Promise.all([
+                checkBookmark(ideaId),
+                getUserVote(ideaId),
+            ]);
+            
+            if (bookmarkResult.success && bookmarkResult.data) {
+                setIsBookmarked(bookmarkResult.data.isBookmarked);
+            }
+            
+            if (voteResult.success && voteResult.data) {
+                setUserVote(voteResult.data.userVote);
+            }
+            
+            setIsLoadingBookmark(false);
+        };
+        
+        fetchData();
+    }, [ideaId, isAuthenticated, userId]);
 
     const handleVote = async (voteType: "UP" | "DOWN") => {
         if (!isAuthenticated) {
@@ -27,12 +68,50 @@ export function IdeaActions({ ideaId, isPaid, hasAccess = false }: IdeaActionsPr
         }
         
         setIsVoting(true);
-        const result = await voteIdea(ideaId, voteType);
-        if (result.success) {
-            toast.success(result.message);
+        
+        // Optimistic update
+        const previousVote = userVote;
+        let newVoteScore = currentVoteScore;
+        let newUserVote = userVote;
+        
+        if (userVote === voteType) {
+            // Removing vote
+            newUserVote = null;
+            newVoteScore = voteType === "UP" ? currentVoteScore - 1 : currentVoteScore + 1;
+        } else if (userVote === null) {
+            // New vote
+            newUserVote = voteType;
+            newVoteScore = voteType === "UP" ? currentVoteScore + 1 : currentVoteScore - 1;
         } else {
-            toast.error(result.message);
+            // Changing vote
+            newUserVote = voteType;
+            newVoteScore = voteType === "UP" ? currentVoteScore + 2 : currentVoteScore - 2;
         }
+        
+        setUserVote(newUserVote);
+        setCurrentVoteScore(newVoteScore);
+        if (onVoteUpdate) onVoteUpdate(newVoteScore, newUserVote);
+        
+        let result;
+        if (userVote === voteType) {
+            result = await removeVote(ideaId);
+        } else {
+            result = await castVote(ideaId, voteType);
+        }
+        
+        if (!result.success) {
+            // Revert on error
+            setUserVote(previousVote);
+            setCurrentVoteScore(currentVoteScore);
+            if (onVoteUpdate) onVoteUpdate(currentVoteScore, previousVote);
+            toast.error(result.message);
+        } else if (result.data) {
+            setCurrentVoteScore(result.data.voteScore);
+            setUserVote(result.data.userVote);
+            if (onVoteUpdate) onVoteUpdate(result.data.voteScore, result.data.userVote);
+            toast.success(result.message);
+        }
+        
         setIsVoting(false);
     };
 
@@ -43,12 +122,26 @@ export function IdeaActions({ ideaId, isPaid, hasAccess = false }: IdeaActionsPr
         }
         
         setIsBookmarking(true);
-        const result = await bookmarkIdea(ideaId);
-        if (result.success) {
-            toast.success(result.message);
+        
+        let result;
+        if (isBookmarked) {
+            result = await removeBookmark(ideaId);
+            if (result.success) {
+                setIsBookmarked(false);
+                toast.success("Bookmark removed");
+            } else {
+                toast.error(result.message);
+            }
         } else {
-            toast.error(result.message);
+            result = await addBookmark(ideaId);
+            if (result.success) {
+                setIsBookmarked(true);
+                toast.success("Bookmark added");
+            } else {
+                toast.error(result.message);
+            }
         }
+        
         setIsBookmarking(false);
     };
 
@@ -73,10 +166,7 @@ export function IdeaActions({ ideaId, isPaid, hasAccess = false }: IdeaActionsPr
     return (
         <div className="mt-8 pt-6 border-t">
             <div className="flex flex-wrap gap-3">
-                <Button
-                    variant="outline"
-                    asChild
-                >
+                <Button variant="outline" asChild>
                     <Link href="/ideas">
                         <ArrowLeft className="h-4 w-4 mr-2" />
                         Back to Ideas
@@ -84,20 +174,20 @@ export function IdeaActions({ ideaId, isPaid, hasAccess = false }: IdeaActionsPr
                 </Button>
                 
                 <Button
-                    variant="outline"
+                    variant={userVote === "UP" ? "default" : "outline"}
                     onClick={() => handleVote("UP")}
                     disabled={isVoting}
-                    className="hover:bg-green-50 hover:text-green-600"
+                    className={userVote === "UP" ? "bg-green-600 hover:bg-green-700" : "hover:bg-green-50 hover:text-green-600"}
                 >
                     <ThumbsUp className="h-4 w-4 mr-2" />
                     Upvote
                 </Button>
                 
                 <Button
-                    variant="outline"
+                    variant={userVote === "DOWN" ? "default" : "outline"}
                     onClick={() => handleVote("DOWN")}
                     disabled={isVoting}
-                    className="hover:bg-red-50 hover:text-red-600"
+                    className={userVote === "DOWN" ? "bg-red-600 hover:bg-red-700" : "hover:bg-red-50 hover:text-red-600"}
                 >
                     <ThumbsDown className="h-4 w-4 mr-2" />
                     Downvote
@@ -106,12 +196,16 @@ export function IdeaActions({ ideaId, isPaid, hasAccess = false }: IdeaActionsPr
                 <Button
                     variant="outline"
                     onClick={handleBookmark}
-                    disabled={isBookmarking}
+                    disabled={isBookmarking || isLoadingBookmark}
                 >
-                    <Bookmark className="h-4 w-4 mr-2" />
-                    Bookmark
+                    {isBookmarked ? (
+                        <BookmarkCheck className="h-4 w-4 mr-2 text-green-600" />
+                    ) : (
+                        <Bookmark className="h-4 w-4 mr-2" />
+                    )}
+                    {isBookmarked ? "Bookmarked" : "Bookmark"}
                 </Button>
-            </div>
+            </div>            
         </div>
     );
 }

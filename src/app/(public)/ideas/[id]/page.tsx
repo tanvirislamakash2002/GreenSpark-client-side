@@ -17,23 +17,21 @@ export default async function IdeaDetailsPage({ params }: IdeaDetailsPageProps) 
     const { id } = await params;
     const session = await getSession();
     const isAuthenticated = !!session?.data?.user;
+    const isAdmin = session?.data?.user?.role === 'ADMIN';
 
     const result = await getIdeaById(id);
 
     if (!result.success || !result.data) {
         return <IdeaNotFound />;
     }
-
     const idea = result.data;
 
     // Only show approved ideas to public
-    if (idea.status !== "APPROVED") {
+    if (idea.status !== "APPROVED" && !isAdmin) {
         return <IdeaNotFound />;
     }
 
-    // Check if user has access to paid content
-    // This would be implemented with a payment check in production
-    const hasAccess = !idea.isPaid || (isAuthenticated && false); // Replace with actual payment check
+    const hasAccess = !idea.isPaid || (isAuthenticated && false);
 
     return (
         <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -67,6 +65,9 @@ export default async function IdeaDetailsPage({ params }: IdeaDetailsPageProps) 
                 ideaId={idea.id}
                 isPaid={idea.isPaid}
                 hasAccess={hasAccess}
+                initialVoteScore={idea.voteScore}
+                isAuthenticated={isAuthenticated}
+                userId={session?.data?.user?.id}
             />
         </div>
     );

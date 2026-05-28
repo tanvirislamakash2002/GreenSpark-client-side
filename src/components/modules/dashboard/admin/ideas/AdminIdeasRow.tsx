@@ -123,7 +123,7 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                     </Button>
                     
                     <Button asChild variant="ghost" size="sm">
-                        <Link href={`/dashboard/admin/ideas/${idea.id}`}>
+                        <Link href={`/ideas/${idea.id}`}  target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-4 w-4" />
                         </Link>
                     </Button>

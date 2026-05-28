@@ -6,7 +6,7 @@ import { HowItWorks } from "@/components/modules/public/home/HowItWorks";
 import { ImpactStats } from "@/components/modules/public/home/ImpactStats";
 import { Newsletter } from "@/components/modules/public/home/Newsletter";
 import { TopVotedIdeas } from "@/components/modules/public/home/TopVotedIdeas";
-
+export const dynamic = 'force-static';
 export default async function Home() {
 
   return (

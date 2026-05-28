@@ -10,10 +10,7 @@ interface IdeaCardProps {
 }
 
 export function IdeaCard({ idea }: IdeaCardProps) {
-    const votePercentage = idea.voteScore > 0 
-        ? (idea.upvotes / (idea.upvotes + idea.downvotes)) * 100 
-        : 0;
-
+    const votePercentage = Math.min(Math.abs(idea.voteScore), 100);
     return (
         <div className="group relative bg-card rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
             {/* Image Section */}
@@ -30,14 +27,14 @@ export function IdeaCard({ idea }: IdeaCardProps) {
                         <Sparkles className="w-12 h-12 text-green-500" />
                     </div>
                 )}
-                
+
                 {/* Category Badge */}
                 <div className="absolute top-3 left-3">
                     <Badge className="bg-white/90 dark:bg-gray-900/90 text-foreground hover:bg-white/90">
                         {idea.categories[0]?.name}
                     </Badge>
                 </div>
-                
+
                 {/* Paid Badge */}
                 {idea.isPaid && (
                     <div className="absolute top-3 right-3">
@@ -56,7 +53,7 @@ export function IdeaCard({ idea }: IdeaCardProps) {
                         {idea.title}
                     </h3>
                 </Link>
-                
+
                 <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
                     {idea.description}
                 </p>
@@ -72,33 +69,30 @@ export function IdeaCard({ idea }: IdeaCardProps) {
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1">
                             <ThumbsUp className="w-4 h-4 text-green-600" />
-                            <span className="text-sm font-medium">{idea.upvotes}</span>
+                            <span className="text-sm font-medium">{idea.voteScore > 0 ? idea.voteScore : 0}</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <ThumbsDown className="w-4 h-4 text-red-500" />
-                            <span className="text-sm font-medium">{idea.downvotes}</span>
+                            <span className="text-sm font-medium">{idea.voteScore < 0 ? Math.abs(idea.voteScore) : 0}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <MessageCircle className="w-4 h-4" />
+                            <MessageCircle className="h-4 w-4" />
                             <span className="text-sm">{idea.commentCount}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <Eye className="w-4 h-4" />
+                            <Eye className="h-4 w-4" />
                             <span className="text-sm">{idea.viewCount}</span>
                         </div>
                     </div>
-                    
-                    <Link
-                        href={`/ideas/${idea.id}`}
-                        className="text-sm text-green-600 hover:text-green-700 font-medium"
-                    >
+
+                    <Link href={`/ideas/${idea.id}`} className="text-sm text-green-600 hover:text-green-700 font-medium">
                         View Idea →
                     </Link>
                 </div>
 
                 {/* Vote Score Bar (Optional) */}
                 <div className="mt-3 h-1 bg-muted rounded-full overflow-hidden">
-                    <div 
+                    <div
                         className="h-full bg-green-500 rounded-full"
                         style={{ width: `${votePercentage}%` }}
                     />

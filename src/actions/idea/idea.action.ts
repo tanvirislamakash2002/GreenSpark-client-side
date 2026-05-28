@@ -26,20 +26,3 @@ export const getTopVotedIdeas = async (limit?: number) => {
     return await ideaService.getTopVotedIdeas(limit);
 };
 
-// Vote on an idea
-export const voteIdea = async (ideaId: string, voteType: 'UP' | 'DOWN') => {
-    // This will be implemented when backend is ready
-    // After successful API call:
-    updateTag('ideas');           // Revalidate public ideas list
-    updateTag(`idea-${ideaId}`);  // Revalidate single idea page
-    return { success: true, message: 'Vote recorded' };
-};
-
-// Bookmark an idea
-export const bookmarkIdea = async (ideaId: string) => {
-    // This will be implemented when backend is ready
-    // After successful API call:
-    updateTag('ideas');           // Revalidate public ideas list
-    updateTag(`idea-${ideaId}`);  // Revalidate single idea page
-    return { success: true, message: 'Bookmark added' };
-};

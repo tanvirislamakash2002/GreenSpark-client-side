@@ -32,9 +32,9 @@ const nextConfig: NextConfig = {
     ],
   },
   transpilePackages: ['@tailwindcss/postcss'],
-  
 
-  
+
+
   async rewrites() {
     return [
       {
@@ -43,6 +43,8 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  staticPageGenerationTimeout: 120,
 };
 
 export default nextConfig;
