@@ -1,8 +1,8 @@
 "use server";
 
-import { userService } from "@/services/user.service";
+import { authService } from "@/services/auth.service";
 
 // Get current session
 export const getSession = async () => {
-    return await userService.getSession();
+    return await authService.getSession();
 };

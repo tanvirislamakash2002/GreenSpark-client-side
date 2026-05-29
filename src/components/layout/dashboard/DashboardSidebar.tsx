@@ -99,16 +99,16 @@ const adminRoutes = [
         title: "Overview",
         items: [
             { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-            { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
+            // { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
         ],
     },
     {
         title: "Idea Management",
         items: [
             { title: "All Ideas", url: "/admin/ideas", icon: Lightbulb },
-            { title: "Pending Approval", url: "/admin/ideas?status=PENDING", icon: Clock },
-            { title: "Approved Ideas", url: "/admin/ideas?status=APPROVED", icon: CheckCircle },
-            { title: "Rejected Ideas", url: "/admin/ideas?status=REJECTED", icon: XCircle },
+            // { title: "Pending Approval", url: "/admin/ideas?status=PENDING", icon: Clock },
+            // { title: "Approved Ideas", url: "/admin/ideas?status=APPROVED", icon: CheckCircle },
+            // { title: "Rejected Ideas", url: "/admin/ideas?status=REJECTED", icon: XCircle },
             { title: "Bookmarks", url: "/admin/bookmarks", icon: Bookmark },
             // { title: "Reported Ideas", url: "/admin/ideas?status=DRAFT", icon: Flag },
         ],
@@ -117,8 +117,8 @@ const adminRoutes = [
         title: "User Management",
         items: [
             { title: "All Members", url: "/admin/users", icon: Users },
-            { title: "Active Members", url: "/admin/users/active", icon: Users },
-            { title: "Suspended Accounts", url: "/admin/users/suspended", icon: Users },
+            // { title: "Active Members", url: "/admin/users/active", icon: Users },
+            // { title: "Suspended Accounts", url: "/admin/users/suspended", icon: Users },
         ],
     },
     {
@@ -126,16 +126,16 @@ const adminRoutes = [
         items: [
             { title: "Categories", url: "/admin/categories", icon: Tag },
             // { title: "Blog Posts", url: "/admin/blog", icon: FileText },
-            { title: "Newsletter", url: "/admin/newsletter", icon: Mail },
+            // { title: "Newsletter", url: "/admin/newsletter", icon: Mail },
         ],
     },
-    {
-        title: "Comment Moderation",
-        items: [
-            { title: "All Comments", url: "/admin/comments", icon: MessageSquare },
-            // { title: "Reported Comments", url: "/admin/comments/reported", icon: Flag },
-        ],
-    },
+    // {
+    //     title: "Comment Moderation",
+    //     items: [
+    //         { title: "All Comments", url: "/admin/comments", icon: MessageSquare },
+    //         // { title: "Reported Comments", url: "/admin/comments/reported", icon: Flag },
+    //     ],
+    // },
     // {
     //     title: "System",
     //     items: [

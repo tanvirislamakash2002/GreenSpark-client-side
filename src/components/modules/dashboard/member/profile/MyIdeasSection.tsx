@@ -29,13 +29,13 @@ const statusConfig = {
     REJECTED: { label: "Rejected", className: "bg-red-500", bgLight: "bg-red-100 text-red-700" },
 };
 
-function IdeaCard({ 
-    idea, 
-    onDelete, 
-    onSubmit, 
-    onUpdate 
-}: { 
-    idea: MemberIdea; 
+function IdeaCard({
+    idea,
+    onDelete,
+    onSubmit,
+    onUpdate
+}: {
+    idea: MemberIdea;
     onDelete: (id: string) => void;
     onSubmit: (id: string) => void;
     onUpdate: () => void;
@@ -80,7 +80,7 @@ function IdeaCard({
             .toUpperCase()
             .slice(0, 2);
     };
-
+    console.log(idea);
     return (
         <>
             <div className="flex flex-col lg:flex-row lg:items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors gap-3">
@@ -99,28 +99,34 @@ function IdeaCard({
                             {new Date(idea.createdAt).toLocaleDateString()}
                         </span>
                     </div>
-                    
-                    <Link 
-                        href={`/ideas/${idea.id}`} 
+
+                    <Link
+                        href={`/ideas/${idea.id}`}
                         className="font-medium hover:text-green-600 transition-colors line-clamp-1"
                     >
                         {idea.title}
                     </Link>
-                    
+
                     <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
                         {idea.description}
                     </p>
-                    
+
                     <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-muted-foreground">
-                        {/* <div className="flex items-center gap-1">
-                            <Avatar className="h-4 w-4">
-                                <AvatarImage src={idea.author?.image || undefined} />
-                                <AvatarFallback className="text-[8px]">
-                                    {idea.author?.name ? getInitials(idea.author.name) : "?"}
-                                </AvatarFallback>
-                            </Avatar>
-                            <span>{idea.author?.name || "Unknown"}</span>
-                        </div> */}
+                            {/* Idea Image Thumbnail */}
+                            {idea.imageUrl && (
+                                <div className="flex items-center gap-1">
+                                    <div className="h-5 w-5 rounded overflow-hidden bg-muted">
+                                        <img
+                                            src={idea.imageUrl}
+                                            alt={idea.title}
+                                            className="h-full w-full object-cover"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).style.display = 'none';
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         <span>{idea.category?.name || "Uncategorized"}</span>
                         <span className="flex items-center gap-1">
                             <ThumbsUp size={12} /> {idea.voteScore || 0}
@@ -132,7 +138,7 @@ function IdeaCard({
                             <MessageSquareMoreIcon size={12} /> {idea.commentCount || 0}
                         </span>
                     </div>
-                    
+
                     {idea.feedback && idea.status === "REJECTED" && (
                         <div className="mt-3 p-2 bg-red-50 dark:bg-red-950/20 rounded-md text-xs">
                             <span className="font-semibold text-red-600">Feedback:</span>
@@ -140,7 +146,7 @@ function IdeaCard({
                         </div>
                     )}
                 </div>
-                
+
                 {/* Right Section - Actions */}
                 <div className="flex items-center gap-2">
                     {/* View Button - Always visible */}
@@ -150,14 +156,14 @@ function IdeaCard({
                             View
                         </Link>
                     </Button>
-                    
+
                     {/* External Link Button */}
                     <Button asChild variant="ghost" size="sm">
                         <Link href={`/ideas/${idea.id}`} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-4 w-4" />
                         </Link>
                     </Button>
-                    
+
                     {/* Edit Button - Only for DRAFT and REJECTED */}
                     {(idea.status === "DRAFT" || idea.status === "REJECTED") && (
                         <Button asChild variant="ghost" size="sm">
@@ -166,11 +172,11 @@ function IdeaCard({
                             </Link>
                         </Button>
                     )}
-                    
+
                     {/* Delete Button - Only for DRAFT and REJECTED */}
                     {(idea.status === "DRAFT" || idea.status === "REJECTED") && (
-                        <Button 
-                            variant="ghost" 
+                        <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => setIsDeleteModalOpen(true)}
                             className="text-red-500 hover:text-red-600"
@@ -178,11 +184,11 @@ function IdeaCard({
                             <Trash2 className="h-4 w-4" />
                         </Button>
                     )}
-                    
+
                     {/* Submit Button - Only for DRAFT */}
                     {idea.status === "DRAFT" && (
-                        <Button 
-                            variant="default" 
+                        <Button
+                            variant="default"
                             size="sm"
                             onClick={() => setIsSubmitModalOpen(true)}
                             className="bg-amber-600 hover:bg-amber-700"
@@ -201,7 +207,7 @@ function IdeaCard({
                 ideaTitle={idea.title}
                 isLoading={isLoading}
             />
-            
+
             <SubmitModal
                 open={isSubmitModalOpen}
                 onOpenChange={setIsSubmitModalOpen}
@@ -254,12 +260,12 @@ function EmptyState({ status, onClearFilters }: { status: string; onClearFilters
     );
 }
 
-export function MyIdeasSection({ 
-    draftIdeas, 
-    pendingIdeas, 
-    approvedIdeas, 
-    rejectedIdeas, 
-    onUpdate 
+export function MyIdeasSection({
+    draftIdeas,
+    pendingIdeas,
+    approvedIdeas,
+    rejectedIdeas,
+    onUpdate
 }: MyIdeasSectionProps) {
     const [activeTab, setActiveTab] = useState("draft");
 
@@ -298,7 +304,7 @@ export function MyIdeasSection({
                             </TabsTrigger>
                         ))}
                     </TabsList>
-                    
+
                     {tabs.map((tab) => (
                         <TabsContent key={tab.value} value={tab.value}>
                             {tab.ideas.length === 0 ? (
