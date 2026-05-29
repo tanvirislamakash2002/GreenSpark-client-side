@@ -22,6 +22,38 @@ export const bookmarkService = {
         }
     },
 
+    getUserBookmarks: async (params?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        category?: string;
+        sortBy?: string;
+    }) => {
+        try {
+            const cookieStore = await cookies();
+            const url = new URL(`${API_URL}/bookmarks`);
+
+            if (params) {
+                if (params.page) url.searchParams.set('page', params.page.toString());
+                if (params.limit) url.searchParams.set('limit', params.limit.toString());
+                if (params.search) url.searchParams.set('search', params.search);
+                if (params.category) url.searchParams.set('category', params.category);
+                if (params.sortBy) url.searchParams.set('sortBy', params.sortBy);
+            }
+
+            const res = await fetch(url.toString(), {
+                headers: { Cookie: cookieStore.toString() },
+                next: { tags: ["user-bookmarks"] },
+            });
+
+            const data = await res.json();
+            return data;
+        } catch (error) {
+            console.error("Get user bookmarks error:", error);
+            return { success: false, message: "Something went wrong" };
+        }
+    },
+
     removeBookmark: async (ideaId: string) => {
         try {
             const cookieStore = await cookies();
@@ -57,25 +89,4 @@ export const bookmarkService = {
         }
     },
 
-    getUserBookmarks: async (page: number = 1, limit: number = 10) => {
-        try {
-            const cookieStore = await cookies();
-            const url = new URL(`${API_URL}/bookmarks`);
-            url.searchParams.set('page', page.toString());
-            url.searchParams.set('limit', limit.toString());
-
-            const res = await fetch(url.toString(), {
-                headers: {
-                    Cookie: cookieStore.toString(),
-                },
-                next: { tags: ["user-bookmarks"] },
-            });
-
-            const data = await res.json();
-            return data;
-        } catch (error) {
-            console.error("Get user bookmarks error:", error);
-            return { success: false, message: "Something went wrong" };
-        }
-    },
 };
