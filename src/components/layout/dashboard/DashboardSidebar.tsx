@@ -125,7 +125,7 @@ const adminRoutes = [
         title: "Content Management",
         items: [
             { title: "Categories", url: "/admin/categories", icon: Tag },
-            { title: "Blog Posts", url: "/admin/blog", icon: FileText },
+            // { title: "Blog Posts", url: "/admin/blog", icon: FileText },
             { title: "Newsletter", url: "/admin/newsletter", icon: Mail },
         ],
     },
@@ -133,7 +133,7 @@ const adminRoutes = [
         title: "Comment Moderation",
         items: [
             { title: "All Comments", url: "/admin/comments", icon: MessageSquare },
-            { title: "Reported Comments", url: "/admin/comments/reported", icon: Flag },
+            // { title: "Reported Comments", url: "/admin/comments/reported", icon: Flag },
         ],
     },
     // {
@@ -237,16 +237,16 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                     </div>
                 </div>
                 <div className="space-y-1">
-                    <Button
+                    {user.role === Roles.ADMIN && <Button
                         variant="ghost"
                         className="w-full justify-start text-muted-foreground hover:text-foreground"
                         asChild
                     >
-                        <Link href={profileRoute}>
-                            <User className="h-4 w-4 mr-2 flex-shrink-0" />
-                            <span className="group-data-[collapsible=icon]:hidden truncate">Profile</span>
+                        <Link href='/admin/settings'>
+                            <Settings className="h-4 w-4 mr-2 flex-shrink-0" />
+                            <span className="group-data-[collapsible=icon]:hidden truncate">Settings</span>
                         </Link>
-                    </Button>
+                    </Button>}
                     <Button
                         variant="ghost"
                         className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
