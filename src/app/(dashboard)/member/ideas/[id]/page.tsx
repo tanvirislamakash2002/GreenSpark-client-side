@@ -1,12 +1,12 @@
 import { notFound } from 'next/navigation';
 import { getIdeaById } from '@/actions/idea/idea.action';
-import { IdeaDetailsHeader } from '@/components/modules/dashboard/member/ideas/details/IdeaDetailsHeader';
-import { IdeaStats } from '@/components/modules/dashboard/member/ideas/details/IdeaStats';
-import { IdeaContent } from '@/components/modules/dashboard/member/ideas/details/IdeaContent';
-import { IdeaFeedback } from '@/components/modules/dashboard/member/ideas/details/IdeaFeedback';
-import { IdeaStatusActions } from '@/components/modules/dashboard/member/ideas/details/IdeaStatusActions';
+import { IdeaDetailsHeader } from '@/components/modules/dashboard/member/idea-details/IdeaDetailsHeader';
+import { IdeaStats } from '@/components/modules/dashboard/member/idea-details/IdeaStats';
+import { IdeaContent } from '@/components/modules/dashboard/member/idea-details/IdeaContent';
+import { IdeaFeedback } from '@/components/modules/dashboard/member/idea-details/IdeaFeedback';
+import { IdeaStatusActions } from '@/components/modules/dashboard/member/idea-details/IdeaStatusActions';
 import { getSession } from '@/actions/auth.action';
-import { IdeaNotFound } from '@/components/modules/dashboard/member/ideas/details/IdeaNotFound';
+import { IdeaNotFound } from '@/components/modules/dashboard/member/idea-details/IdeaNotFound';
 
 interface IdeaDetailsPageProps {
     params: Promise<{

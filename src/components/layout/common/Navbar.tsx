@@ -217,6 +217,14 @@ export function Navbar() {
                         </Link>
                       </DropdownMenuItem>
                     )}
+                    {user.role === Roles.ADMIN && (
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin/bookmarks" className="cursor-pointer">
+                          <Bookmark className="mr-2 h-4 w-4" />
+                          Bookmarks
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
 
                     {/* Profile */}
                     <DropdownMenuItem asChild>
@@ -380,6 +388,19 @@ export function Navbar() {
                         </Link>
                       </Button>
                     </>
+                  )}
+                  {user.role === Roles.ADMIN && (                    
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        asChild
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Link href="/admin/bookmarks">
+                          <Bookmark className="h-4 w-4 mr-2" />
+                          Bookmarks
+                        </Link>
+                      </Button>
                   )}
 
                   <Button

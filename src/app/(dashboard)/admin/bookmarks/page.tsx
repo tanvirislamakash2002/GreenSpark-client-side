@@ -4,7 +4,7 @@ import { BookmarksFilterBar } from '@/components/modules/dashboard/shared/bookma
 import { BookmarksGrid } from '@/components/modules/dashboard/shared/bookmarks/BookmarksGrid';
 import { BookmarksPagination } from '@/components/modules/dashboard/shared/bookmarks/BookmarksPagination';
 
-interface BookmarksPageProps {
+interface AdminBookmarksPageProps {
     searchParams: Promise<{
         page?: string;
         search?: string;
@@ -13,7 +13,7 @@ interface BookmarksPageProps {
     }>;
 }
 
-async function BookmarksContent({ searchParams }: { searchParams: Awaited<BookmarksPageProps['searchParams']> }) {
+async function AdminBookmarksContent({ searchParams }: { searchParams: Awaited<AdminBookmarksPageProps['searchParams']> }) {
     const page = searchParams.page ? parseInt(searchParams.page) : 1;
     const limit = 9;
     
@@ -24,6 +24,7 @@ async function BookmarksContent({ searchParams }: { searchParams: Awaited<Bookma
         category: searchParams.category,
         sortBy: searchParams.sortBy as any,
     });
+
     if (!result.success || !result.data) {
         return (
             <div className="text-center py-16">
@@ -54,10 +55,10 @@ async function BookmarksContent({ searchParams }: { searchParams: Awaited<Bookma
     );
 }
 
-export default async function BookmarksPage({ searchParams }: BookmarksPageProps) {
+export default async function AdminBookmarksPage({ searchParams }: AdminBookmarksPageProps) {
     const resolvedParams = await searchParams;
     
     return (
-            <BookmarksContent searchParams={resolvedParams} />
+            <AdminBookmarksContent searchParams={resolvedParams} />
     );
 }

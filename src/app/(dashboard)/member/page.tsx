@@ -1,13 +1,13 @@
 import { getSession } from "@/actions/auth.action";
 import { getDashboardData } from "@/actions/member.action";
-import { DashboardSkeleton } from "@/components/modules/dashboard/member/DashboardSkeleton";
-import { MemberBookmarksPreview } from "@/components/modules/dashboard/member/MemberBookmarksPreview";
-import { MemberIdeasPreview } from "@/components/modules/dashboard/member/MemberIdeasPreview";
-import { MemberRecentActivity } from "@/components/modules/dashboard/member/MemberRecentActivity";
-import { MemberStats } from "@/components/modules/dashboard/member/MemberStats";
-import { MemberVotesPreview } from "@/components/modules/dashboard/member/MemberVotesPreview";
-import { MemberWelcome } from "@/components/modules/dashboard/member/MemberWelcome";
-import { PendingApprovalAlert } from "@/components/modules/dashboard/member/PendingApprovalAlert";
+import { DashboardSkeleton } from "@/components/modules/dashboard/member/member-dashboard/DashboardSkeleton";
+import { MemberBookmarksPreview } from "@/components/modules/dashboard/member/member-dashboard/MemberBookmarksPreview";
+import { MemberIdeasPreview } from "@/components/modules/dashboard/member/member-dashboard/MemberIdeasPreview";
+import { MemberRecentActivity } from "@/components/modules/dashboard/member/member-dashboard/MemberRecentActivity";
+import { MemberStats } from "@/components/modules/dashboard/member/member-dashboard/MemberStats";
+import { MemberVotesPreview } from "@/components/modules/dashboard/member/member-dashboard/MemberVotesPreview";
+import { MemberWelcome } from "@/components/modules/dashboard/member/member-dashboard/MemberWelcome";
+import { PendingApprovalAlert } from "@/components/modules/dashboard/member/member-dashboard/PendingApprovalAlert";
 import { Suspense } from "react";
 
 async function DashboardContent() {

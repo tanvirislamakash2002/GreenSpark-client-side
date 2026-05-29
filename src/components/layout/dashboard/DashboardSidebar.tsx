@@ -39,7 +39,7 @@ import {
     BarChart3,
     Mail,
     Activity,
-    HelpCircle,
+    HelpCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -106,10 +106,11 @@ const adminRoutes = [
         title: "Idea Management",
         items: [
             { title: "All Ideas", url: "/admin/ideas", icon: Lightbulb },
-            { title: "Pending Approval", url: "/admin/ideas/pending", icon: Clock },
-            { title: "Approved Ideas", url: "/admin/ideas/approved", icon: CheckCircle },
-            { title: "Rejected Ideas", url: "/admin/ideas/rejected", icon: XCircle },
-            { title: "Reported Ideas", url: "/admin/ideas/reported", icon: Flag },
+            { title: "Pending Approval", url: "/admin/ideas?status=PENDING", icon: Clock },
+            { title: "Approved Ideas", url: "/admin/ideas?status=APPROVED", icon: CheckCircle },
+            { title: "Rejected Ideas", url: "/admin/ideas?status=REJECTED", icon: XCircle },
+            { title: "Bookmarks", url: "/admin/bookmarks", icon: Bookmark },
+            // { title: "Reported Ideas", url: "/admin/ideas?status=DRAFT", icon: Flag },
         ],
     },
     {
