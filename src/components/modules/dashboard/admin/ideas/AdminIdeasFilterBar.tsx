@@ -55,18 +55,18 @@ export function AdminIdeasFilterBar() {
             params.delete(key);
         }
         params.delete('page');
-        router.push(`/dashboard/admin/ideas?${params.toString()}`);
+        router.push(`/admin/ideas?${params.toString()}`);
     };
 
     const clearSearch = () => {
         const params = new URLSearchParams(searchParams);
         params.delete('search');
         params.delete('page');
-        router.push(`/dashboard/admin/ideas?${params.toString()}`);
+        router.push(`/admin/ideas?${params.toString()}`);
     };
 
     const resetFilters = () => {
-        router.push('/dashboard/admin/ideas');
+        router.push('/admin/ideas');
     };
 
     const hasActiveFilters = currentSearch || currentCategory !== 'all' || currentStatus !== 'all' || currentSort !== 'newest';

@@ -48,7 +48,7 @@ async function EditIdeaContent({ id }: { id: string }) {
                     Only draft or rejected ideas can be edited.
                 </p>
                 <Button asChild variant="outline">
-                    <Link href="/dashboard/member/ideas">
+                    <Link href="/member/ideas">
                         Back to My Ideas
                     </Link>
                 </Button>

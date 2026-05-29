@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { getAdminDashboardData } from "@/actions/admin.action";
 import { AdminWelcome } from "@/components/modules/dashboard/admin/admin-dashboard/AdminWelcome";
 import { AdminStats } from "@/components/modules/dashboard/admin/admin-dashboard/AdminStats";
@@ -9,13 +8,12 @@ import { TopContributors } from "@/components/modules/dashboard/admin/admin-dash
 import { RecentUsers } from "@/components/modules/dashboard/admin/admin-dashboard/RecentUsers";
 import { ReportedAlert } from "@/components/modules/dashboard/admin/admin-dashboard/ReportedAlert";
 import { QuickActions } from "@/components/modules/dashboard/admin/admin-dashboard/QuickActions";
-import { AdminDashboardSkeleton } from "@/components/modules/dashboard/admin/admin-dashboard/AdminDashboardSkeleton";
 import { getSession } from "@/actions/auth.action";
 
-async function DashboardContent() {
+export default async function AdminDashboardPage() {
     const { data: session } = await getSession();
     const result = await getAdminDashboardData();
-
+    
     if (!result.success || !result.data) {
         return (
             <div className="text-center py-16">
@@ -33,13 +31,9 @@ async function DashboardContent() {
                 name={session!.user.name} 
                 email={session!.user.email}
             />
-            
             <AdminStats stats={stats} />
-            
             <ReportedAlert count={reportedCommentsCount} />
-            
             <PendingApprovalList ideas={pendingIdeas} />
-            
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
                     <RecentActivity activities={recentActivity} />
@@ -52,13 +46,5 @@ async function DashboardContent() {
                 </div>
             </div>
         </div>
-    );
-}
-
-export default async function AdminDashboardPage() {
-    return (
-        <Suspense fallback={<AdminDashboardSkeleton />}>
-            <DashboardContent />
-        </Suspense>
     );
 }

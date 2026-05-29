@@ -18,7 +18,7 @@ export function AdminIdeasPagination({ currentPage, totalPages, totalItems, item
     const goToPage = (page: number) => {
         const params = new URLSearchParams(searchParams);
         params.set('page', page.toString());
-        router.push(`/dashboard/admin/ideas?${params.toString()}`);
+        router.push(`/admin/ideas?${params.toString()}`);
     };
 
     const startItem = (currentPage - 1) * itemsPerPage + 1;

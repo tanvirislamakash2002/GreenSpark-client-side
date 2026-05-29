@@ -98,7 +98,7 @@ const adminRoutes = [
     {
         title: "Overview",
         items: [
-            { title: "Dashboard", url: "", icon: LayoutDashboard },
+            { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
             { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
         ],
     },

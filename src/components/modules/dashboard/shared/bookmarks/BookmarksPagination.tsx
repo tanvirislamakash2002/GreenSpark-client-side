@@ -18,7 +18,7 @@ export function BookmarksPagination({ currentPage, totalPages, totalItems, items
     const goToPage = (page: number) => {
         const params = new URLSearchParams(searchParams);
         params.set('page', page.toString());
-        router.push(`/dashboard/member/bookmarks?${params.toString()}`);
+        router.push(`/member/bookmarks?${params.toString()}`);
     };
 
     const startItem = (currentPage - 1) * itemsPerPage + 1;

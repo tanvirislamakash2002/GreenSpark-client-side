@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { AdminDashboardData, AdminStats, PendingIdea, ActivityItem, TopContributor, RecentUser, ChartData } from "@/types/admin.type";
 
 const API_URL = env.API_URL;
-
 export const adminService = {
     getDashboardData: async (): Promise<{ success: boolean; data?: AdminDashboardData; message?: string }> => {
         try {
@@ -14,7 +13,6 @@ export const adminService = {
                 },
                 next: { tags: ["admin-dashboard"] },
             });
-
             const data = await res.json();
 
             if (!res.ok) {

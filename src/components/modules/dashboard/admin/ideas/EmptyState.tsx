@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 
 export function EmptyState() {
     const handleReset = () => {
-        window.location.href = '/dashboard/admin/ideas';
+        window.location.href = '/admin/ideas';
     };
 
     return (

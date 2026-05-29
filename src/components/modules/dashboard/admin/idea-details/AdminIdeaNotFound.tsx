@@ -13,7 +13,7 @@ export function AdminIdeaNotFound() {
                 The idea you're looking for doesn't exist or has been deleted.
             </p>
             <Button asChild variant="outline">
-                <Link href="/dashboard/admin/ideas">
+                <Link href="/admin/ideas">
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to All Ideas
                 </Link>

@@ -46,18 +46,18 @@ export function BookmarksFilterBar() {
             params.delete(key);
         }
         params.delete('page');
-        router.push(`/dashboard/member/bookmarks?${params.toString()}`);
+        router.push(`/member/bookmarks?${params.toString()}`);
     };
 
     const clearSearch = () => {
         const params = new URLSearchParams(searchParams);
         params.delete('search');
         params.delete('page');
-        router.push(`/dashboard/member/bookmarks?${params.toString()}`);
+        router.push(`/member/bookmarks?${params.toString()}`);
     };
 
     const resetFilters = () => {
-        router.push('/dashboard/member/bookmarks');
+        router.push('/member/bookmarks');
     };
 
     const hasActiveFilters = currentSearch || currentCategory !== 'all' || currentSort !== 'recent';
