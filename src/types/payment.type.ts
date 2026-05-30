@@ -59,3 +59,17 @@ export interface Payment {
         imageUrl: string | null;
     };
 }
+
+export interface PaymentsResponse {
+    success: boolean;
+    data?: {
+        payments: Payment[];
+        pagination: {
+            currentPage: number;
+            totalPages: number;
+            totalItems: number;
+            itemsPerPage: number;
+        };
+    };
+    message?: string;
+}
