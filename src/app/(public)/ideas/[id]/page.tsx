@@ -31,7 +31,7 @@ export default async function IdeaDetailsPage({ params }: IdeaDetailsPageProps) 
         return <IdeaNotFound />;
     }
 
-    const hasAccess = !idea.isPaid || (isAuthenticated && false);
+        const hasAccess = !idea.isPaid || (idea.hasFullAccess === true);
 
     return (
         <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -63,11 +63,13 @@ export default async function IdeaDetailsPage({ params }: IdeaDetailsPageProps) 
 
             <IdeaActions
                 ideaId={idea.id}
+                ideaTitle={idea.title}
                 isPaid={idea.isPaid}
                 hasAccess={hasAccess}
                 initialVoteScore={idea.voteScore}
                 isAuthenticated={isAuthenticated}
                 userId={session?.data?.user?.id}
+                price={idea.price}
             />
         </div>
     );

@@ -1,98 +1,146 @@
-import { CreatePaymentRequest, PaymentResponse } from '@/types/pricing.type';
-import { pricingPlans } from '@/constants/pricing';
+import { env } from "@/env";
+import { cookies } from "next/headers";
+import { 
+    CreatePaymentIntentData, 
+    CreatePaymentIntentResponse,
+    PaymentStatusResponse,
+    CheckPaidResponse,
+    UserPaymentsResponse
+} from "@/types/payment.type";
 
-// Dummy transaction storage (in real app, this would be in database)
-const generateTransactionId = (): string => {
-    return `TXN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-};
+const API_URL = env.API_URL;
 
 export const paymentService = {
-    createPayment: async (request: CreatePaymentRequest): Promise<PaymentResponse> => {
+    createPaymentIntent: async (data: CreatePaymentIntentData): Promise<CreatePaymentIntentResponse> => {
         try {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 800));
+            const cookieStore = await cookies();
+            const res = await fetch(`${API_URL}/payments/create-payment-intent`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Cookie: cookieStore.toString(),
+                },
+                body: JSON.stringify(data),
+            });
 
-            const plan = pricingPlans.find(p => p.id === request.planId);
-            
-            if (!plan) {
+            const response = await res.json();
+
+            if (!res.ok) {
                 return {
                     success: false,
-                    message: 'Invalid plan selected',
+                    message: response.message || "Failed to create payment intent",
                 };
             }
-
-            // Calculate amount based on billing cycle
-            const amount = request.billingCycle === 'monthly' 
-                ? plan.priceMonthly 
-                : plan.priceYearly;
-
-            if (amount === 0) {
-                // Free plan - no payment needed
-                return {
-                    success: true,
-                    data: {
-                        transactionId: 'FREE_PLAN',
-                        paymentUrl: '/member',
-                        amount: 0,
-                    },
-                };
-            }
-
-            // Generate dummy payment URL
-            const transactionId = generateTransactionId();
-            const paymentUrl = `/api/payment/checkout?transactionId=${transactionId}&plan=${request.planId}&cycle=${request.billingCycle}`;
 
             return {
                 success: true,
-                data: {
-                    transactionId,
-                    paymentUrl,
-                    amount,
+                data: response.data,
+            };
+        } catch (error) {
+            console.error("Create payment intent error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    checkPaymentStatus: async (paymentId: string): Promise<PaymentStatusResponse> => {
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${API_URL}/payments/status/${paymentId}`, {
+                headers: {
+                    Cookie: cookieStore.toString(),
                 },
-            };
-        } catch (error) {
-            console.error('Create payment error:', error);
-            return {
-                success: false,
-                message: 'Failed to create payment. Please try again.',
-            };
-        }
-    },
+                next: { tags: [`payment-${paymentId}`] },
+            });
 
-    verifyPayment: async (transactionId: string): Promise<{ success: boolean; message: string }> => {
-        try {
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // In real implementation, verify with payment gateway
-            // For dummy data, always return success
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to check payment status",
+                };
+            }
+
             return {
                 success: true,
-                message: 'Payment verified successfully',
+                data: data.data,
             };
         } catch (error) {
+            console.error("Check payment status error:", error);
             return {
                 success: false,
-                message: 'Payment verification failed',
+                message: "Something went wrong",
             };
         }
     },
 
-    getSubscriptionStatus: async (userId: string): Promise<{ isPremium: boolean; plan: string; expiresAt: string | null }> => {
+    checkUserPaidForIdea: async (ideaId: string): Promise<CheckPaidResponse> => {
         try {
-            await new Promise(resolve => setTimeout(resolve, 300));
-            
-            // For demo, return false (not premium)
-            // In real app, fetch from database
+            const cookieStore = await cookies();
+            const res = await fetch(`${API_URL}/payments/check-paid/${ideaId}`, {
+                headers: {
+                    Cookie: cookieStore.toString(),
+                },
+                next: { tags: [`user-paid-${ideaId}`] },
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to check payment status",
+                };
+            }
+
             return {
-                isPremium: false,
-                plan: 'free',
-                expiresAt: null,
+                success: true,
+                data: data.data,
             };
         } catch (error) {
+            console.error("Check user paid for idea error:", error);
             return {
-                isPremium: false,
-                plan: 'free',
-                expiresAt: null,
+                success: false,
+                message: "Something went wrong",
+            };
+        }
+    },
+
+    getUserPayments: async (page: number = 1, limit: number = 10): Promise<UserPaymentsResponse> => {
+        try {
+            const cookieStore = await cookies();
+            const url = new URL(`${API_URL}/payments/my-payments`);
+            url.searchParams.set('page', page.toString());
+            url.searchParams.set('limit', limit.toString());
+            
+            const res = await fetch(url.toString(), {
+                headers: {
+                    Cookie: cookieStore.toString(),
+                },
+                next: { tags: ["user-payments"] },
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                return {
+                    success: false,
+                    message: data.message || "Failed to fetch payments",
+                };
+            }
+
+            return {
+                success: true,
+                data: data.data,
+            };
+        } catch (error) {
+            console.error("Get user payments error:", error);
+            return {
+                success: false,
+                message: "Something went wrong",
             };
         }
     },

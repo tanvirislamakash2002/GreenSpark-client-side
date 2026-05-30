@@ -7,24 +7,29 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { castVote, removeVote, getUserVote } from "@/actions/vote.action";
 import { addBookmark, removeBookmark, checkBookmark } from "@/actions/bookmark.action";
+import { Paywall } from "../../dashboard/member/idea-details/Paywall";
 
 interface IdeaActionsProps {
     ideaId: string;
+    ideaTitle: string;
     isPaid: boolean;
     hasAccess?: boolean;
     initialVoteScore?: number;
     isAuthenticated: boolean;
     userId?: string;
+    price?: number | null;
     onVoteUpdate?: (newScore: number, userVote: string | null) => void;
 }
 
 export function IdeaActions({ 
     ideaId, 
+    ideaTitle,
     isPaid, 
     hasAccess = false,
     initialVoteScore = 0,
     isAuthenticated,
     userId,
+    price,
     onVoteUpdate 
 }: IdeaActionsProps) {
     const [isVoting, setIsVoting] = useState(false);
@@ -155,9 +160,11 @@ export function IdeaActions({
                     <p className="text-muted-foreground mb-4">
                         This is a premium idea. Purchase to view the full content.
                     </p>
-                    <Button className="bg-amber-500 hover:bg-amber-600">
-                        Unlock for $9.99
-                    </Button>
+                    <Paywall 
+                        ideaId={ideaId} 
+                        amount={price || 9.99} 
+                        ideaTitle={ideaTitle} 
+                    />
                 </div>
             </div>
         );

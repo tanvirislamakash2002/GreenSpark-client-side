@@ -36,7 +36,6 @@ export const ideaService = {
                 data: data.data,
             };
         } catch (error) {
-            console.error("Get ideas error:", error);
             return {
                 success: false,
                 message: "Something went wrong",
@@ -44,40 +43,48 @@ export const ideaService = {
         }
     },
 
-    getIdeaById: async (id: string): Promise<IdeaResponse> => {
-        try {
-            if (!id) {
-                return {
-                    success: false,
-                    message: "Idea ID is required",
-                };
-            }
-
-            const res = await fetch(`${API_URL}/ideas/${id}`, {
-                next: { tags: [`idea-${id}`] },
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                return {
-                    success: false,
-                    message: data.message || "Failed to fetch idea",
-                };
-            }
-
-            return {
-                success: true,
-                data: data.data,
-            };
-        } catch (error) {
-            console.error("Get idea by ID error:", error);
+    getIdeaById: async (id: string, cookieHeader?: string): Promise<IdeaResponse> => {
+    try {
+        if (!id) {
             return {
                 success: false,
-                message: "Something went wrong",
+                message: "Idea ID is required",
             };
         }
-    },   
+
+        const headers: HeadersInit = {};
+        
+        // Forward cookies if provided (for server-side requests)
+        if (cookieHeader) {
+            headers.Cookie = cookieHeader;
+        }
+
+        const res = await fetch(`${API_URL}/ideas/${id}`, {
+            headers,
+            credentials: "include", // This works for client-side
+            next: { tags: [`idea-${id}`] },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            return {
+                success: false,
+                message: data.message || "Failed to fetch idea",
+            };
+        }
+
+        return {
+            success: true,
+            data: data.data,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: "Something went wrong",
+        };
+    }
+},  
 
     getFeaturedIdeas: async (limit: number = 3): Promise<{ success: boolean; data?: any[]; message?: string }> => {
         try {
@@ -102,7 +109,6 @@ export const ideaService = {
                 data: data.data,
             };
         } catch (error) {
-            console.error("Get featured ideas error:", error);
             return {
                 success: false,
                 message: "Something went wrong",
@@ -133,7 +139,6 @@ export const ideaService = {
                 data: data.data,
             };
         } catch (error) {
-            console.error("Get top voted ideas error:", error);
             return {
                 success: false,
                 message: "Something went wrong",
@@ -164,7 +169,6 @@ export const ideaService = {
                 data: data.data,
             };
         } catch (error) {
-            console.error("Get recent ideas error:", error);
             return {
                 success: false,
                 message: "Something went wrong",

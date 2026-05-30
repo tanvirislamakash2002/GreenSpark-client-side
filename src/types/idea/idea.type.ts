@@ -26,6 +26,8 @@ export interface Idea {
     }[];
     createdAt: string;
     updatedAt: string;
+    hasFullAccess?: boolean;
+    requiresPayment?: boolean; 
 }
 
 export interface GetIdeasParams {

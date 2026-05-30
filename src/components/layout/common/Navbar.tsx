@@ -44,8 +44,7 @@ const navItems = [
   { name: "Home", href: "/", icon: null },
   { name: "Ideas", href: "/ideas", icon: Lightbulb },
   { name: "About", href: "/about", icon: Info },
-  { name: "Blog", href: "/blog", icon: FileText },
-  { name: "Pricing", href: "/pricing", icon: CreditCard },
+  { name: "Blog", href: "/blog", icon: FileText }
 ];
 
 interface User {

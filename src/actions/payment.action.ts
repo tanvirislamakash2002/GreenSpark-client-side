@@ -1,39 +1,29 @@
-'use server';
+"use server";
 
-import { paymentService } from '@/services/payment.service';
-import { CreatePaymentRequest } from '@/types/pricing.type';
-import { updateTag } from 'next/cache';
-import { cookies } from 'next/headers';
+import { paymentService } from "@/services/payment.service";
+import { CreatePaymentIntentData } from "@/types/payment.type";
+import { updateTag } from "next/cache";
 
-export const createPayment = async (request: CreatePaymentRequest) => {
-    const result = await paymentService.createPayment(request);
+export const createPaymentIntent = async (data: CreatePaymentIntentData) => {
+    return await paymentService.createPaymentIntent(data);
+};
 
-    if (result.success && result.data?.paymentUrl) {
-        // In real app, store transaction in database
-        updateTag('payment');
+export const checkPaymentStatus = async (paymentId: string) => {
+    return await paymentService.checkPaymentStatus(paymentId);
+};
+
+export const checkUserPaidForIdea = async (ideaId: string) => {
+    const result = await paymentService.checkUserPaidForIdea(ideaId);
+    if (result.success && result.data) {
+        // Revalidate idea cache if user has paid
+        if (result.data.hasPaid) {
+            updateTag(`idea-${ideaId}`);
+            updateTag("ideas");
+        }
     }
-
     return result;
 };
 
-export const verifyPayment = async (transactionId: string) => {
-    const result = await paymentService.verifyPayment(transactionId);
-    updateTag('subscription');
-    return result;
-};
-
-export const getSubscriptionStatus = async (userId: string) => {
-    return await paymentService.getSubscriptionStatus(userId);
-};
-
-// For the pricing page to get session user
-export const getCurrentUser = async () => {
-    try {
-        const cookieStore = await cookies();
-        // This would fetch user from session in real app
-        // For now, return null (not logged in)
-        return { success: true, data: null };
-    } catch (error) {
-        return { success: false, data: null };
-    }
+export const getUserPayments = async (page: number = 1, limit: number = 10) => {
+    return await paymentService.getUserPayments(page, limit);
 };
