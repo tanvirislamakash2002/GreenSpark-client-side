@@ -6,6 +6,7 @@ import { IdeaDetailsHeader } from "@/components/modules/public/idea-details/Idea
 import { IdeaStats } from "@/components/modules/public/idea-details/IdeaStats";
 import { IdeaContent } from "@/components/modules/public/idea-details/IdeaContent";
 import { IdeaActions } from "@/components/modules/public/idea-details/IdeaActions";
+import { CommentsSection } from "@/components/modules/public/comments/CommentsSection";
 
 interface IdeaDetailsPageProps {
     params: Promise<{
@@ -71,6 +72,8 @@ export default async function IdeaDetailsPage({ params }: IdeaDetailsPageProps) 
                 userId={session?.data?.user?.id}
                 price={idea.price}
             />
+
+            <CommentsSection ideaId={idea.id} />
         </div>
     );
 }
