@@ -8,6 +8,16 @@ export const getComments = async (ideaId: string, page: number = 1, limit: numbe
     return await commentService.getComments(ideaId, page, limit);
 };
 
+export const getUserComments = async (params?: {
+    search?: string;
+    sortBy?: string;
+    dateRange?: string;
+    page?: number;
+    limit?: number;
+}) => {
+    return await commentService.getUserComments(params);
+};
+
 export const createComment = async (ideaId: string, data: CreateCommentData) => {
     const result = await commentService.createComment(ideaId, data);
     if (result.success) {

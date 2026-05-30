@@ -8,7 +8,7 @@ import {
     DeleteIdeaResponse
 } from "@/types/idea/admin-idea.type";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+const API_URL = env.API_URL ;
 
 export const adminIdeaService = {
     getAdminIdeas: async (params?: GetAdminIdeasParams): Promise<AdminIdeasResponse> => {

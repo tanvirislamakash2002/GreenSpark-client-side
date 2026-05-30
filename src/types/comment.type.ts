@@ -33,3 +33,46 @@ export interface CreateCommentData {
     content: string;
     parentId?: string | null;
 }
+
+export interface UserComment {
+    id: string;
+    content: string;
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+    idea: {
+        id: string;
+        title: string;
+        imageUrl: string | null;
+        voteScore: number;
+    };
+    replyCount: number;
+    upvoteCount?: number;
+}
+
+export interface UserCommentsResponse {
+    success: boolean;
+    data?: {
+        comments: UserComment[];
+        stats: {
+            totalComments: number;
+            mostActiveIdea: string | null;
+            lastCommentDate: string | null;
+        };
+        pagination: {
+            currentPage: number;
+            totalPages: number;
+            totalItems: number;
+            itemsPerPage: number;
+        };
+    };
+    message?: string;
+}
+
+export interface CommentFilters {
+    search?: string;
+    sortBy?: 'newest' | 'oldest' | 'mostVoted';
+    dateRange?: 'week' | 'month' | 'all';
+    page?: number;
+    limit?: number;
+}

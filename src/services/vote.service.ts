@@ -2,7 +2,7 @@ import { env } from "@/env";
 import { UserVotesResponse } from "@/types/vote.type";
 import { cookies } from "next/headers";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1";
+const API_URL = env.API_URL ;
 
 export const voteService = {
     castVote: async (ideaId: string, voteType: 'UP' | 'DOWN') => {
