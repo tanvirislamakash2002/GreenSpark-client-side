@@ -28,3 +28,13 @@ export const removeVote = async (ideaId: string) => {
 export const getUserVote = async (ideaId: string) => {
     return await voteService.getUserVote(ideaId);
 };
+export const getUserVotes = async (params?: {
+    voteType?: string;
+    sortBy?: string;
+    search?: string;
+    category?: string;
+    page?: number;
+    limit?: number;
+}) => {
+    return await voteService.getUserVotes(params);
+};
