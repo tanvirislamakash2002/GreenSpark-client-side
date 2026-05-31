@@ -1,7 +1,7 @@
 "use server";
 
-import { commentService } from "@/services/comment.service";
-import { CreateCommentData } from "@/types/comment.type";
+import { commentService } from "@/services/comment/comment.service";
+import { CreateCommentData } from "@/types/comment/comment.type";
 import { updateTag } from "next/cache";
 
 export const getComments = async (ideaId: string, page: number = 1, limit: number = 10) => {

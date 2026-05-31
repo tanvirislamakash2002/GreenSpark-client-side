@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import { cookies } from "next/headers";
-import { CommentsResponse, CreateCommentData, UserCommentsResponse } from "@/types/comment.type";
+import { CommentsResponse, CreateCommentData, UserCommentsResponse } from "@/types/comment/comment.type";
 
 const API_URL = env.API_URL;
 

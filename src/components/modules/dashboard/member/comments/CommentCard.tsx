@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { UserComment } from "@/types/comment.type";
-import { updateComment, deleteComment } from "@/actions/comment.action";
+import { UserComment } from "@/types/comment/comment.type";
+import { updateComment, deleteComment } from "@/actions/comment/comment.action";
 import { DeleteCommentModal } from "@/components/modules/public/comments/DeleteCommentModal";
 import { toast } from "sonner";
 

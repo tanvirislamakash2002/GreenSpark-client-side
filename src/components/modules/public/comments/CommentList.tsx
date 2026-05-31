@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MessageCircle } from "lucide-react";
-import { Comment } from "@/types/comment.type";
+import { Comment } from "@/types/comment/comment.type";
 import { CommentCard } from "./CommentCard";
 import { Button } from "@/components/ui/button";
 

@@ -6,11 +6,11 @@ import { MessageSquare, Flag, Trash2, Edit2, X, Check } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Comment } from "@/types/comment.type";
+import { Comment } from "@/types/comment/comment.type";
 import { CommentForm } from "./CommentForm";
 import { DeleteCommentModal } from "./DeleteCommentModal";
 import { ReportCommentModal } from "./ReportCommentModal";
-import { updateComment, deleteComment, reportComment } from "@/actions/comment.action";
+import { updateComment, deleteComment, reportComment } from "@/actions/comment/comment.action";
 import { toast } from "sonner";
 
 interface CommentCardProps {

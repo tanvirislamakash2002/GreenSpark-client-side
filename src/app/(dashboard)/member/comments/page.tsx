@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getSession } from "@/actions/auth.action";
-import { getUserComments } from "@/actions/comment.action";
+import { getUserComments } from "@/actions/comment/comment.action";
 import { MyCommentsHeader } from "@/components/modules/dashboard/member/comments/MyCommentsHeader";
 import { CommentsFilterBar } from "@/components/modules/dashboard/member/comments/CommentsFilterBar";
 import { CommentsList } from "@/components/modules/dashboard/member/comments/CommentsList";

@@ -1,4 +1,4 @@
-import { UserComment } from "@/types/comment.type";
+import { UserComment } from "@/types/comment/comment.type";
 import { CommentCard } from "./CommentCard";
 import { EmptyState } from "./EmptyState";
 

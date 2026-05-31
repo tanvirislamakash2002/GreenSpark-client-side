@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { MessageCircle } from "lucide-react";
-import { Comment } from "@/types/comment.type";
+import { Comment } from "@/types/comment/comment.type";
 import { CommentForm } from "./CommentForm";
 import { CommentList } from "./CommentList";
-import { getComments, createComment } from "@/actions/comment.action";
+import { getComments, createComment } from "@/actions/comment/comment.action";
 import { getSession } from "@/actions/auth.action";
 import { toast } from "sonner";
 

@@ -129,13 +129,13 @@ const adminRoutes = [
             // { title: "Newsletter", url: "/admin/newsletter", icon: Mail },
         ],
     },
-    // {
-    //     title: "Comment Moderation",
-    //     items: [
-    //         { title: "All Comments", url: "/admin/comments", icon: MessageSquare },
+    {
+        title: "Comment Moderation",
+        items: [
+            { title: "All Comments", url: "/admin/comments", icon: MessageSquare },
     //         // { title: "Reported Comments", url: "/admin/comments/reported", icon: Flag },
-    //     ],
-    // },
+        ],
+    },
     // {
     //     title: "System",
     //     items: [
