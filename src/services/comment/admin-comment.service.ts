@@ -9,14 +9,14 @@ export const adminCommentService = {
         try {
             const cookieStore = await cookies();
             const url = new URL(`${API_URL}/comments/admin/comments`);
-            
+
             if (params?.search) url.searchParams.set('search', params.search);
             if (params?.status && params.status !== 'all') url.searchParams.set('status', params.status);
             if (params?.reportStatus && params.reportStatus !== 'all') url.searchParams.set('reportStatus', params.reportStatus);
             if (params?.sortBy) url.searchParams.set('sortBy', params.sortBy);
             if (params?.page) url.searchParams.set('page', params.page.toString());
             if (params?.limit) url.searchParams.set('limit', params.limit.toString());
-            
+
             const res = await fetch(url.toString(), {
                 headers: {
                     Cookie: cookieStore.toString(),
@@ -113,6 +113,24 @@ export const adminCommentService = {
         } catch (error) {
             console.error("Resolve reports error:", error);
             return { success: false, message: "Failed to resolve reports" };
+        }
+    },
+
+    dismissReports: async (commentId: string) => {
+        try {
+            const cookieStore = await cookies();
+            const res = await fetch(`${API_URL}/comments/admin/comments/${commentId}/dismiss`, {
+                method: "PATCH",
+                headers: {
+                    Cookie: cookieStore.toString(),
+                },
+            });
+
+            const data = await res.json();
+            return data;
+        } catch (error) {
+            console.error("Dismiss reports error:", error);
+            return { success: false, message: "Failed to dismiss reports" };
         }
     },
 

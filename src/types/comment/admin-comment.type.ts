@@ -16,6 +16,8 @@ export interface AdminComment {
         slug: string;
     };
     reportCount: number;
+    hasResolvedReports?: boolean;
+    hasDismissedReports?: boolean;
     reports?: CommentReport[];
 }
 
@@ -40,6 +42,7 @@ export interface AdminCommentsResponse {
             totalComments: number;
             reportedComments: number;
             resolvedReports: number;
+            dismissedReports: number;
             deletedComments: number;
         };
         pagination: {

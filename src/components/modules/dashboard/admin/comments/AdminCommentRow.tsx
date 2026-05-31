@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { Flag, Trash2, RotateCcw, CheckCircle, Eye, AlertTriangle, MoreVertical } from "lucide-react";
+import { Flag, Trash2, RotateCcw, CheckCircle, Eye, AlertTriangle, MoreVertical, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,7 +16,7 @@ import {
 import { AdminComment } from "@/types/comment/admin-comment.type";
 import { ReportDetailsModal } from "./ReportDetailsModal";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { deleteComment, restoreComment, resolveReports } from "@/actions/comment/admin-comment.action";
+import { deleteComment, restoreComment, resolveReports, dismissReports } from "@/actions/comment/admin-comment.action";
 import { toast } from "sonner";
 
 interface AdminCommentRowProps {
@@ -29,6 +29,7 @@ export function AdminCommentRow({ comment, onUpdate }: AdminCommentRowProps) {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showRestoreDialog, setShowRestoreDialog] = useState(false);
     const [showResolveDialog, setShowResolveDialog] = useState(false);
+    const [showDismissDialog, setShowDismissDialog] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const getInitials = (name: string) => {
@@ -74,9 +75,30 @@ export function AdminCommentRow({ comment, onUpdate }: AdminCommentRowProps) {
         setShowResolveDialog(false);
     };
 
+    const handleDismiss = async () => {
+        setIsLoading(true);
+        const result = await dismissReports(comment.id);
+        if (result.success) {
+            toast.success("Reports dismissed");
+            onUpdate();
+        } else {
+            toast.error(result.message || "Failed to dismiss reports");
+        }
+        setIsLoading(false);
+        setShowDismissDialog(false);
+    };
+
     const statusBadge = () => {
         if (comment.isDeleted) {
             return <Badge variant="destructive">Deleted</Badge>;
+        }
+        // This condition is correct - shows "Reports Resolved"
+        if (comment.hasResolvedReports && comment.reportCount === 0) {
+            return <Badge className="bg-green-100 text-green-700">Reports Resolved</Badge>;
+        }
+        // This condition is correct - shows "Reports Dismissed"
+        if (comment.hasDismissedReports && comment.reportCount === 0) {
+            return <Badge className="bg-gray-100 text-gray-700">Reports Dismissed</Badge>;
         }
         if (comment.reportCount > 0) {
             return <Badge className="bg-red-100 text-red-700">Reported ({comment.reportCount})</Badge>;
@@ -96,7 +118,7 @@ export function AdminCommentRow({ comment, onUpdate }: AdminCommentRowProps) {
                                 {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
                             </span>
                         </div>
-                        
+
                         <div className="flex items-center gap-2 mb-2">
                             <Avatar className="h-6 w-6">
                                 <AvatarImage src={comment.user.image || undefined} />
@@ -105,13 +127,13 @@ export function AdminCommentRow({ comment, onUpdate }: AdminCommentRowProps) {
                             <span className="text-sm font-medium">{comment.user.name}</span>
                             <span className="text-xs text-muted-foreground">({comment.user.email})</span>
                         </div>
-                        
+
                         <p className="text-sm text-muted-foreground whitespace-pre-wrap line-clamp-3">
                             {comment.content}
                         </p>
-                        
+
                         <div className="mt-2">
-                            <Link 
+                            <Link
                                 href={`/ideas/${comment.idea.id}`}
                                 className="text-xs text-green-600 hover:underline"
                                 target="_blank"
@@ -120,7 +142,7 @@ export function AdminCommentRow({ comment, onUpdate }: AdminCommentRowProps) {
                             </Link>
                         </div>
                     </div>
-                    
+
                     {/* Right Section - Actions */}
                     <div className="flex items-center gap-2">
                         {comment.reportCount > 0 && (
@@ -129,7 +151,7 @@ export function AdminCommentRow({ comment, onUpdate }: AdminCommentRowProps) {
                                 Reports ({comment.reportCount})
                             </Button>
                         )}
-                        
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="sm">
@@ -143,14 +165,34 @@ export function AdminCommentRow({ comment, onUpdate }: AdminCommentRowProps) {
                                         View in Context
                                     </Link>
                                 </DropdownMenuItem>
-                                {comment.reportCount > 0 && (
-                                    <DropdownMenuItem onClick={() => setShowResolveDialog(true)}>
-                                        <CheckCircle className="h-4 w-4 mr-2" />
-                                        Resolve Reports
+                                {comment.hasResolvedReports && (
+                                    <DropdownMenuItem onClick={() => setShowDismissDialog(true)}>
+                                        <XCircle className="h-4 w-4 mr-2" />
+                                        Revert to Dismissed
                                     </DropdownMenuItem>
                                 )}
+
+                                {comment.hasDismissedReports && (
+                                    <DropdownMenuItem onClick={() => setShowResolveDialog(true)}>
+                                        <CheckCircle className="h-4 w-4 mr-2" />
+                                        Revert to Resolved
+                                    </DropdownMenuItem>
+                                )}
+
+                                {comment.reportCount > 0 && (
+                                    <>
+                                        <DropdownMenuItem onClick={() => setShowResolveDialog(true)}>
+                                            <CheckCircle className="h-4 w-4 mr-2" />
+                                            Resolve Reports
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => setShowDismissDialog(true)}>
+                                            <XCircle className="h-4 w-4 mr-2" />
+                                            Dismiss Reports
+                                        </DropdownMenuItem>
+                                    </>
+                                )}
                                 {!comment.isDeleted ? (
-                                    <DropdownMenuItem 
+                                    <DropdownMenuItem
                                         onClick={() => setShowDeleteDialog(true)}
                                         className="text-red-600"
                                     >
@@ -203,6 +245,16 @@ export function AdminCommentRow({ comment, onUpdate }: AdminCommentRowProps) {
                 description="Are you sure you want to mark all reports on this comment as resolved?"
                 confirmText="Resolve"
                 onConfirm={handleResolve}
+                isLoading={isLoading}
+            />
+
+            <ConfirmDialog
+                open={showDismissDialog}
+                onOpenChange={setShowDismissDialog}
+                title="Dismiss Reports"
+                description="Are you sure you want to dismiss all reports on this comment? The comment will remain visible and reports will be marked as dismissed."
+                confirmText="Dismiss"
+                onConfirm={handleDismiss}
                 isLoading={isLoading}
             />
         </>

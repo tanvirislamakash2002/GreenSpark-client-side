@@ -36,6 +36,14 @@ export const resolveReports = async (commentId: string) => {
     return result;
 };
 
+export const dismissReports = async (commentId: string) => {
+    const result = await adminCommentService.dismissReports(commentId);
+    if (result.success) {
+        updateTag("admin-comments");
+    }
+    return result;
+};
+
 export const bulkCommentAction = async (action: string, commentIds: string[]) => {
     const result = await adminCommentService.bulkAction(action, commentIds);
     if (result.success) {

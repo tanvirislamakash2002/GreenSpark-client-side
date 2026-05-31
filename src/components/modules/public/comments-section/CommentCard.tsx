@@ -124,7 +124,7 @@ export function CommentCard({
                             </div>
                         </div>
 
-                        <div>
+                        <div className="flex flex-wrap items-center gap-1">
                             {/* Edit button - only for author */}
                             {!isEditing && canEdit && (
                                 <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
@@ -230,7 +230,7 @@ export function CommentCard({
                             </div>
                         )}
                     </div>
-                )}
+                )}                
             </div>
 
             <DeleteCommentModal

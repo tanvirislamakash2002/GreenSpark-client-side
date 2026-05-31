@@ -1,10 +1,11 @@
-import { MessageCircle, Flag, CheckCircle, Trash2 } from "lucide-react";
+import { MessageCircle, Flag, CheckCircle, Trash2, XCircle } from "lucide-react";
 
 interface AdminCommentsHeaderProps {
     stats: {
         totalComments: number;
         reportedComments: number;
         resolvedReports: number;
+        dismissedReports: number; 
         deletedComments: number;
     };
 }
@@ -14,6 +15,7 @@ export function AdminCommentsHeader({ stats }: AdminCommentsHeaderProps) {
         { label: "Total Comments", value: stats.totalComments, icon: MessageCircle, color: "text-blue-500" },
         { label: "Reported", value: stats.reportedComments, icon: Flag, color: "text-red-500", highlight: true },
         { label: "Resolved", value: stats.resolvedReports, icon: CheckCircle, color: "text-green-500" },
+        { label: "Dismissed", value: stats.dismissedReports, icon: XCircle, color: "text-gray-500" },
         { label: "Deleted", value: stats.deletedComments, icon: Trash2, color: "text-gray-500" },
     ];
 
@@ -24,7 +26,7 @@ export function AdminCommentsHeader({ stats }: AdminCommentsHeaderProps) {
                 Review and manage all user comments across the platform
             </p>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 {statItems.map((item) => {
                     const Icon = item.icon;
                     return (
