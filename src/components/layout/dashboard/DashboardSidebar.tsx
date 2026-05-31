@@ -74,7 +74,7 @@ const memberRoutes = [
         items: [
             { title: "My Votes", url: "/member/votes", icon: ThumbsUp },
             { title: "My Comments", url: "/member/comments", icon: MessageSquare },
-            // { title: "Notifications", url: "/member/notifications", icon: Bell },
+            // TODO4:  { title: "Notifications", url: "/member/notifications", icon: Bell },
         ],
     },
     {
@@ -110,7 +110,7 @@ const adminRoutes = [
             // { title: "Approved Ideas", url: "/admin/ideas?status=APPROVED", icon: CheckCircle },
             // { title: "Rejected Ideas", url: "/admin/ideas?status=REJECTED", icon: XCircle },
             { title: "Bookmarks", url: "/admin/bookmarks", icon: Bookmark },
-            // { title: "Reported Ideas", url: "/admin/ideas?status=DRAFT", icon: Flag },
+            // TODO3: { title: "Reported Ideas", url: "/admin/ideas?status=DRAFT", icon: Flag },
         ],
     },
     {
@@ -125,8 +125,8 @@ const adminRoutes = [
         title: "Content Management",
         items: [
             { title: "Categories", url: "/admin/categories", icon: Tag },
-            // { title: "Blog Posts", url: "/admin/blog", icon: FileText },
-            // { title: "Newsletter", url: "/admin/newsletter", icon: Mail },
+            // TODO2: { title: "Blog Posts", url: "/admin/blog", icon: FileText },
+            { title: "Newsletter", url: "/admin/newsletter", icon: Mail },
         ],
     },
     {
@@ -139,7 +139,7 @@ const adminRoutes = [
     // {
     //     title: "System",
     //     items: [
-    //         { title: "Activity Logs", url: "/admin/logs", icon: Activity },
+    // TODO5:        { title: "Activity Logs", url: "/admin/logs", icon: Activity },
     //         { title: "Settings", url: "/admin/settings", icon: Settings },
     //     ],
     // },
