@@ -3,6 +3,7 @@ import { IdeasHeader } from '@/components/modules/public/ideas/IdeasHeader';
 import { IdeasFilterBar } from '@/components/modules/public/ideas/IdeasFilterBar';
 import { IdeasGrid } from '@/components/modules/public/ideas/IdeasGrid';
 import { IdeasPagination } from '@/components/modules/public/ideas/IdeasPagination';
+import { getAllCategories } from '@/actions/category.action';
 
 interface IdeasPageProps {
     searchParams: Promise<{
@@ -16,19 +17,21 @@ interface IdeasPageProps {
 
 export default async function IdeasPage({ searchParams }: IdeasPageProps) {
     const params = await searchParams;
-    
+
     const page = params.page ? parseInt(params.page) : 1;
     const limit = 12;
-    
-    const result = await getIdeas({
-        page,
-        limit,
-        search: params.search,
-        category: params.category,
-        status: params.status as any,
-        sortBy: params.sortBy as any,
-    });
 
+    const [result, categoriesResult] = await Promise.all([
+        getIdeas({
+            page,
+            limit,
+            search: params.search,
+            category: params.category,
+            status: params.status as any,
+            sortBy: params.sortBy as any,
+        }),
+        getAllCategories(),
+    ]);
     if (!result.success || !result.data) {
         return (
             <div className="text-center py-16">
@@ -40,10 +43,12 @@ export default async function IdeasPage({ searchParams }: IdeasPageProps) {
 
     const { ideas, pagination } = result.data;
 
+    const categories = categoriesResult.success && categoriesResult.data ? categoriesResult.data : [];
+    
     return (
         <div className="container mx-auto px-4 py-12">
             <IdeasHeader totalItems={pagination.totalItems} />
-            <IdeasFilterBar />
+            <IdeasFilterBar categories={categories} />
             <IdeasGrid ideas={ideas} />
             <IdeasPagination
                 currentPage={pagination.currentPage}

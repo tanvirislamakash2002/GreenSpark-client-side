@@ -12,7 +12,6 @@ export const getAllCategories = async () => {
     return await categoryService.getAllCategories();
 };
 
-// ✅ Add this function
 export const getCategoryCounts = async () => {
     return await categoryService.getCategoryCounts();
 };

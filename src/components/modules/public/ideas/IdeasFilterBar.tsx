@@ -12,10 +12,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { categories } from '@/constants/categories';
 import { sortOptions } from '@/constants/categories';
+import { Category } from '@/types/category.type';
 
-export function IdeasFilterBar() {
+interface IdeasFilterBarProps {
+    categories: Category[];
+}
+
+export function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
@@ -28,14 +32,14 @@ export function IdeasFilterBar() {
 
     const updateFilters = (key: string, value: string) => {
         const params = new URLSearchParams(searchParams);
-        
+
         if (value && value !== 'all') {
             params.set(key, value);
         } else {
             params.delete(key);
         }
-        
-        params.delete('page'); // Reset to first page when filters change
+
+        params.delete('page');
         startTransition(() => {
             router.push(`/ideas?${params.toString()}`);
         });
@@ -69,7 +73,12 @@ export function IdeasFilterBar() {
                     <SelectItem value="all">All Categories</SelectItem>
                     {categories.map((cat) => (
                         <SelectItem key={cat.id} value={cat.slug}>
-                            {cat.icon} {cat.name}
+                            <div className="flex items-center gap-2">
+                                {cat.imageUrl && (
+                                    <img src={cat.imageUrl} alt="" className="w-4 h-4 rounded-full object-cover" />
+                                )}
+                                {cat.name}
+                            </div>
                         </SelectItem>
                     ))}
                 </SelectContent>
@@ -118,8 +127,8 @@ export function IdeasFilterBar() {
 
             {/* Mobile Filter Button */}
             <div className="sm:hidden mb-4">
-                <Button 
-                    variant="outline" 
+                <Button
+                    variant="outline"
                     className="w-full gap-2"
                     onClick={() => setShowMobileFilters(!showMobileFilters)}
                 >
