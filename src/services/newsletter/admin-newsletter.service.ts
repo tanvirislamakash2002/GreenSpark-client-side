@@ -13,7 +13,7 @@ export const adminNewsletterService = {
     }): Promise<SubscribersResponse> => {
         try {
             const cookieStore = await cookies();
-            const url = new URL(`${API_URL}/admin/newsletter/subscribers`);
+            const url = new URL(`${API_URL}/newsletter/subscribers`);
             
             if (params?.page) url.searchParams.set('page', params.page.toString());
             if (params?.limit) url.searchParams.set('limit', params.limit.toString());
@@ -40,7 +40,7 @@ export const adminNewsletterService = {
     sendNewsletter: async (data: SendNewsletterData) => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/newsletter/send`, {
+            const res = await fetch(`${API_URL}/newsletter/send`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export const adminNewsletterService = {
     sendTestEmail: async (email: string, subject: string, content: string) => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/newsletter/test`, {
+            const res = await fetch(`${API_URL}/newsletter/test`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export const adminNewsletterService = {
     exportSubscribers: async (format: string = "csv") => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/newsletter/export?format=${format}`, {
+            const res = await fetch(`${API_URL}/newsletter/export?format=${format}`, {
                 headers: { Cookie: cookieStore.toString() },
             });
 
@@ -95,7 +95,7 @@ export const adminNewsletterService = {
     deleteSubscriber: async (subscriberId: string) => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/newsletter/subscribers/${subscriberId}`, {
+            const res = await fetch(`${API_URL}/newsletter/subscribers/${subscriberId}`, {
                 method: "DELETE",
                 headers: { Cookie: cookieStore.toString() },
             });
@@ -111,7 +111,7 @@ export const adminNewsletterService = {
     getCampaigns: async (): Promise<{ success: boolean; data?: Campaign[]; message?: string }> => {
         try {
             const cookieStore = await cookies();
-            const res = await fetch(`${API_URL}/admin/newsletter/campaigns`, {
+            const res = await fetch(`${API_URL}/newsletter/campaigns`, {
                 headers: { Cookie: cookieStore.toString() },
                 next: { tags: ["newsletter-campaigns"] },
             });

@@ -108,9 +108,9 @@ export function SubscribersTable({ subscribers, onUpdate }: SubscribersTableProp
                         </SelectContent>
                     </Select>
                     
-                    <Button variant="outline" onClick={handleExport}>
+                    {/* <Button variant="outline" onClick={handleExport}>
                         Export CSV
-                    </Button>
+                    </Button> */}
                 </div>
             </div>
 

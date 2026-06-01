@@ -1,6 +1,6 @@
 'use server';
 
-import { newsletterService } from '@/services/newsletter.service';
+import { newsletterService } from '@/services/newsletter/newsletter.service';
 import { updateTag } from 'next/cache';
 
 export const subscribeToNewsletter = async (email: string) => {

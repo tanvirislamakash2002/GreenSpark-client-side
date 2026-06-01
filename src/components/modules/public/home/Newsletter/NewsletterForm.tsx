@@ -5,7 +5,7 @@ import { Mail, CheckCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { subscribeToNewsletter } from '@/actions/newsletter.action';
+import { subscribeToNewsletter } from '@/actions/newsletter/newsletter.action';
 
 export function NewsletterForm() {
     const [email, setEmail] = useState('');

@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getSession } from "@/actions/auth.action";
 import { getSubscribers } from "@/actions/newsletter/admin-newsletter.action";
@@ -6,7 +5,6 @@ import { AdminNewsletterHeader } from "@/components/modules/dashboard/admin/news
 import { SubscribersTable } from "@/components/modules/dashboard/admin/newsletter/SubscribersTable";
 import { ComposeNewsletter } from "@/components/modules/dashboard/admin/newsletter/ComposeNewsletter";
 import { CampaignHistory } from "@/components/modules/dashboard/admin/newsletter/CampaignHistory";
-import { AdminNewsletterSkeleton } from "@/components/modules/dashboard/admin/newsletter/AdminNewsletterSkeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface AdminNewsletterPageProps {
@@ -19,7 +17,7 @@ interface AdminNewsletterPageProps {
 
 async function AdminNewsletterContent({ searchParams }: { searchParams: Awaited<AdminNewsletterPageProps['searchParams']> }) {
     const session = await getSession();
-    
+
     if (!session?.data?.user || session.data.user.role !== "ADMIN") {
         notFound();
     }
@@ -52,25 +50,25 @@ async function AdminNewsletterContent({ searchParams }: { searchParams: Awaited<
     return (
         <div className="container mx-auto px-4 py-8">
             <AdminNewsletterHeader stats={stats} />
-            
+
             <Tabs defaultValue="subscribers" className="space-y-6">
-                <TabsList>
-                    <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
-                    <TabsTrigger value="compose">Compose</TabsTrigger>
-                    <TabsTrigger value="history">Campaign History</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="subscribers">
-                    <SubscribersTable subscribers={subscribers} onUpdate={revalidate} />
-                </TabsContent>
-                
-                <TabsContent value="compose">
-                    <ComposeNewsletter />
-                </TabsContent>
-                
-                <TabsContent value="history">
-                    <CampaignHistory />
-                </TabsContent>
+                <div className="flex flex-col w-full gap-4">
+                    <TabsList>
+                        <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
+                        <TabsTrigger value="compose">Compose</TabsTrigger>
+                        <TabsTrigger value="history">Campaign History</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="subscribers">
+                        <SubscribersTable subscribers={subscribers} onUpdate={revalidate} />
+                    </TabsContent>
+                    <TabsContent value="compose">
+                        <ComposeNewsletter />
+                    </TabsContent>
+                    <TabsContent value="history">
+                        <CampaignHistory />
+                    </TabsContent>
+                </div>
             </Tabs>
         </div>
     );
@@ -78,8 +76,8 @@ async function AdminNewsletterContent({ searchParams }: { searchParams: Awaited<
 
 export default async function AdminNewsletterPage({ searchParams }: AdminNewsletterPageProps) {
     const resolvedParams = await searchParams;
-    
+
     return (
-            <AdminNewsletterContent searchParams={resolvedParams} />
+        <AdminNewsletterContent searchParams={resolvedParams} />
     );
 }
