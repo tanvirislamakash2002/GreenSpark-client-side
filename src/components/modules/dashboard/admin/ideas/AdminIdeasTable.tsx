@@ -16,15 +16,6 @@ export function AdminIdeasTable({ ideas, onUpdate }: AdminIdeasTableProps) {
 
     return (
         <div className="space-y-2">
-            {/* Table Header - Desktop */}
-            <div className="hidden lg:grid grid-cols-12 gap-4 bg-muted/50 p-4 text-sm font-medium rounded-lg">
-                <div className="col-span-5">Idea</div>
-                <div className="col-span-2">Author</div>
-                <div className="col-span-2">Status</div>
-                <div className="col-span-2">Stats</div>
-                <div className="col-span-1 text-right">Actions</div>
-            </div>
-            
             {/* Rows */}
             <div className="space-y-2">
                 {ideas.map((idea) => (

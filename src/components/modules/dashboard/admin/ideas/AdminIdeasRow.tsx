@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Eye, CheckCircle, XCircle, Trash2, ExternalLink, EyeIcon, ThumbsUp, MessageSquareIcon, MessageSquareMoreIcon } from 'lucide-react';
+import { Eye, CheckCircle, XCircle, Trash2, ExternalLink, EyeIcon, ThumbsUp, MessageSquareIcon, MessageSquareMoreIcon, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,6 +12,7 @@ import { RejectModal } from './RejectModal';
 import { DeleteModal } from './DeleteModal';
 import { approveIdea, rejectIdea, deleteIdea } from '@/actions/idea/admin-idea.action';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 interface AdminIdeasRowProps {
     idea: AdminIdea;
@@ -83,10 +84,9 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between p-4 rounded-lg border hover:bg-muted/50 transition-colors">
                 {/* Left Section */}
                 <div className="flex-1 min-w-0">
+                    {/* Badges and date */}
                     <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <Badge className={status.className}>
-                            {status.label}
-                        </Badge>
+                        <Badge className={status.className}>{status.label}</Badge>
                         {idea.isPaid && (
                             <Badge variant="secondary" className="bg-amber-100 text-amber-700">
                                 Premium
@@ -96,9 +96,29 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                             {new Date(idea.createdAt).toLocaleDateString()}
                         </span>
                     </div>
-                    <Link href={`/ideas/${idea.id}`} className="font-medium hover:text-green-600 transition-colors">
-                        {idea.title}
-                    </Link>
+
+                    {/* Title with thumbnail */}
+                    <div className="flex items-start gap-3">
+                        {/* Idea Image Thumbnail */}
+                        {idea.imageUrl ? (
+                            <div className="flex-shrink-0">
+                                <Image
+                                    src={idea.imageUrl}
+                                    alt={idea.title}
+                                    width={40}
+                                    height={40}
+                                    className="w-10 h-10 rounded-md object-cover"
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex-shrink-0 w-10 h-10 bg-muted rounded-md flex items-center justify-center">
+                                <Lightbulb className="h-5 w-5 text-muted-foreground" />
+                            </div>
+                        )}
+                        <Link href={`/ideas/${idea.id}`} className="font-medium hover:text-green-600 transition-colors">
+                            {idea.title}
+                        </Link>
+                    </div>
                     <div className="flex flex-wrap items-center gap-4 mt-2 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                             <Avatar className="h-5 w-5">
@@ -108,12 +128,12 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                             <span>{idea.author.name}</span>
                         </div>
                         <span>{idea.categories[0]?.name || 'Uncategorized'}</span>
-                        <span className='flex items-center justify-center gap-2'><ThumbsUp size={15}/> {idea.voteScore}</span>
-                        <span className='flex items-center justify-center gap-2'><EyeIcon size={15}/> {idea.viewCount}</span>
-                        <span className='flex items-center justify-center gap-2'><MessageSquareMoreIcon size={15}/> {idea.commentCount}</span>
+                        <span className='flex items-center justify-center gap-2'><ThumbsUp size={15} /> {idea.voteScore}</span>
+                        <span className='flex items-center justify-center gap-2'><EyeIcon size={15} /> {idea.viewCount}</span>
+                        <span className='flex items-center justify-center gap-2'><MessageSquareMoreIcon size={15} /> {idea.commentCount}</span>
                     </div>
                 </div>
-                
+
                 {/* Right Section - Actions */}
                 <div className="flex items-center gap-2 mt-3 lg:mt-0">
                     <Button asChild variant="ghost" size="sm">
@@ -121,25 +141,25 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                             <Eye className="h-4 w-4" />
                         </Link>
                     </Button>
-                    
+
                     <Button asChild variant="ghost" size="sm">
-                        <Link href={`/ideas/${idea.id}`}  target="_blank" rel="noopener noreferrer">
+                        <Link href={`/ideas/${idea.id}`} target="_blank" rel="noopener noreferrer">
                             <ExternalLink className="h-4 w-4" />
                         </Link>
                     </Button>
-                    
+
                     {idea.status === 'PENDING' && (
                         <>
-                            <Button 
-                                variant="ghost" 
+                            <Button
+                                variant="ghost"
                                 size="sm"
                                 onClick={() => setIsApproveModalOpen(true)}
                                 className="text-green-600"
                             >
                                 <CheckCircle className="h-4 w-4" />
                             </Button>
-                            <Button 
-                                variant="ghost" 
+                            <Button
+                                variant="ghost"
                                 size="sm"
                                 onClick={() => setIsRejectModalOpen(true)}
                                 className="text-red-600"
@@ -148,10 +168,10 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                             </Button>
                         </>
                     )}
-                    
+
                     {(idea.status === 'APPROVED' || idea.status === 'REJECTED') && (
-                        <Button 
-                            variant="ghost" 
+                        <Button
+                            variant="ghost"
                             size="sm"
                             onClick={() => setIsDeleteModalOpen(true)}
                             className="text-red-600"
@@ -161,7 +181,7 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                     )}
                 </div>
             </div>
-            
+
             <ApproveModal
                 open={isApproveModalOpen}
                 onOpenChange={setIsApproveModalOpen}
@@ -169,7 +189,7 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                 ideaTitle={idea.title}
                 isLoading={isLoading}
             />
-            
+
             <RejectModal
                 open={isRejectModalOpen}
                 onOpenChange={setIsRejectModalOpen}
@@ -177,7 +197,7 @@ export function AdminIdeasRow({ idea, onUpdate }: AdminIdeasRowProps) {
                 ideaTitle={idea.title}
                 isLoading={isLoading}
             />
-            
+
             <DeleteModal
                 open={isDeleteModalOpen}
                 onOpenChange={setIsDeleteModalOpen}
