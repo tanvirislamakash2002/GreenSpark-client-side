@@ -1,7 +1,5 @@
 'use client';
 
-import { useTransition } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -10,26 +8,16 @@ interface IdeasPaginationProps {
     totalPages: number;
     totalItems: number;
     itemsPerPage: number;
+    onPageChange: (page: number) => void;
 }
 
 export function IdeasPagination({ 
     currentPage, 
     totalPages, 
     totalItems, 
-    itemsPerPage 
+    itemsPerPage,
+    onPageChange 
 }: IdeasPaginationProps) {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const [isPending, startTransition] = useTransition();
-
-    const goToPage = (page: number) => {
-        const params = new URLSearchParams(searchParams);
-        params.set('page', page.toString());
-        startTransition(() => {
-            router.push(`/ideas?${params.toString()}`);
-        });
-    };
-
     const startItem = (currentPage - 1) * itemsPerPage + 1;
     const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
@@ -45,8 +33,8 @@ export function IdeasPagination({
                 <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => goToPage(currentPage - 1)}
-                    disabled={currentPage <= 1 || isPending}
+                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage <= 1}
                 >
                     <ChevronLeft className="h-4 w-4 mr-1" />
                     Previous
@@ -71,8 +59,7 @@ export function IdeasPagination({
                                 variant={currentPage === pageNum ? 'default' : 'outline'}
                                 size="sm"
                                 className="w-9"
-                                onClick={() => goToPage(pageNum)}
-                                disabled={isPending}
+                                onClick={() => onPageChange(pageNum)}
                             >
                                 {pageNum}
                             </Button>
@@ -83,8 +70,8 @@ export function IdeasPagination({
                 <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => goToPage(currentPage + 1)}
-                    disabled={currentPage >= totalPages || isPending}
+                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={currentPage >= totalPages}
                 >
                     Next
                     <ChevronRight className="h-4 w-4 ml-1" />

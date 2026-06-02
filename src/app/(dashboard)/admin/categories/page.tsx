@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getCategories } from '@/actions/category.action';
 import { CategoriesHeader } from '@/components/modules/dashboard/admin/categories/CategoriesHeader';
 import { CategoriesSearch } from '@/components/modules/dashboard/admin/categories/CategoriesSearch';
@@ -14,6 +15,8 @@ import { Category } from '@/types/category.type';
 import { toast } from 'sonner';
 
 export default function AdminCategoriesPage() {
+    const searchParams = useSearchParams();
+    
     const [categories, setCategories] = useState<Category[]>([]);
     const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, totalItems: 0, itemsPerPage: 10 });
     const [isLoading, setIsLoading] = useState(true);
@@ -22,21 +25,28 @@ export default function AdminCategoriesPage() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
 
-    const fetchCategories = useCallback(async () => {
-        setIsLoading(true);
-        const result = await getCategories();
-        if (result.success && result.data) {
-            setCategories(result.data.categories);
-            setPagination(result.data.pagination);
-        } else {
-            toast.error(result.message || 'Failed to load categories');
-        }
-        setIsLoading(false);
-    }, []);
+    const page = searchParams.get('page') || '1';
+    const search = searchParams.get('search') || '';
 
     useEffect(() => {
+        const fetchCategories = async () => {
+            setIsLoading(true);
+            const result = await getCategories({
+                page: parseInt(page),
+                limit: 10,
+                search: search || undefined,
+            });
+            if (result.success && result.data) {
+                setCategories(result.data.categories);
+                setPagination(result.data.pagination);
+            } else {
+                toast.error(result.message || 'Failed to load categories');
+            }
+            setIsLoading(false);
+        };
+
         fetchCategories();
-    }, [fetchCategories]);
+    }, [page, search]); // Only runs when URL changes (on search or pagination)
 
     const handleEdit = (category: Category) => {
         setSelectedCategory(category);
@@ -49,7 +59,8 @@ export default function AdminCategoriesPage() {
     };
 
     const handleSuccess = () => {
-        fetchCategories();
+        // Refresh the page to show updated data
+        window.location.reload();
     };
 
     if (isLoading) {
@@ -68,7 +79,7 @@ export default function AdminCategoriesPage() {
                 categories={categories}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
-                onRefresh={fetchCategories}
+                onRefresh={handleSuccess}
                 onAddClick={() => setIsCreateModalOpen(true)}
             />
             <CategoriesPagination

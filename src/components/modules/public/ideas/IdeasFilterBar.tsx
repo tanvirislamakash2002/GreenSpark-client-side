@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { memo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, Filter, X } from 'lucide-react';
+import { Filter, X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
     Select,
     SelectContent,
@@ -14,57 +13,41 @@ import {
 } from '@/components/ui/select';
 import { sortOptions } from '@/constants/categories';
 import { Category } from '@/types/category.type';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { SearchInput } from './SearchInput';
 
 interface IdeasFilterBarProps {
     categories: Category[];
 }
 
-export function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
-    const router = useRouter();
+export const IdeasFilterBar = memo(function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
     const searchParams = useSearchParams();
-    const [isPending, startTransition] = useTransition();
-    const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const router = useRouter();
+    const [showMobileFilters, setShowMobileFilters] = useState(false); // You'll need to add useState back
 
-    const currentSearch = searchParams.get('search') || '';
     const currentCategory = searchParams.get('category') || 'all';
     const currentStatus = searchParams.get('status') || '';
     const currentSort = searchParams.get('sortBy') || 'recent';
 
     const updateFilters = (key: string, value: string) => {
         const params = new URLSearchParams(searchParams);
-
         if (value && value !== 'all') {
             params.set(key, value);
         } else {
             params.delete(key);
         }
-
         params.delete('page');
-        startTransition(() => {
-            router.push(`/ideas?${params.toString()}`);
-        });
+        router.push(`/ideas?${params.toString()}`);
     };
 
     const resetFilters = () => {
-        startTransition(() => {
-            router.push('/ideas');
-        });
+        router.push('/ideas');
     };
 
     const FilterContent = () => (
-        <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search Input */}
-            <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                    placeholder="Search ideas..."
-                    defaultValue={currentSearch}
-                    onChange={(e) => updateFilters('search', e.target.value)}
-                    className="pl-9"
-                />
-            </div>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <SearchInput />
 
-            {/* Category Select */}
             <Select value={currentCategory} onValueChange={(v) => updateFilters('category', v)}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="All Categories" />
@@ -74,17 +57,20 @@ export function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
                     {categories.map((cat) => (
                         <SelectItem key={cat.id} value={cat.slug}>
                             <div className="flex items-center gap-2">
-                                {cat.imageUrl && (
-                                    <img src={cat.imageUrl} alt="" className="w-4 h-4 rounded-full object-cover" />
-                                )}
-                                {cat.name}
+                                {cat?.imageUrl ?
+                                    <Avatar className="h-5 w-5">
+                                        <AvatarImage src={cat.imageUrl || undefined} />
+                                        <AvatarFallback>{cat.name.charAt(0)}</AvatarFallback>
+                                    </Avatar> :
+                                    <Sparkles className='h-4 w-4 text-green-700' />
+                                }
+                                <span>{cat.name}</span>
                             </div>
                         </SelectItem>
                     ))}
                 </SelectContent>
             </Select>
 
-            {/* Payment Status Select */}
             <Select value={currentStatus} onValueChange={(v) => updateFilters('status', v)}>
                 <SelectTrigger className="w-full sm:w-[140px]">
                     <SelectValue placeholder="All Ideas" />
@@ -96,7 +82,6 @@ export function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
                 </SelectContent>
             </Select>
 
-            {/* Sort Select */}
             <Select value={currentSort} onValueChange={(v) => updateFilters('sortBy', v)}>
                 <SelectTrigger className="w-full sm:w-[160px]">
                     <SelectValue placeholder="Sort by" />
@@ -110,8 +95,7 @@ export function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
                 </SelectContent>
             </Select>
 
-            {/* Reset Button */}
-            <Button variant="outline" onClick={resetFilters} className="gap-2">
+            <Button type="button" variant="outline" onClick={resetFilters} className="gap-2">
                 <X className="h-4 w-4" />
                 Reset
             </Button>
@@ -120,12 +104,10 @@ export function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
 
     return (
         <>
-            {/* Desktop Filters */}
             <div className="hidden sm:block mb-6">
                 <FilterContent />
             </div>
 
-            {/* Mobile Filter Button */}
             <div className="sm:hidden mb-4">
                 <Button
                     variant="outline"
@@ -137,7 +119,6 @@ export function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
                 </Button>
             </div>
 
-            {/* Mobile Filters Dropdown */}
             {showMobileFilters && (
                 <div className="sm:hidden mb-6 p-4 border rounded-lg bg-muted/30">
                     <FilterContent />
@@ -145,4 +126,4 @@ export function IdeasFilterBar({ categories }: IdeasFilterBarProps) {
             )}
         </>
     );
-}
+});
