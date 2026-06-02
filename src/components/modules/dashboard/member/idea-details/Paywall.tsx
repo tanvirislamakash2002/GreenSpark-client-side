@@ -22,25 +22,25 @@ export function Paywall({ ideaId, amount, ideaTitle }: PaywallProps) {
 
     const handleInitiatePayment = async () => {
         setIsLoading(true);
-        
+
         const result = await createPaymentIntent({
             ideaId,
             amount,
             ideaTitle,
         });
-        
+
         if (!result.success) {
             toast.error(result.message || "Failed to initiate payment");
             setIsLoading(false);
             return;
         }
-        
+
         if (!result.data) {
             toast.error("Payment data missing");
             setIsLoading(false);
             return;
         }
-        
+
         setClientSecret(result.data.clientSecret);
         setIsLoading(false);
     };
@@ -58,7 +58,10 @@ export function Paywall({ ideaId, amount, ideaTitle }: PaywallProps) {
             <div className="bg-muted p-6 rounded-lg">
                 <h3 className="text-lg font-semibold mb-4">Complete Your Purchase</h3>
                 <Elements stripe={stripePromise} options={{ clientSecret }}>
-                    <PaymentForm onSuccess={handleSuccess} onCancel={handleCancel} />
+                    <PaymentForm
+                        ideaId={ideaId}
+                        onSuccess={handleSuccess}
+                        onCancel={handleCancel} />
                 </Elements>
             </div>
         );
@@ -66,9 +69,9 @@ export function Paywall({ ideaId, amount, ideaTitle }: PaywallProps) {
 
     return (
         <div className="text-center">
-            <Button 
-                onClick={handleInitiatePayment} 
-                disabled={isLoading} 
+            <Button
+                onClick={handleInitiatePayment}
+                disabled={isLoading}
                 className="bg-amber-500 hover:bg-amber-600"
             >
                 {isLoading ? "Processing..." : `Unlock for $${amount.toFixed(2)}`}
