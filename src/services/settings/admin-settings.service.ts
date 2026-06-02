@@ -139,10 +139,9 @@ export const adminSettingsService = {
 
             if (!res.ok) return { success: false, message: response.message };
 
-            // The backend already returns { activities: [], pagination: {} }
             return {
                 success: true,
-                data: response.data, // response.data already has the correct structure
+                data: response.data,
             };
         } catch (error) {
             return { success: false, message: "Failed to fetch activity" };

@@ -12,7 +12,7 @@ export interface AdminProfile {
 export interface AdminActivity {
     id: string;
     action: string;
-    details: string;
+    details: any;
     ipAddress: string;
     createdAt: string;
 }

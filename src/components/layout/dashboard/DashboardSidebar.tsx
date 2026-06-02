@@ -136,13 +136,13 @@ const adminRoutes = [
     //         // { title: "Reported Comments", url: "/admin/comments/reported", icon: Flag },
         ],
     },
-    // {
-    //     title: "System",
-    //     items: [
+    {
+        title: "System",
+        items: [
     // TODO5:        { title: "Activity Logs", url: "/admin/logs", icon: Activity },
-    //         { title: "Settings", url: "/admin/settings", icon: Settings },
-    //     ],
-    // },
+            { title: "Settings", url: "/admin/settings", icon: Settings },
+        ],
+    },
 ];
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
@@ -237,7 +237,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                     </div>
                 </div>
                 <div className="space-y-1">
-                    {user.role === Roles.ADMIN && <Button
+                    {/* {user.role === Roles.ADMIN && <Button
                         variant="ghost"
                         className="w-full justify-start text-muted-foreground hover:text-foreground"
                         asChild
@@ -246,7 +246,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                             <Settings className="h-4 w-4 mr-2 flex-shrink-0" />
                             <span className="group-data-[collapsible=icon]:hidden truncate">Settings</span>
                         </Link>
-                    </Button>}
+                    </Button>} */}
                     <Button
                         variant="ghost"
                         className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"

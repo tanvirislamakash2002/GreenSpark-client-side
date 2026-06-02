@@ -23,6 +23,31 @@ const activityIcons = {
 
 const defaultIcon = { icon: Activity, color: "text-gray-500", bg: "bg-gray-100" };
 
+// Helper function to format details
+const formatDetails = (details: any, action: string): string => {
+    if (typeof details === 'string') return details;
+    if (!details) return '';
+    
+    switch (action) {
+        case 'APPROVE_IDEA':
+            return `Approved idea "${details.ideaTitle || details.ideaId}"`;
+        case 'REJECT_IDEA':
+            return `Rejected idea "${details.ideaTitle || details.ideaId}"`;
+        case 'DELETE_IDEA':
+            return `Deleted idea "${details.ideaTitle || details.ideaId}"`;
+        case 'DELETE_COMMENT':
+            return `Deleted comment ${details.commentId}`;
+        case 'SUSPEND_USER':
+            return `Suspended user ${details.targetUserEmail || details.targetUserId}`;
+        case 'ADMIN_LOGIN':
+            return `Admin logged in`;
+        case 'SETTINGS_CHANGE':
+            return `Settings changed`;
+        default:
+            return JSON.stringify(details);
+    }
+};
+
 export function AdminActivityLogCard({ activities }: AdminActivityLogCardProps) {
     const [showAll, setShowAll] = useState(false);
     const displayedActivities = showAll ? activities : activities.slice(0, 5);
@@ -66,7 +91,9 @@ export function AdminActivityLogCard({ activities }: AdminActivityLogCardProps) 
                             </div>
                             <div className="flex-1">
                                 <p className="text-sm font-medium">{activity.action.replace(/_/g, " ")}</p>
-                                <p className="text-xs text-muted-foreground">{activity.details}</p>
+                                <p className="text-xs text-muted-foreground">
+                                    {formatDetails(activity.details, activity.action)}
+                                </p>
                                 <div className="flex items-center gap-3 mt-1">
                                     <span className="text-xs text-muted-foreground">
                                         {new Date(activity.createdAt).toLocaleString()}
