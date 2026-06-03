@@ -59,9 +59,9 @@ async function BlogContent({ searchParams }: { searchParams: Awaited<BlogPagePro
             <BlogSearch />
             <BlogCategoryFilter categoryCounts={categoryCounts} />
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-3 gap-8">
                 {/* Main Content */}
-                <div className="">
+                <div className="col-span-2">
                     {featuredPost && <FeaturedPost post={featuredPost} />}
                     <BlogGrid posts={posts} />
                     <BlogPagination

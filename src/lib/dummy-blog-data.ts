@@ -7,7 +7,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: '10 Simple Ways to Reduce Plastic Waste in Your Daily Life',
         excerpt: 'Discover easy, actionable tips to cut down on plastic consumption and make your lifestyle more sustainable.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/RGzrz129/b26.jpg',
         category: 'tips',
         author: {
             name: 'Sarah Johnson',
@@ -26,7 +26,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: 'How a Solar-Powered School Transformed This Rural Community',
         excerpt: 'The inspiring story of how renewable energy changed education and livelihoods in a remote village.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/1YGkTspX/b27.jpg',
         category: 'success-stories',
         author: {
             name: 'Michael Chen',
@@ -45,7 +45,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: 'Vertical Farming: The Future of Urban Agriculture',
         excerpt: 'Exploring how vertical farms are revolutionizing food production in crowded cities.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/27Cj5FPQ/b28.jpg',
         category: 'innovations',
         author: {
             name: 'Emma Rodriguez',
@@ -64,7 +64,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: 'GreenSpark Reaches 500 Ideas Milestone!',
         excerpt: 'Celebrating our community\'s achievement in sharing 500 sustainability ideas.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/YFyNhTcF/b29.jpg',
         category: 'news',
         author: {
             name: 'David Kim',
@@ -83,7 +83,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: 'Composting Basics for Apartment Dwellers',
         excerpt: 'You don\'t need a backyard to compost. Learn how to start composting in your apartment.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/6RSjXb2R/b31.jpg',
         category: 'tips',
         author: {
             name: 'Lisa Wang',
@@ -102,7 +102,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: 'Solving EV Charging Challenges in Rural Communities',
         excerpt: 'Innovative solutions bringing electric vehicle infrastructure to underserved rural areas.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/mVRxpvYG/b32.jpg',
         category: 'innovations',
         author: {
             name: 'James Wilson',
@@ -121,7 +121,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: 'From Landfill to Landscape: The Reclaimed Wood Movement',
         excerpt: 'How salvaged wood is being transformed into beautiful furniture while reducing waste.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/gZk99MTf/b33.jpg',
         category: 'success-stories',
         author: {
             name: 'Maria Garcia',
@@ -140,7 +140,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: 'Green Rooftops: A Solution to Urban Heat Islands',
         excerpt: 'How rooftop gardens are cooling our cities and improving air quality.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/KzjzYGw7/b34.jpg',
         category: 'innovations',
         author: {
             name: 'Alex Thompson',
@@ -159,7 +159,7 @@ export const dummyBlogPosts: BlogPost[] = [
         title: 'The Ultimate Guide to Building a Sustainable Wardrobe',
         excerpt: 'Tips for choosing eco-friendly clothing and reducing fashion waste.',
         content: 'Full content here...',
-        featuredImage: 'https://i.ibb.co.com/C5WkXByf/2.jpg',
+        featuredImage: 'https://i.ibb.co.com/qLs0yLFW/b35.jpg',
         category: 'tips',
         author: {
             name: 'Sophia Lee',

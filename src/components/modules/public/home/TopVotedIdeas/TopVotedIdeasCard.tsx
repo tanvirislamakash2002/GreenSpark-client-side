@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ThumbsUp, User, ArrowRight } from 'lucide-react';
+import { ThumbsUp, User, ArrowRight, Crown, Trophy, Award } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Idea } from '@/types/idea/idea.type';
 
@@ -9,17 +9,14 @@ interface TopVotedIdeasCardProps {
 }
 
 export function TopVotedIdeasCard({ idea, rank }: TopVotedIdeasCardProps) {
-    const medalColors = {
-        1: "text-yellow-500",
-        2: "text-gray-400",
-        3: "text-amber-600",
+    const medalIcons = {
+        1: { icon: Crown, color: "text-yellow-500", bgColor: "bg-yellow-100 dark:bg-yellow-900/30" },
+        2: { icon: Trophy, color: "text-gray-400", bgColor: "bg-gray-100 dark:bg-gray-800" },
+        3: { icon: Award, color: "text-amber-600", bgColor: "bg-amber-100 dark:bg-amber-900/30" },
     };
 
-    const medalEmojis = {
-        1: "🥇",
-        2: "🥈",
-        3: "🥉",
-    };
+    const medalConfig = medalIcons[rank as keyof typeof medalIcons] || medalIcons[3];
+    const RankIcon = medalConfig.icon;
 
     // Truncate description to 100 characters
     const truncatedDescription = idea.description && idea.description.length > 100
@@ -37,10 +34,10 @@ export function TopVotedIdeasCard({ idea, rank }: TopVotedIdeasCardProps) {
 
     return (
         <div className="group relative flex items-start gap-4 p-5 rounded-xl border bg-card hover:shadow-md transition-all duration-300">
-            {/* Rank Badge */}
+            {/* Rank Badge with Icon */}
             <div className="flex-shrink-0">
-                <div className={`text-3xl font-bold ${medalColors[rank as keyof typeof medalColors]}`}>
-                    {medalEmojis[rank as keyof typeof medalEmojis]}
+                <div className={`w-10 h-10 rounded-full ${medalConfig.bgColor} flex items-center justify-center`}>
+                    <RankIcon className={`w-5 h-5 ${medalConfig.color}`} />
                 </div>
             </div>
 

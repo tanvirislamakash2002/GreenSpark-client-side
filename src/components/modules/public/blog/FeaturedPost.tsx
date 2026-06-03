@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, User, Star } from 'lucide-react';
+import { Calendar, Clock, User, Star, Sparkles } from 'lucide-react';
 import { BlogPost } from '@/types/blog.type';
 import { Badge } from '@/components/ui/badge';
 import { getCategoryLabel } from '@/constants/blog';
@@ -30,7 +30,7 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
                         )}
                         <div className="absolute top-3 left-3">
                             <Badge className="bg-amber-500 text-white border-0">
-                                ✨ Featured
+                                <Sparkles size={10}/> Featured
                             </Badge>
                         </div>
                     </div>

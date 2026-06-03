@@ -34,7 +34,7 @@ export function HeroSection() {
     };
 
     return (
-        <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-green-950/20 dark:via-background dark:to-emerald-950/20">
+        <section className="relative min-h-[90vh] pt-10 md:pt-18 flex items-center overflow-hidden bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-green-950/20 dark:via-background dark:to-emerald-950/20">
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-30">
                 <div className="absolute top-20 left-10 w-72 h-72 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl animate-pulse" />

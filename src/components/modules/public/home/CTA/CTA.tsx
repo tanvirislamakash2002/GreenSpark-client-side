@@ -41,13 +41,13 @@ export function CTA() {
 
                     {/* CTA Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Button asChild size="lg" className="bg-white text-green-700 hover:bg-gray-100 hover:text-green-800 group">
+                        <Button asChild size="lg" className="bg-white text-green-700 hover:bg-gray-100 hover:text-green-100 group">
                             <Link href="/register">
                                 Get Started
                                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </Button>
-                        <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+                        <Button asChild size="lg" variant="outline" className="border-white bg-green-700 text-white hover:bg-white/10">
                             <Link href="/ideas">
                                 Explore Ideas
                             </Link>
